@@ -6,7 +6,7 @@
 /*   By: hyi <hyi@student.42seoul.kr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/03 00:28:24 by hyi               #+#    #+#             */
-/*   Updated: 2021/04/30 16:23:51 by hyi              ###   ########.fr       */
+/*   Updated: 2021/05/02 17:30:03 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ int	ft_strlen(char *str)
 
 int	ft_while_loop(char **line, char *buf, char **buf_ref)
 {
-	int		idx;
-	int		st;
+	int	idx;
+	int	st;
 
 	idx = ft_get_next_idx(buf, '\n', 0);
 	if (idx < 0)
