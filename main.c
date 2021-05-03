@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include "get_next_line.h"
 #include "main.h"
 
 int get_next_line(int fd, char **line, char *prompt);
@@ -19,7 +14,6 @@ char *get_prompt(){
 	buf_ptr = getcwd(buf, 1024);
 	prompt = ft_strdup(buf_ptr);
 	ft_resize_and_copy(&prompt, " % ", 0, 3);
-	//printf("%s\n", prompt);
 	return prompt;
 }
 
@@ -308,6 +302,26 @@ void ft_lstfree(t_string *del)
 	del = 0;
 }
 
+int ft_lstcount(t_string *arg)
+{
+	t_string *curr;
+	int cnt;
+
+	cnt = 0;
+	if (arg == 0)
+		return (cnt);
+	else
+	{
+		curr = arg;
+		while (curr)
+		{
+			curr = curr->next;
+			cnt++;
+		}
+	}
+	return (cnt);
+}
+
 t_string *ft_lstswap(t_string **root, t_string *now, t_string *to)
 {
 	t_string *curr;
@@ -377,7 +391,7 @@ int ft_lst_get_len(t_string *root)
 	return (cnt);
 }
 
-t_string *ft_lst_init(char *s)
+t_string *ft_lstinit(char *s)
 {
 	t_string *temp;
 
@@ -459,7 +473,7 @@ t_string *replace_str(char **buf, int st, int ed, char *to)
 	ft_resize_and_copy(&temp, *buf, 0, st + 1);
 	ft_resize_and_copy(&temp, to, 0, ft_strlen(to));
 	ft_resize_and_copy(&temp, *buf, ed, ft_strlen(*buf));
-	now = ft_lst_init(now_str);
+	now = ft_lstinit(now_str);
 	free(*buf);
 	*buf = temp;
 	return (now);
@@ -528,7 +542,7 @@ t_inst *make_command(char **space_chunks, int line_cnt)
 				continue ;
 			}
 		}
-		arg = ft_lst_init(ft_strdup(*(space_chunks + k)));
+		arg = ft_lstinit(ft_strdup(*(space_chunks + k)));
 		ft_lstadd_back(&ret->arg, arg);
 		k++;
 	}
@@ -601,7 +615,7 @@ t_string *chunks_to_string(char **chunks)
 	i = 0;
 	ret = 0;
 	while (*(chunks + i))
-		ft_lstadd_back(&ret, ft_lst_init(ft_strdup(*(chunks + (i++)))));
+		ft_lstadd_back(&ret, ft_lstinit(ft_strdup(*(chunks + (i++)))));
 	return (ret);
 }
 
@@ -642,7 +656,7 @@ int split_inst_red(t_inst *curr)
 		free(curr->inst);
 		curr->inst = ft_strdup(*inst_chunks);
 		temp_args = chunks_to_string(inst_chunks + 1);
-		ft_lstadd_front(&temp_args, ft_lst_init(ft_strdup(rd)));
+		ft_lstadd_front(&temp_args, ft_lstinit(ft_strdup(rd)));
 		ft_lstadd_back(&temp_args, curr->arg);
 		curr->arg = temp_args;
 		ft_free_chunks(inst_chunks, num_of_lines);
@@ -670,7 +684,7 @@ int split_args_red(t_inst *curr)
 		{
 			temp_args = chunks_to_string(arg_chunks);
 			if (ft_strnstr(curr_arg->str, rd, ft_strlen(curr_arg->str)) == curr_arg->str)
-				ft_lstadd_front(&temp_args, ft_lst_init(ft_strdup(rd)));
+				ft_lstadd_front(&temp_args, ft_lstinit(ft_strdup(rd)));
 			else if (ft_cnt_lines(curr_arg->str, rd[0]) == 1)
 			{
 				if (ft_strnstr(curr_arg->str, rd, ft_strlen(curr_arg->str))[1] == 0)
@@ -679,16 +693,158 @@ int split_args_red(t_inst *curr)
 					ft_lstfree_all(temp_args);
 					return (1);
 				}
-				ft_lstadd_back(&temp_args, ft_lst_init(ft_strdup(rd)));
+				ft_lstadd_back(&temp_args, ft_lstinit(ft_strdup(rd)));
 			}
 			else
-				ft_lstadd_after(&temp_args, ft_lst_init(ft_strdup(rd)));
+				ft_lstadd_after(&temp_args, ft_lstinit(ft_strdup(rd)));
 			ft_free_chunks(arg_chunks, ft_cnt_lines(curr_arg->str, rd[0]));
 			curr_arg = ft_lstswap(&(curr->arg), curr_arg, temp_args);
 		}
 		curr_arg = curr_arg->next;
 	}
 	return (0);
+}
+
+t_env *ft_envinit(char *key, char *value)
+{
+	t_env *env;
+
+	if ((env = (t_env *)malloc(sizeof(t_env))) == 0)
+		return (0);
+	env->key = ft_strdup(key);
+	env->value = ft_strdup(value);
+	env->next = 0;
+	return (env);
+}
+
+t_env *ft_envfind(char *key)
+{
+	t_env *curr;
+
+	curr = g_env;
+	if (curr == 0)
+		return (0);
+	while (curr && ft_strncmp(curr->key, key, ft_strlen(curr->key)) != 0)
+	{
+		curr = curr->next;
+	}
+	return (curr);
+}
+
+void ft_envfree(t_env *env)
+{
+	free(env->key);
+	free(env->value);
+	free(env);
+}
+
+void ft_envremove(t_env **root, char *key)
+{
+	t_env *curr;
+	t_env *prev;
+	t_env *del;
+	
+	curr = *root;
+	prev = 0;
+	while (curr)
+	{
+		if (ft_strncmp(curr->key, key, ft_strlen(curr->key)) == 0)
+		{
+			if (prev == 0)
+				*root = curr->next;
+			else
+			{
+				del = curr;
+				prev->next = curr->next;
+				ft_envfree(del);
+			}
+			break ;
+		}
+		prev = curr;
+		curr = curr->next;
+	}
+}
+
+void ft_envadd_back(t_env **root, t_env *now)
+{
+	t_env *curr;
+
+	if (*root == 0)
+		*root = now;
+	else
+	{
+		curr = *root;
+		while (curr->next)
+			curr = curr->next;
+		curr->next = now;
+	}
+}
+
+/*
+ * flag : append 여부 (0 : remove and add, 1 : append)
+*/
+void ft_envchkandadd(t_env **root, t_env *now, int flag)
+{
+	t_env *curr;
+
+	curr = ft_envfind(now->key);
+	if (curr == 0)
+		ft_envadd_back(root, now);
+	else
+	{
+		if (flag == 1)
+			ft_resize_and_copy(&curr->value, now->value, 0, ft_strlen(now->value));
+		else
+		{
+			free(curr->value);
+			curr->value = ft_strdup(now->value);
+		}
+		ft_envfree(now);
+	}
+}
+
+void ft_envprint_all(t_env *root)
+{
+	t_env *curr;
+
+	curr = root;
+	while (curr)
+	{
+		printf("%s=%s\n",curr->key, curr->value);
+		curr = curr->next;
+	}
+}
+void set_genv(char **envp)
+{
+	char **chunk;
+	char **curr;
+	int cnt_args;
+
+	curr = envp;
+	while (*curr)
+	{
+		chunk = ft_split(*curr, '=');
+		cnt_args = ft_cnt_lines(*curr, '=');
+		if (cnt_args == 2)
+			ft_envadd_back(&g_env, ft_envinit(chunk[0], chunk[1]));
+		else
+			ft_envadd_back(&g_env, ft_envinit(chunk[0], ""));
+		ft_free_chunks(chunk, cnt_args);
+		curr++;
+	}
+}
+
+void free_genv()
+{
+	t_env *del;
+	t_env *curr;
+
+	curr = g_env;
+	while ((del = curr) != 0)
+	{
+		curr = del->next; 
+		ft_envfree(del);
+	}
 }
 
 int main(int argc, char **argv, char **envp){
@@ -699,13 +855,13 @@ int main(int argc, char **argv, char **envp){
 
 	(void)argc;
 	(void)argv;
-	(void)envp;
+	set_genv(envp);
 	prompt = get_prompt();
 	while (1)
 	{
 		get_next_line(0, &buf, prompt);
 		buf = ft_trim(buf, ' ');
-		const_strings = ft_lst_init(0);
+		const_strings = ft_lstinit(0);
 		processing_quotes(&buf, &const_strings);
 		insts = split_commands(ft_split(buf, ';'), ft_cnt_lines(buf, ';'));
 		free(buf);
@@ -717,19 +873,68 @@ int main(int argc, char **argv, char **envp){
 				// parsing error
 				break ;
 			}
-			printf("inst:|%s|\n", curr->inst);
-			int i = 0;
-			t_string *args = curr->arg;
-			while (args)
+			// cd
+			if (ft_strnstr(curr->inst, "cd", ft_strlen(curr->inst)) != 0
+					&& ft_strlen(curr->inst) == 2)
 			{
-				printf("%dth:|%s|\n",i++, args->str);
-				args = args->next;
+				if (ft_cd(curr) == 0)
+				{
+					free(prompt);
+					prompt = get_prompt();
+				}
+				else
+					printf("%s: 파일 이나 디렉터리 없음\n", curr->arg->str);
+
+			}
+			else if (ft_strnstr(curr->inst, "pwd", ft_strlen(curr->inst)) != 0
+					&& ft_strlen(curr->inst) == 3)
+			{
+				if (ft_pwd() == -1)
+					printf("error 발생\n");
+			}
+			else if (ft_strnstr(curr->inst, "ls", ft_strlen(curr->inst)) != 0
+					&& ft_strlen(curr->inst) == 2)
+			{
+				if (ft_ls(curr) == 1)
+				{
+					printf("error 발생\n");
+				}
+			}
+			else if (ft_strnstr(curr->inst, "exit", ft_strlen(curr->inst)) != 0
+					&& ft_strlen(curr->inst) == 4)
+			{
+				free_genv();
+				free(prompt);
+				ft_lstfree_all(const_strings);
+				ft_inst_free(insts);
+				exit(0);
+			}
+			else if (ft_strnstr(curr->inst, "export", ft_strlen(curr->inst)) != 0
+					&& ft_strlen(curr->inst) == 6)
+			{
+				int temp_ret;
+				if ((temp_ret = ft_export(curr)) != 0)
+					printf("error 발생\n");
+				printf("ret:%d\n", temp_ret);
+			}
+			else if (ft_strnstr(curr->inst, "env", ft_strlen(curr->inst)) != 0
+					&& ft_strlen(curr->inst) == 3)
+			{
+				if ((ft_env(curr)) != 0)
+					printf("err?\n");
+			}
+			else if (ft_strnstr(curr->inst, "unset", ft_strlen(curr->inst)) != 0
+					&& ft_strlen(curr->inst) == 5)
+			{
+				if ((ft_unset(curr)) != 0)
+					printf("err?\n");
 			}
 			curr = curr->next;
 		}
 		ft_lstfree_all(const_strings);
 		ft_inst_free(insts);
 	}
+	free_genv();
 	free(prompt);
 	return 0;
 }
