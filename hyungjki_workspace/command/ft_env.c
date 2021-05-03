@@ -1,18 +1,45 @@
 #include "../minishell.h"
 
+t_env *get_env(t_env *env, char *key)
+{
+	while (env)
+	{
+		if (env->key)
+			if (ft_strcmp(env->key, key) == 0)
+				return (env);
+		env = env->next;
+	}
+}
+
+void edit_env_value(t_env *env, char *key, char *value)
+{
+	while (env)
+	{
+		if (env->key)
+			if (ft_strcmp(env->key, key) == 0)
+			{
+				free(env->value);
+				env->value = value;
+				break;
+			}	
+		env = env->next;
+	}
+}
+
 void ft_env(void)
 {
-	g_env **env_list = get_env_list();
+	t_env *node;
 
-	while ((*env_list))
+	node = g_env;
+	while (node)
 	{
-		if (((*env_list)->key) || ((*env_list)->value))
+		if ((node->key) || (node->value))
 		{
-			ft_putstr_fd((*env_list)->key, STDOUT_FILENO);
+			ft_putstr_fd(node->key, STDOUT_FILENO);
 			ft_putstr_fd("=", STDOUT_FILENO);
-			ft_putendl_fd((*env_list)->value, STDOUT_FILENO);
+			ft_putendl_fd(node->value, STDOUT_FILENO);
 		}
-		(*env_list) = (*env_list)->next;
+		node = node->next;
 	}
 	return ;
 }

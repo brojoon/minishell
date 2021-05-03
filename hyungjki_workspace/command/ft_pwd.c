@@ -2,13 +2,11 @@
 
 void ft_pwd(void)
 {
-	char path[1024];
+	char buf[1024];
 
-	if (!(getcwd(path, 1024)))
-	{
-		//error handle
-	}
+	if (!(getcwd(buf, 1024)))
+		catch_error("pwd", errno);
 	else
-		ft_putendl_fd(path, STDOUT_FILENO);
-	return;
+		ft_putendl_fd(buf, STDOUT_FILENO);
+	return ;
 }

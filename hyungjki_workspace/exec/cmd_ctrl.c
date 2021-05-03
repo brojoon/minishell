@@ -1,27 +1,6 @@
-#include "minishell.h"	
+#include "../minishell.h"	
 
-int		ft_strcmp(char *s1, char *s2)
-{
-	int i;
-
-	i = 0;
-	while (s1[i] && s2[i])
-	{
-		if (s1[i] > s2[i])
-			return (1);
-		if (s1[i] < s2[i])
-			return (-1);
-		i++;
-	}
-	if (s1[i] == '\0' && s2[i] == '\0')
-		return (0);
-	else if (s1[i] == '\0')
-		return (-1);
-	else
-		return (1);
-}
-
-static void cmd_ctrl(t_inst *inst)
+void cmd_ctrl(t_inst *inst)
 {
 	if (ft_strcmp(inst->inst, "cd") == 0)
 		ft_cd(inst->arg);
@@ -37,11 +16,4 @@ static void cmd_ctrl(t_inst *inst)
 		ft_pwd();
 	else if (ft_strcmp(inst->inst, "unset") == 0)
 		ft_unset(inst->arg);
-}
-
-g_env *get_env_list(void)
-{
-	static g_env *env_list = NULL;
-
-	return (&env_list);
 }
