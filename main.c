@@ -834,6 +834,35 @@ t_string *chunks_to_string(char **chunks)
 		ft_lstadd_back(&ret, ft_lstinit(ft_strdup(*(chunks + (i++)))));
 	return (ret);
 }
+/*
+ * execve에 넣기 위한 t_string *의 형식 변경 함수
+*/
+char **inst_to_chunks(t_inst *inst)
+{
+	char **ret;
+	t_string *curr;
+	int st;
+
+	if ((ret = (char **)malloc(sizeof(char *) * (ft_lstcount(inst->rd)+ft_lstcount(inst->arg) + 3))) == 0)
+		return (0);
+	*ret = inst->inst;
+	*(ret + 1) = inst->option;
+	curr = inst->rd;
+	st = 2;
+	while (curr)
+	{
+		*(ret + (st++)) = curr->str;
+		curr = curr->next;
+	}
+	curr = inst->arg;
+	while (curr)
+	{
+		*(ret + (st++)) = curr->str;
+		curr = curr->next;
+	}
+	*(ret + st) = 0;
+	return (ret);
+}
 
 t_env *ft_envinit(char *key, char *value)
 {
