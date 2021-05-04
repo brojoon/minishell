@@ -116,6 +116,8 @@ void	ft_free_chunks(char **ret, int ret_st)
 	int	st;
 
 	st = 0;
+	if (*ret == 0)
+		return ;
 	while (st < ret_st)
 		free(*(ret + (st++)));
 	free(ret);
@@ -281,7 +283,7 @@ char	*ft_strnstr(char *big, char *little, size_t len)
 	return (0);
 }
 
-t_string *ft_lst_find(t_string *root, char *target)
+t_string *ft_lstfind(t_string *root, char *target)
 {
 	t_string *curr;
 
@@ -321,7 +323,7 @@ int ft_lstcount(t_string *arg)
 	}
 	return (cnt);
 }
-
+/*
 t_string *ft_lstswap(t_string **root, t_string *now, t_string *to)
 {
 	t_string *curr;
@@ -338,14 +340,44 @@ t_string *ft_lstswap(t_string **root, t_string *now, t_string *to)
 	}
 	if (prev == 0)
 		*root = to;
+	else if (to == 0)
+		prev->next = curr->next;
 	else
 		prev->next = to;
-	curr = to;
-	while (curr && curr->next)
-		curr = curr->next;
-	curr->next = now->next;
+	curr = prev;
+	if (to != 0)
+	{
+		curr = to;
+		while (curr && curr->next)
+			curr = curr->next;
+		curr->next = now->next;
+	}
 	ft_lstfree(del);
 	return (curr);
+}
+*/
+t_string *ft_lstremove(t_string **root, t_string *target)
+{
+	t_string *curr;
+	t_string *prev;
+	t_string *del;
+
+	del = target;
+	curr = *root;
+	prev = 0;
+	while (curr && ft_strncmp(curr->str, target->str, ft_strlen(curr->str)) != 0)
+	{
+		prev = curr;
+		curr = curr->next;
+	}
+	if (prev == 0)
+		*root = curr->next;
+	else
+		prev->next = curr->next;
+	ft_lstfree(del);
+	if (prev == 0)
+		return (*root);
+	return (prev->next);
 }
 
 void ft_lstfree_all(t_string *root)
@@ -370,6 +402,8 @@ void ft_inst_free(t_inst *root)
 	{
 		root = del->next;
 		free(del->inst);
+		free(del->option);
+		ft_lstfree_all(del->rd);
 		ft_lstfree_all(del->arg);
 		free(del);
 		del = root;
@@ -479,13 +513,15 @@ t_string *replace_str(char **buf, int st, int ed, char *to)
 	return (now);
 }
 
-t_inst *ft_inst_init()
+t_inst *ft_instinit()
 {
 	t_inst *ret;
 
 	if (!(ret = (t_inst *)malloc(sizeof(t_inst))))
 		return (0);
 	ret->inst = 0;
+	ret->option = 0;
+	ret->rd = 0;
 	ret->arg = 0;
 	ret->next = 0;
 	return (ret);
@@ -520,30 +556,200 @@ char **split_redirection(char *str, char **splitter)
 }
 
 /*
- * 하나의 명령어이므로 space 단위로 split한 후 첫 번째는 명령어,
- * 나머지는 인자로 넣어줌 ( - 옵션이 붙은 경우에는 중복 체크하여 한개만)
+ * 한번에 2개 이상의 redirection이 붙어있는 경우 error
+*/
+int check_red_error(char *inst)
+{
+	int num_of_lines;
+	int num_of_lines2;
+
+	num_of_lines = ft_cnt_lines(inst, '>');
+	num_of_lines2 = ft_cnt_lines(inst, '<');
+	if (num_of_lines > 2 || num_of_lines2 > 2)
+		return (1);
+	if (ft_strchr(inst, '<') && ft_strchr(inst, '>'))
+		return (1);
+	return (0);
+}
+
+int	ft_make_int(const char *ptr, int st, int ed, int sign)
+{
+	unsigned long	ret;
+	unsigned long	mod;
+
+	ret = 0;
+	mod = 1;
+	while (--ed >= st)
+	{
+		ret += ((unsigned long)(ptr[ed] - '0') * mod);
+		mod *= 10;
+	}
+	if (ret > 2147483647 && sign == 1)
+		return (-1);
+	else if (ret > 2147483648 && sign == -1)
+		return (0);
+	return (ret * sign);
+}
+
+int	ft_atoi(const char *nptr)
+{
+	int		st;
+	int		ed;
+	int		sign;
+
+	sign = 1;
+	st = 0;
+	while (nptr[st] && (nptr[st] == ' ' ||
+				(nptr[st] >= 0x09 && nptr[st] <= 0x0D)))
+		st++;
+	if (!nptr[st])
+		return (0);
+	if (nptr[st] == '-')
+		sign = -1;
+	if (sign == -1 || nptr[st] == '+')
+		st++;
+	if (nptr[st] < '0' || nptr[st] > '9')
+		return (0);
+	ed = st;
+	while (nptr[ed] >= '0' && nptr[ed] <= '9')
+		ed++;
+	return (ft_make_int(nptr, st, ed, sign));
+}
+
+/*
+ * ret 0 : fd
+ * ret 1 : not fd (inst or argument)
+ * ret 2 : ubuntu 기준 fd는 0 ~ 1023 
+*/
+int is_fd(char *s)
+{
+	int st;
+
+	if (ft_strlen(s) > 4)
+		return (1);
+	st = 0;
+	while (*(s + st))
+	{
+		if (*(s + st) < '0' || *(s + st) > '9')
+			return (1);
+		st++;
+	}
+	st = ft_atoi(s);
+	if (st < 0 || st > 1023)
+		return (1);
+	return (0);
+}
+
+/*
+ * space 단위로 쪼개진 chunk에서 '<', '>', '>>' catch
+ * redirection으로 쪼갰을 때 2개가 나오면 왼쪽은 fd 혹은 명령어/인자
+ * ret 0 : 정상
+ * ret 1 : fd가 잘못된 경우
+ * ret 2 : redirection 오류
+ * ret 3 : parse error
+*/
+int handle_red_token(t_inst *inst, char **cmd, int *k)
+{
+	char *red;
+	char **chunks;
+	char *now;
+
+	now = *(cmd + *k);
+	red = 0;
+	if (check_red_error(now) != 0)
+		return (2);
+	chunks = split_redirection(now, &red);
+	if (red != 0)
+	{
+		if (ft_cnt_lines(now, red[0]) == 2)
+		{
+			if (is_fd(chunks[0]) == 0)
+				ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(chunks[0])));
+			else if (is_fd(chunks[0]) == 1)
+			{
+				if (inst->inst == 0)
+					inst->inst = ft_strdup(chunks[0]);
+				else
+					ft_lstadd_back(&(inst->arg), ft_lstinit(ft_strdup(chunks[0])));
+			}
+			else
+			{
+				ft_free_chunks(chunks, ft_cnt_lines(now, red[0]));
+				return (1);
+			}
+			ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(red)));
+			ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(chunks[1])));
+		}
+		else if (ft_cnt_lines(now, red[0]) == 1)
+		{
+			ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(chunks[0])));
+			if (ft_strncmp(now, red, ft_strlen(red)) == 0)
+				ft_lstadd_front(&(inst->rd), ft_lstinit(ft_strdup(red)));
+			else
+			{
+				ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(red)));
+				if (*(cmd + *k + 1) == 0)
+				{
+					ft_free_chunks(chunks, ft_cnt_lines(now, red[0]));
+					return (3);
+				}
+				ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(*(cmd + ++(*k)))));
+				}
+		}
+		else
+		{
+			if (*(cmd + *k + 1) == 0)
+			{
+				ft_free_chunks(chunks, ft_cnt_lines(now, red[0]));
+				return (3);
+			}
+			ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(red)));
+			ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(*(cmd + ++(*k)))));
+		}
+		ft_free_chunks(chunks, ft_cnt_lines(now, red[0]));
+	}
+	else
+		return (-1);
+	return (0);
+}
+
+/*
+ * redirection은 어느 위치든 나올 수 있음
+ * -로 시작하면 option으로 인식
 */
 t_inst *make_command(char **space_chunks, int line_cnt)
 {
 	int k;
 	t_inst *ret;
 	t_string *arg;
+	int flag;
 
-	ret = ft_inst_init();
-	ret->inst = ft_strdup(*space_chunks);
-	k = 1;
+	ret = ft_instinit();
+	k = 0;
 	while (*(space_chunks + k))
 	{
-		if (ft_strchr(*(space_chunks + k), '-') == *(space_chunks + k))
+		flag = handle_red_token(ret, space_chunks, &k);
+		if (flag > 0)
 		{
-			if (ft_lst_find(ret->arg, *(space_chunks + k)) != 0)
+			printf("make_commmand err:%d\n", flag);
+			ft_inst_free(ret);
+			return (0);
+		}
+		else if (flag == -1)
+		{
+			if (ft_strncmp(*(space_chunks + k), "-", 1) == 0)
 			{
-				k++;
-				continue ;
+				if (ft_lstfind(ret->arg, *(space_chunks + k)) == 0)
+					ret->option = ft_strdup(*(space_chunks + k));
+			}
+			else if (ret->inst == 0)
+				ret->inst = ft_strdup(*(space_chunks + k));
+			else
+			{
+				arg = ft_lstinit(ft_strdup(*(space_chunks + k)));
+				ft_lstadd_back(&ret->arg, arg);
 			}
 		}
-		arg = ft_lstinit(ft_strdup(*(space_chunks + k)));
-		ft_lstadd_back(&ret->arg, arg);
 		k++;
 	}
 	ft_free_chunks(space_chunks, line_cnt);
@@ -572,8 +778,18 @@ t_inst *split_commands(char **semi_chunks, int line_cnt)
 		while (*(pipe_chunks + j))
 		{
 			inst = make_command(ft_split(*(pipe_chunks + j), ' '), ft_cnt_lines(*(pipe_chunks + j), ' '));
-			//printf("inst:%s\n", inst->inst);
-			ft_inst_add(&root, inst);
+			if (inst == 0)
+				printf("err 발생..\n");
+			else
+			{
+				printf("inst:%s\n",inst->inst);
+				printf("\toption:%s\n",inst->option);
+				for (t_string *r = inst->rd; r; r = r->next)
+					printf("\t\trd:%s\n",r->str);
+				for (t_string *r = inst->arg; r; r = r->next)
+					printf("\t\t\targ:%s\n",r->str);
+				ft_inst_add(&root, inst);
+			}
 			j++;
 		}
 		ft_free_chunks(pipe_chunks, ft_cnt_lines(*(semi_chunks + i), '|'));
@@ -617,92 +833,6 @@ t_string *chunks_to_string(char **chunks)
 	while (*(chunks + i))
 		ft_lstadd_back(&ret, ft_lstinit(ft_strdup(*(chunks + (i++)))));
 	return (ret);
-}
-
-/*
- * 한번에 2개 이상의 redirection이 붙어있는 경우 error
-*/
-int check_red_error(char *inst)
-{
-	int num_of_lines;
-	int num_of_lines2;
-
-	num_of_lines = ft_cnt_lines(inst, '>');
-	num_of_lines2 = ft_cnt_lines(inst, '<');
-	if (num_of_lines > 2 || num_of_lines2 > 2)
-		return (1);
-	if (num_of_lines == 2 && num_of_lines2 == 2)
-		return (1);
-	return (0);
-}
-
-/*
- * 명령어 부분에 있는 redirection 처리 부분
- * 명령어에서 redirection이 두개 이상 
-*/
-int split_inst_red(t_inst *curr)
-{
-	char *rd;
-	char **inst_chunks;
-	t_string *temp_args;
-	int num_of_lines;
-
-	rd = 0;
-	if (check_red_error(curr->inst) == 1)
-		return (1);
-	if ((inst_chunks = split_redirection(curr->inst, &rd)) != 0)
-	{
-		num_of_lines = ft_cnt_lines(curr->inst, rd[0]);
-		free(curr->inst);
-		curr->inst = ft_strdup(*inst_chunks);
-		temp_args = chunks_to_string(inst_chunks + 1);
-		ft_lstadd_front(&temp_args, ft_lstinit(ft_strdup(rd)));
-		ft_lstadd_back(&temp_args, curr->arg);
-		curr->arg = temp_args;
-		ft_free_chunks(inst_chunks, num_of_lines);
-	}
-	return (0);
-}
-/*
- * argument에 있는 redirection은 >2 , 1>2, 1>, 1<2>>3 형식이며
- * 1>, 1<2>>3은 error로 처리
-*/
-int split_args_red(t_inst *curr)
-{
-	t_string *curr_arg;
-	char **arg_chunks;
-	char *rd;
-	t_string *temp_args;
-
-	curr_arg = curr->arg;
-	rd = 0;
-	while (curr_arg)
-	{
-		if (check_red_error(curr_arg->str) == 1)
-			return (1);
-		if ((arg_chunks = split_redirection(curr_arg->str, &rd)) != 0)
-		{
-			temp_args = chunks_to_string(arg_chunks);
-			if (ft_strnstr(curr_arg->str, rd, ft_strlen(curr_arg->str)) == curr_arg->str)
-				ft_lstadd_front(&temp_args, ft_lstinit(ft_strdup(rd)));
-			else if (ft_cnt_lines(curr_arg->str, rd[0]) == 1)
-			{
-				if (ft_strnstr(curr_arg->str, rd, ft_strlen(curr_arg->str))[1] == 0)
-				{
-					ft_free_chunks(arg_chunks, ft_cnt_lines(curr_arg->str, rd[0]));
-					ft_lstfree_all(temp_args);
-					return (1);
-				}
-				ft_lstadd_back(&temp_args, ft_lstinit(ft_strdup(rd)));
-			}
-			else
-				ft_lstadd_after(&temp_args, ft_lstinit(ft_strdup(rd)));
-			ft_free_chunks(arg_chunks, ft_cnt_lines(curr_arg->str, rd[0]));
-			curr_arg = ft_lstswap(&(curr->arg), curr_arg, temp_args);
-		}
-		curr_arg = curr_arg->next;
-	}
-	return (0);
 }
 
 t_env *ft_envinit(char *key, char *value)
@@ -868,11 +998,6 @@ int main(int argc, char **argv, char **envp){
 		t_inst *curr = insts;
 		while (curr != 0)
 		{
-			if (split_args_red(curr) == 1 || split_inst_red(curr) == 1)
-			{
-				// parsing error
-				break ;
-			}
 			// cd
 			if (ft_strnstr(curr->inst, "cd", ft_strlen(curr->inst)) != 0
 					&& ft_strlen(curr->inst) == 2)

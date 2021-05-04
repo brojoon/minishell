@@ -12,6 +12,8 @@ typedef struct s_env t_env;
 struct s_inst
 {
 	char *inst;
+	char *option;
+	t_string *rd;
 	t_string *arg;
 	t_inst *next;
 };
