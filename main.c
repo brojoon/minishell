@@ -737,13 +737,13 @@ t_inst *make_command(char **space_chunks, int line_cnt)
 		}
 		else if (flag == -1)
 		{
-			if (ft_strncmp(*(space_chunks + k), "-", 1) == 0)
+			if (ret->inst == 0)
+				ret->inst = ft_strdup(*(space_chunks + k));
+			else if (ft_strncmp(*(space_chunks + k), "-", 1) == 0)
 			{
 				if (ft_lstfind(ret->arg, *(space_chunks + k)) == 0)
 					ret->option = ft_strdup(*(space_chunks + k));
 			}
-			else if (ret->inst == 0)
-				ret->inst = ft_strdup(*(space_chunks + k));
 			else
 			{
 				arg = ft_lstinit(ft_strdup(*(space_chunks + k)));
