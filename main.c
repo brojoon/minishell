@@ -617,26 +617,18 @@ int	ft_atoi(const char *nptr)
 }
 
 /*
- * ret 0 : fd
+ * ret 0 : 정상 fd (0 ~ 2)
  * ret 1 : not fd (inst or argument)
- * ret 2 : ubuntu 기준 fd는 0 ~ 1023 
+ * ret 2 : 3 ~ 9 사이의 fd
 */
 int is_fd(char *s)
 {
-	int st;
-
-	if (ft_strlen(s) > 4)
+	if (ft_strlen(s) > 1)
 		return (1);
-	st = 0;
-	while (*(s + st))
-	{
-		if (*(s + st) < '0' || *(s + st) > '9')
-			return (1);
-		st++;
-	}
-	st = ft_atoi(s);
-	if (st < 0 || st > 1023)
+	if (*s < '0' || *s > '9')
 		return (1);
+	else if (*s > '2' && *s <= '9')
+		return (2);
 	return (0);
 }
 
@@ -664,7 +656,16 @@ int handle_red_token(t_inst *inst, char **cmd, int *k)
 		if (ft_cnt_lines(now, red[0]) == 2)
 		{
 			if (is_fd(chunks[0]) == 0)
-				ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(chunks[0])));
+			{
+				if (chunks[0][0] == '2' && red[0] == '>')
+					chunks[0][0] = '0';
+				if (chunks[0][0] == '1' && red[0] == '>')
+					;
+				else if (chunks[0][0] == '0' && red[0] == '<')
+					;
+				else
+					ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(chunks[0])));
+			}
 			else if (is_fd(chunks[0]) == 1)
 			{
 				if (inst->inst == 0)
