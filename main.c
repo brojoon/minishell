@@ -405,6 +405,7 @@ void ft_inst_free(t_inst *root)
 		free(del->option);
 		ft_lstfree_all(del->rd);
 		ft_lstfree_all(del->arg);
+		ft_inst_free(del->child);
 		free(del);
 		del = root;
 	}
@@ -478,7 +479,7 @@ void ft_lstadd_back(t_string **root, t_string *s)
 	}
 }
 
-void ft_inst_add(t_inst **root, t_inst *inst)
+void ft_instadd_sibling(t_inst **root, t_inst *inst)
 {
 	t_inst *curr;
 
@@ -490,6 +491,20 @@ void ft_inst_add(t_inst **root, t_inst *inst)
 		while (curr->next != 0)
 			curr = curr->next;
 		curr->next = inst;
+	}
+}
+void ft_instadd_child(t_inst **root, t_inst *inst)
+{
+	t_inst *curr;
+
+	if (*root == 0)
+		*root = inst;
+	else
+	{
+		curr = *root;
+		while (curr->child != 0)
+			curr = curr->child;
+		curr->child = inst;
 	}
 }
 
@@ -524,6 +539,7 @@ t_inst *ft_instinit()
 	ret->rd = 0;
 	ret->arg = 0;
 	ret->next = 0;
+	ret->child = 0;
 	return (ret);
 }
 
@@ -758,7 +774,30 @@ t_inst *make_command(char **space_chunks, int line_cnt)
 }
 
 /*
+ * echo인 경우 arg를 모두 합침
+ * arg + ' ' + arg 형식
+*/
+void echo_merge_args(t_inst **inst)
+{
+	t_string *arg;
+	char *temp;
+
+	temp = 0;
+	arg = (*inst)->arg;
+	while (arg)
+	{
+		ft_resize_and_copy(&temp, arg->str, 0, ft_strlen(arg->str));
+		if (arg->next)
+			ft_resize_and_copy(&temp, " ", 0, 1);
+		arg = arg->next;
+	}
+	ft_lstfree_all((*inst)->arg);
+	(*inst)->arg = ft_lstinit(temp);
+}
+
+/*
  * 여러 줄으로 입력받은 명령어 문자열을 |, ; 단위로 split 후 make_command 함수 호출
+ * ;(semi colon)은 inst->next, |(pipe)는 inst->child로 attach
 */
 t_inst *split_commands(char **semi_chunks, int line_cnt)
 {
@@ -767,6 +806,7 @@ t_inst *split_commands(char **semi_chunks, int line_cnt)
 	char **pipe_chunks;
 	t_inst *inst;
 	t_inst *root;
+	t_inst *temp;
 
 	root = 0;
 	if (semi_chunks == 0)
@@ -776,6 +816,7 @@ t_inst *split_commands(char **semi_chunks, int line_cnt)
 	{
 		pipe_chunks = ft_split(*(semi_chunks + i), '|');
 		j = 0;
+		temp = 0;
 		while (*(pipe_chunks + j))
 		{
 			inst = make_command(ft_split(*(pipe_chunks + j), ' '), ft_cnt_lines(*(pipe_chunks + j), ' '));
@@ -783,17 +824,20 @@ t_inst *split_commands(char **semi_chunks, int line_cnt)
 				printf("err 발생..\n");
 			else
 			{
+				if (ft_strncmp(inst->inst, "echo", ft_strlen(inst->inst)) == 0)
+					echo_merge_args(&inst);
 				printf("inst:%s\n",inst->inst);
 				printf("\toption:%s\n",inst->option);
 				for (t_string *r = inst->rd; r; r = r->next)
 					printf("\t\trd:%s\n",r->str);
 				for (t_string *r = inst->arg; r; r = r->next)
 					printf("\t\t\targ:%s\n",r->str);
-				ft_inst_add(&root, inst);
+				ft_instadd_child(&temp, inst);
 			}
 			j++;
 		}
 		ft_free_chunks(pipe_chunks, ft_cnt_lines(*(semi_chunks + i), '|'));
+		ft_instadd_sibling(&root, temp);
 		i++;
 	}
 	ft_free_chunks(semi_chunks, line_cnt);
@@ -1002,7 +1046,7 @@ void free_genv()
 	curr = g_env;
 	while ((del = curr) != 0)
 	{
-		curr = del->next; 
+		curr = del->next;
 		ft_envfree(del);
 	}
 }
@@ -1038,7 +1082,7 @@ int main(int argc, char **argv, char **envp){
 					prompt = get_prompt();
 				}
 				else
-					printf("%s: 파일 이나 디렉터리 없음\n", curr->arg->str);
+					printf("%s: 파일 이나 디렉터리 없음\n", curr->inst);
 
 			}
 			else if (ft_strnstr(curr->inst, "pwd", ft_strlen(curr->inst)) != 0

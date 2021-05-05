@@ -6,6 +6,8 @@
 int ft_cd(t_inst *inst)
 {
 	t_string *arg;
+	t_env *env;
+	char buf[BUFFER_SIZE];
 
 	arg = inst->arg;
 	if (arg == 0)
@@ -14,6 +16,12 @@ int ft_cd(t_inst *inst)
 		return (1);
 	if (chdir(arg->str) == -1)
 		return (1);
+	env = ft_envfind("PWD");
+	if (env)
+	{
+		free(env->value);
+		env->value = ft_strdup(getcwd(buf, 1024));
+	}
 	return (0);
 }
 
