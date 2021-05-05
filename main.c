@@ -1128,6 +1128,12 @@ int main(int argc, char **argv, char **envp){
 				if ((ft_unset(curr)) != 0)
 					printf("err?\n");
 			}
+			else if (ft_strnstr(curr->inst, "echo", ft_strlen(curr->inst)) != 0
+					&& ft_strlen(curr->inst) == 4)
+			{
+				if ((ft_echo(curr)) != 0)
+					printf("echo err?\n");
+			}
 			curr = curr->next;
 		}
 		ft_lstfree_all(const_strings);

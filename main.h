@@ -56,4 +56,4 @@ int ft_env(t_inst *inst);
 int ft_chk_key(char *s);
 int ft_chk_export(t_inst *inst);
 char *ft_substr(char *s, int start, int len);
-
+int ft_echo(t_inst *inst);

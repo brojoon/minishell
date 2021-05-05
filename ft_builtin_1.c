@@ -46,9 +46,12 @@ int ft_echo(t_inst *inst)
 
 	arg = inst->arg;
 	if (arg == 0 || arg->str == 0)
-	{
 		printf("\n");
-		return (0);
+	else
+	{
+		write(1, arg->str, ft_strlen(arg->str));
+		if (inst->option == 0 || ft_strncmp(inst->option, "-n", 2) != 0)
+			write(1, "\n", 1);
 	}
 	return (0);
 }
