@@ -12,8 +12,11 @@ typedef struct s_env t_env;
 struct s_inst
 {
 	char *inst;
+	char *option;
+	t_string *rd;
 	t_string *arg;
 	t_inst *next;
+	t_inst *child;
 };
 
 struct s_string
@@ -43,6 +46,7 @@ char **ft_split(char *s, char c);
 int ft_strncmp(char *s1, char *s2, int len);
 void ft_envadd_back(t_env **root, t_env *now);
 t_env *ft_envinit(char *key, char *value);
+t_env *ft_envfind(char *key);
 void ft_free_chunks(char **ret, int ret_st);
 void ft_envchkandadd(t_env **root, t_env *now, int flag);
 void ft_envprint_all(t_env *root);
@@ -52,4 +56,4 @@ int ft_env(t_inst *inst);
 int ft_chk_key(char *s);
 int ft_chk_export(t_inst *inst);
 char *ft_substr(char *s, int start, int len);
-
+int ft_echo(t_inst *inst);
