@@ -17,47 +17,6 @@ char *get_prompt(){
 	return prompt;
 }
 
-/*
- * 문자열의 왼쪽에서 문자 제거
-*/
-char	*ft_ltrim(char *str, char c)
-{
-	char *ptr;
-
-	ptr = str;
-	if (!str)
-		return (str);
-	while (*ptr && *ptr == c)
-		ptr++;
-	ptr = ft_strdup(ptr);
-	free(str);
-	return (ptr);
-	//return(ptr);
-}
-
-/*
- * 문자열의 오른쪽에서 문자 제거
-*/
-char	*ft_rtrim(char *str, char c)
-{
-	char *ret;
-
-	ret = str + ft_strlen(str) - 1;
-	if (!ret)
-		return (ret);
-	while (*ret && *ret == c)
-	{
-		*ret = '\0';
-		ret--;
-	}
-	return (str);
-}
-
-char	*ft_trim(char *str, char c)
-{
-	return (ft_rtrim(ft_ltrim(str, c), c));
-}
-
 char	*ft_strchr(char *s, int c)
 {
 	int	st;
@@ -173,7 +132,7 @@ char	**ft_split(char *s, char c)
 	return (ret);
 }
 
-int cnt_quotes(char *str, char c)
+int cnt_quotes(char *str, char c, int *meta_arr)
 {
 	int st;
 	int cnt;
@@ -184,60 +143,62 @@ int cnt_quotes(char *str, char c)
 		return (cnt);
 	while (str[st])
 	{
-		if (str[st] == c)
-		{
-			if (c == '\'')
-				cnt++;
-			else if (c == '\"')
-			{
-				if (st == 0 || (st > 0 && str[st - 1] != '\\'))
-					cnt++;
-			}
-		}
+		if (str[st] == c && meta_arr[st] == 1)
+			cnt++;
 		st++;
 	}
 	return (cnt);
 }
 
-int ft_comma_sub_loop(char **buf, char target)
+/*
+ * 일반 문자, / 뒤에 있는 $, ", `는 meta x(0)
+ * 그 외에는 meta (1)
+*/
+int *get_meta_arr(char *str)
+{
+	int *ret;
+	int st;
+
+	ret = (int *)malloc(sizeof(int) * ft_strlen(str));
+	st = 0;
+	while (str[st])
+	{
+		if (str[st] == '\'')
+		{
+			if (st == 0 || !(str[st - 1] == '\\' && ret[st - 1] == 1))
+			{
+				ret[st++] = 1;
+				while (str[st] && str[st] != '\'')
+					ret[st++] = 0;
+				ret[st] = 1;
+			}
+			else
+				ret[st] = 0;
+		}
+		else if (st > 0 && str[st - 1] == '\\' && ret[st - 1] == 1)
+				ret[st] = 0;
+		else if (str[st] == '\\' || str[st] == '\'' || str[st] == '\"' || str[st] == '$')
+			ret[st] = 1;
+		else
+			ret[st] = 0;
+		st++;
+	}
+	return (ret);
+}
+
+int quotes_sub_loop(char **buf, int **meta_arr, char target)
 {
 	char *temp;
 
 	// 짝이 맞지 않는 경우
-	if (cnt_quotes(*buf, target) % 2 == 1)
+	while (cnt_quotes(*buf, target, *meta_arr) % 2 == 1)
 	{
-		while (1)
-		{
-			get_next_line(0, &temp, "> ");
-			ft_resize_and_copy(buf, "\n", 0, 1);
-			ft_resize_and_copy(buf, temp, 0, ft_strlen(temp));
-			free(temp);
-			if (cnt_quotes(*buf, target) % 2 == 0)
-				break ;
-		}
-	}
-	return (0);
-}
-
-int merge_str(char **buf, char target)
-{
-	char *temp;
-	char **chunks;
-	int cnt;
-
-	cnt = 0;
-	temp = 0;
-	if (ft_cnt_lines(*buf, target) > 0)
-	{
-		chunks = ft_split(*buf, target);
-		while (*(chunks + cnt))
-		{
-			ft_resize_and_copy(&temp, *(chunks + cnt), 0, ft_strlen(*(chunks + cnt)));
-			cnt++;
-		}
-		*buf = ft_strdup(temp);
+		get_next_line(0, &temp, "> ");
+		ft_resize_and_copy(buf, "\n", 0, 1);
+		ft_resize_and_copy(buf, temp, 0, ft_strlen(temp));
 		free(temp);
-		ft_free_chunks(chunks, ft_cnt_lines(*buf, target));
+		free(*meta_arr);
+		*meta_arr = get_meta_arr(*buf);
 	}
 	return (0);
 }
@@ -323,39 +284,7 @@ int ft_lstcount(t_string *arg)
 	}
 	return (cnt);
 }
-/*
-t_string *ft_lstswap(t_string **root, t_string *now, t_string *to)
-{
-	t_string *curr;
-	t_string *prev;
-	t_string *del;
 
-	del = now;
-	curr = *root;
-	prev = 0;
-	while (curr && ft_strnstr(curr->str, now->str, ft_strlen(curr->str)) == 0)
-	{
-		prev = curr;
-		curr = curr->next;
-	}
-	if (prev == 0)
-		*root = to;
-	else if (to == 0)
-		prev->next = curr->next;
-	else
-		prev->next = to;
-	curr = prev;
-	if (to != 0)
-	{
-		curr = to;
-		while (curr && curr->next)
-			curr = curr->next;
-		curr->next = now->next;
-	}
-	ft_lstfree(del);
-	return (curr);
-}
-*/
 t_string *ft_lstremove(t_string **root, t_string *target)
 {
 	t_string *curr;
@@ -478,7 +407,9 @@ void ft_lstadd_back(t_string **root, t_string *s)
 		curr->next = s;
 	}
 }
-
+/*
+ * ;(semi-colon)으로 나뉜 애들은 sibling
+*/
 void ft_instadd_sibling(t_inst **root, t_inst *inst)
 {
 	t_inst *curr;
@@ -493,6 +424,10 @@ void ft_instadd_sibling(t_inst **root, t_inst *inst)
 		curr->next = inst;
 	}
 }
+
+/*
+ * |(pipe)로 나뉜 애들은 child
+*/
 void ft_instadd_child(t_inst **root, t_inst *inst)
 {
 	t_inst *curr;
@@ -508,24 +443,24 @@ void ft_instadd_child(t_inst **root, t_inst *inst)
 	}
 }
 
-t_string *replace_str(char **buf, int st, int ed, char *to)
+/*
+ * buf의 st ~ ed를 char *to로 치환하는 함수
+*/
+char *replace_str(char **buf, int st, int ed, char *to)
 {
 	char *temp;
 	char *now_str;
-	t_string *now;
 
 	temp = 0;
-	now_str = 0;
-	if (st == ed -1)
+	if (st == ed - 1)
 		return (0);
-	ft_resize_and_copy(&now_str, *buf, st, ed);
-	ft_resize_and_copy(&temp, *buf, 0, st + 1);
+	now_str = ft_substr(*buf, st, ed - st + 1);
+	ft_resize_and_copy(&temp, *buf, 0, st);
 	ft_resize_and_copy(&temp, to, 0, ft_strlen(to));
-	ft_resize_and_copy(&temp, *buf, ed, ft_strlen(*buf));
-	now = ft_lstinit(now_str);
+	ft_resize_and_copy(&temp, *buf, ed + 1, ft_strlen(*buf));
 	free(*buf);
 	*buf = temp;
-	return (now);
+	return (now_str);
 }
 
 t_inst *ft_instinit()
@@ -732,7 +667,8 @@ int handle_red_token(t_inst *inst, char **cmd, int *k)
 
 /*
  * redirection은 어느 위치든 나올 수 있음
- * -로 시작하면 option으로 인식
+ * -로 시작하면 option으로 인식(인자 뒤에 나올 경우 인자로 인식)
+ * -로 시작하는 option이 여러개인 경우 첫 번째만 인식
 */
 t_inst *make_command(char **space_chunks, int line_cnt)
 {
@@ -758,13 +694,23 @@ t_inst *make_command(char **space_chunks, int line_cnt)
 				ret->inst = ft_strdup(*(space_chunks + k));
 			else if (ft_strncmp(*(space_chunks + k), "-", 1) == 0)
 			{
-				if (ft_lstfind(ret->arg, *(space_chunks + k)) == 0)
+				if (ret->arg == 0 && ret->option == 0)
 					ret->option = ft_strdup(*(space_chunks + k));
+				else if (ret->arg != 0)
+				{
+					arg = ft_lstinit(ft_strdup(*(space_chunks + k)));
+					ft_lstadd_back(&ret->arg, arg);
+				}
 			}
 			else
 			{
 				arg = ft_lstinit(ft_strdup(*(space_chunks + k)));
-				ft_lstadd_back(&ret->arg, arg);
+				if (ft_strncmp(arg->str, "\"\"", ft_strlen(arg->str)) == 0)
+					ft_lstfree(arg);
+				else if (ft_strncmp(arg->str, "\'\'", ft_strlen(arg->str)) == 0)
+					ft_lstfree(arg);
+				else
+					ft_lstadd_back(&ret->arg, arg);
 			}
 		}
 		k++;
@@ -784,6 +730,8 @@ void echo_merge_args(t_inst **inst)
 
 	temp = 0;
 	arg = (*inst)->arg;
+	if (arg == 0)
+		return ;
 	while (arg)
 	{
 		ft_resize_and_copy(&temp, arg->str, 0, ft_strlen(arg->str));
@@ -826,12 +774,6 @@ t_inst *split_commands(char **semi_chunks, int line_cnt)
 			{
 				if (ft_strncmp(inst->inst, "echo", ft_strlen(inst->inst)) == 0)
 					echo_merge_args(&inst);
-				printf("inst:%s\n",inst->inst);
-				printf("\toption:%s\n",inst->option);
-				for (t_string *r = inst->rd; r; r = r->next)
-					printf("\t\trd:%s\n",r->str);
-				for (t_string *r = inst->arg; r; r = r->next)
-					printf("\t\t\targ:%s\n",r->str);
 				ft_instadd_child(&temp, inst);
 			}
 			j++;
@@ -844,41 +786,69 @@ t_inst *split_commands(char **semi_chunks, int line_cnt)
 	return (root);
 }
 
-void processing_quotes(char **buf, t_string **const_strings)
+/*
+ * quotes로 str을 감싸는 함수
+*/
+char *encap_quotes(char *str, char quote)
+{
+	char *ret;
+
+	ret = 0;
+	ft_resize_and_copy(&ret, &quote, 0, 1);
+	ft_resize_and_copy(&ret, str, 0, 2);
+	ft_resize_and_copy(&ret, &quote, 0, 1);
+	return (ret);
+}
+
+/*
+ * quotes로 감싸진 str의 내용물만 return
+*/
+char *decap_quotes(char *str, char *quote)
+{
+	char *ret;
+
+	ret = ft_substr(str, 1, ft_strlen(str) - 2);
+	*quote = str[0];
+	return (ret);
+}
+
+/*
+ * quotes(", ')사이의 string을 const_strings로 옮기고 %%로 변경
+*/
+void handle_quotes(char **buf, t_string **const_strings)
 {
 	int st;
 	int ed;
-	t_string *temp;
+	char *prev_str;
+	char *rep;
 	char now;
+	int *meta_arr;
 
+	meta_arr = get_meta_arr(*buf);
 	st = 0;
 	while ((now = *(*buf + st)))
 	{
-		if (now == '\'' || now == '\"')
+		if ((now == '\'' || now == '\"') && meta_arr[st] == 1)
 		{
-			ft_comma_sub_loop(buf, now);
+			quotes_sub_loop(buf, &meta_arr, now);
+			rep = encap_quotes("%%", now);
 			ed = ft_get_next_idx(*buf, now, st + 1);
-			while (now == '\"' && *(*buf + ed - 1) == '\\')
+			while (meta_arr[ed] == 0)
 				ed = ft_get_next_idx(*buf, now, ed + 1);
-			if ((temp = replace_str(buf, st, ed, "%%")) != 0)
-				ft_lstadd_back(const_strings, temp);
+			if ((prev_str = replace_str(buf, st, ed, rep)) != 0)
+			{
+				ft_lstadd_back(const_strings, ft_lstinit(ft_strdup(prev_str)));
+				free(meta_arr);
+				meta_arr = get_meta_arr(*buf);
+			}
+			free(rep);
 			st = ft_get_next_idx(*buf, now, st + 1);
 		}
 		st++;
 	}
+	free(meta_arr);
 }
 
-t_string *chunks_to_string(char **chunks)
-{
-	t_string *ret;
-	int i;
-
-	i = 0;
-	ret = 0;
-	while (*(chunks + i))
-		ft_lstadd_back(&ret, ft_lstinit(ft_strdup(*(chunks + (i++)))));
-	return (ret);
-}
 /*
  * execve에 넣기 위한 t_string *의 형식 변경 함수
 */
@@ -1051,6 +1021,170 @@ void free_genv()
 	}
 }
 
+/*
+ * meta char 처리 함수
+*/
+char *proc_metachar(char *s)
+{
+	int st;
+	int ed;
+	char *ret;
+	t_env *env;
+	int *meta_arr;
+
+	st = 0;
+	ret = 0;
+	meta_arr = get_meta_arr(s);
+	while (s[st])
+	{
+		if (s[st] == '\\' && meta_arr[st] == 1 && s[st + 1] != 0)
+		{
+			st++;
+			if (s[st] != '$' && s[st] != '`' && s[st] !='"' && s[st] != '\\')
+			{
+				meta_arr[--st] = 0;
+				continue ;
+			}
+			if (s[st] == '$')
+			{
+				ed = st + 1;
+				while (s[ed] && ((s[ed] >= 'A' && s[ed] <= 'Z' ) ||
+							(s[ed] >= '0' && s[ed] <= '9')))
+				ed++;
+			}
+			ed = st;
+			ft_resize_and_copy(&ret, s, st, ed);
+			st = ed - 1;
+
+		}
+		else if (s[st] == '$' && meta_arr[st] == 1)
+		{
+			ed = st + 1;
+			while (s[ed] && ((s[ed] >= 'A' && s[ed] <= 'Z') ||
+						(s[ed] >= '0' && s[ed] <= '9')))
+				ed++;
+			env = ft_envfind(ft_substr(s, st + 1, ed));
+			if (env != 0)
+				ft_resize_and_copy(&ret, env->value, 0, ft_strlen(env->value));
+			st = ed - 1;
+		}
+		else
+			ft_resize_and_copy(&ret, &s[st], 0, 1);
+		if (s[st] == 0)
+			break ;
+		st++;
+	}
+	free(meta_arr);
+	return (ret);
+}
+
+/*
+ * Quotes(", ')에 묶인 문자열 처리 함수
+ * single quotes인 경우 그냥 내용물 출력
+ * double quotes인 경우 $, \ 처리
+*/
+void proc_quotes(char **now)
+{
+	char *decap_str;
+	char *new_str;
+	char quote;
+	
+	if (*now == 0)
+		return ;
+	decap_str = decap_quotes(*now, &quote);
+	if (quote == '\"')
+		new_str = proc_metachar(decap_str);
+	else
+		new_str = ft_strdup(decap_str);
+	free(*now);
+	*now = new_str;
+}
+
+/*
+ * const_strings에 묶인 문자열을 inst에 있는 문자열 %%와 치환
+*/
+void get_ori_consts(t_string *str, t_inst **inst)
+{
+	t_inst *curr;
+	t_string *arg;
+	t_string *const_now;
+	char *temp;
+	int st;
+	int ed;
+
+	curr = *inst;
+	const_now = str;
+	while (curr)
+	{
+		arg = curr->arg;
+		while (arg)
+		{
+			st = 0;
+			temp = 0;
+			while ((arg->str)[st])
+			{
+				if (((arg->str)[st] == '\'' || (arg->str)[st] == '\"')
+						&& (ft_strncmp(arg->str + st, encap_quotes("%%", (arg->str)[st]),
+								4) == 0))
+				{
+					ft_resize_and_copy(&temp, const_now->str, 0, ft_strlen(const_now->str));
+					st += 3;
+					const_now = const_now->next;
+				}
+				else
+					ft_resize_and_copy(&temp, arg->str, st, st + 1);
+				st++;
+			}
+			free(arg->str);
+			arg->str = temp;
+			arg = arg->next;
+		}
+		curr = curr->child;
+	}
+}
+
+
+void proc_consts(t_string **consts)
+{
+	t_string *now;
+	char * now_str;
+	now = *consts;
+	while (now)
+	{
+		proc_quotes(&(now->str));
+		now = now->next;
+	}
+}
+
+void proc_inst_metachar(t_inst **insts)
+{
+	t_inst *now;
+	t_inst *children;
+	char *new_str;
+	t_string *arg;
+
+	now = *insts;
+	while (now)
+	{
+		children = now;
+		while (children)
+		{
+			new_str = proc_metachar(children->inst);
+			free(children->inst);
+			children->inst = new_str;
+			arg = children->arg;
+			while (arg != 0)
+			{
+				new_str = proc_metachar(arg->str);
+				free(arg->str);
+				arg->str = new_str;
+				arg = arg->next;
+			}
+			children = children->child;
+		}
+		now = now->next;
+	}
+}
 int main(int argc, char **argv, char **envp){
 	char *buf;
 	char *prompt;
@@ -1064,14 +1198,25 @@ int main(int argc, char **argv, char **envp){
 	while (1)
 	{
 		get_next_line(0, &buf, prompt);
-		buf = ft_trim(buf, ' ');
-		const_strings = ft_lstinit(0);
-		processing_quotes(&buf, &const_strings);
+		const_strings = 0;
+		handle_quotes(&buf, &const_strings);
 		insts = split_commands(ft_split(buf, ';'), ft_cnt_lines(buf, ';'));
+		proc_consts(&const_strings);
+		proc_inst_metachar(&insts);
+		get_ori_consts(const_strings, &insts);
 		free(buf);
 		t_inst *curr = insts;
+		/*
 		while (curr != 0)
 		{
+			printf("-----parsing result-----\n");
+			printf("inst:%s\n",curr->inst);
+			printf("\toption:%s\n",curr->option);
+			for (t_string *r = curr->rd; r; r = r->next)
+				printf("\t\trd:%s\n",r->str);
+			for (t_string *r = curr->arg; r; r = r->next)
+				printf("\t\t\targ:%s\n",r->str);
+			printf("-----execute result-----\n");
 			// cd
 			if (ft_strnstr(curr->inst, "cd", ft_strlen(curr->inst)) != 0
 					&& ft_strlen(curr->inst) == 2)
@@ -1136,6 +1281,7 @@ int main(int argc, char **argv, char **envp){
 			}
 			curr = curr->next;
 		}
+	*/
 		ft_lstfree_all(const_strings);
 		ft_inst_free(insts);
 	}
