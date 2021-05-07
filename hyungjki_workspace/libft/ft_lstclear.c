@@ -12,10 +12,10 @@
 
 #include "libft.h"
 
-void	ft_lstclear(t_list **lst, void (*del)(void *))
+void	ft_lstclear(t_list1 **lst, void (*del)(void *))
 {
-	t_list	*next;
-	t_list	*cur;
+	t_list1	*next;
+	t_list1	*cur;
 
 	next = *lst;
 	while (next)

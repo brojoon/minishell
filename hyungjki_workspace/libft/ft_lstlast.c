@@ -9,10 +9,10 @@
 /*   Updated: 2021/01/02 18:18:24 by hyungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+S
 #include "libft.h"
 
-t_list	*ft_lstlast(t_list *lst)
+t_list1	*ft_lstlast(t_list1 *lst)
 {
 	if (lst)
 		while (lst->next)

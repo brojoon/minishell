@@ -26,7 +26,7 @@ void edit_env_value(t_env *env, char *key, char *value)
 	}
 }
 
-void ft_env(void)
+void ft_env(char **environ)
 {
 	t_env *node;
 
