@@ -35,11 +35,11 @@ struct s_string
 
 typedef struct	s_redir
 {
-	int			argc;
-	char		**argv;
-	char		**cmds;
-	char		*types;
-}				t_redir;
+	int argc;
+	char **argv;
+	char **inst;
+	char *types;
+} t_redir;
 
 struct s_inst
 {
