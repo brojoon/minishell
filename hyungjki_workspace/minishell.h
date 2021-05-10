@@ -21,11 +21,20 @@
 # define LEFT_ARROW 4479771
 # define RIGHT_ARROW 4414235
 
-extern char **environ;
-
+// 1개 명령어 struct
 typedef struct s_inst t_inst;
 typedef struct s_string t_string;
 typedef struct s_env t_env;
+struct s_inst
+{
+	char *inst;
+	char *option;
+	t_string *rd;
+	t_string *arg;
+	t_inst *next;
+	t_inst *child;
+	int fds[2];
+};
 
 struct s_string
 {
@@ -33,45 +42,23 @@ struct s_string
 	t_string *next;
 };
 
-typedef struct	s_redir
-{
-	int argc;
-	char **argv;
-	char **inst;
-	char *types;
-} t_redir;
-
-struct s_inst
-{
-	char *inst;
-	t_string *arg;
-	int is_pipe; // 실행전 파싱 된것에서 찾아서 바꾼후 arg에서 지워 버리거나 아니면 아예 파싱 단계에서 | 발견시 1로 설정해주고
-				 // arg에 따로 저장안해도 될듯합니다
-	int pre_pipe; // ex) echo hello | exit, unset, export 등이 작동하면 안됨 하위프로세스가
-				  // 상위 프로세스에 영향을 끼칠수없음 파싱단계 에서 처리 (X) 어차피 파이프 만들때 1로 바꿔주면됩니다
-	int fds[2];   // 파이프함수 사용시 쓰이는 배열 입니다 
-	int is_redir;
-	t_redir *redir;
-	t_inst *next;
-};
-
-typedef struct s_env
+struct s_env
 {
 	char *key;
 	char *value;
-	struct s_env *next;
-} t_env;
+	t_env *next;
+};
 
 /*
 builtin func
 */
-void ft_cd(t_string *arg);
-void ft_echo(t_string *arg, char *op);
-void ft_env(void);
-void ft_exit(t_string *arg);
-void ft_export(t_string *arg);
+void ft_cd(t_inst *proc, t_env *g_env);
+void ft_echo(t_inst *proc, char *op);
+void ft_env(t_env *g_env);
+void ft_exit(t_inst *proc);
+void ft_export(t_inst *proc, t_env **g_env);
 void ft_pwd(void);
-void ft_unset(t_string *arg);
+void ft_unset(t_inst *proc, t_env **g_env);
 
 /*
 signal func
@@ -87,31 +74,44 @@ tmp
 /*
 error handle
 */
-void	catch_error(char *msg, int errnum);
-void error_msg_join(char *arg1, char *arg2);
+void	catch_error(char *inst, char *msg);
+void error_msg_join(char *arg1, char *arg2, int errnum);
 
 /*
 env related
 */
 void edit_env_value(t_env *env, char *key, char *value);
 t_env *get_env(t_env *env, char *key);
-void del_env(char *key);
+void del_env(char *key, t_env **g_env);
 int check_valid_env_key(char *key);
 static void alter_pwd(void);
 
 /*
 exec func
 */
-int exec_builtin(t_inst *proc);
-void exec_child_process(t_inst *proc, t_inst *next_proc);
-void exec_pipe(t_inst *proc);
-void exec_parent_process(t_inst *proc);
+int exec_builtin(t_inst *proc, t_env *g_env);
+void exec_child_process(t_inst *proc, t_inst *child, t_env *g_env);
+void exec_pipe(t_inst *proc, t_env *g_env);
+void exec_parent_process(t_inst *proc, t_env *g_env);
+
+/*
+redir func
+*/
+int get_redir_type(t_string *rd);
+int get_redir_fd(t_inst *proc, int type);
+int exec_redir_right(t_inst *proc, t_env *g_env);
+int exec_redir_dright(t_inst *proc, t_env *g_env);
+int	exec_redir_left(t_inst *proc, t_env *g_env);
+int redir_skip_right(t_string *str);
+int redir_skip_left(t_string *str);
+void redir_exec(t_inst *proc, t_env *g_env);
+void redir_init(t_inst *proc, t_env *g_env);
 
 /*
 exec util
 */
-char *find_value(char *key, char **environ);
-char *get_path(char *inst, char **environ);
+char *find_value(char *key, t_env *g_env);
+char *get_path(char *inst, t_env *g_env);
 void is_redir(t_inst *proc);
 void is_pipe(t_inst *proc);
 

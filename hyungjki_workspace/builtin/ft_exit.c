@@ -1,22 +1,22 @@
 #include "../minishell.h"
 
-void ft_exit(t_string *arg)
+void ft_exit(t_inst *proc)
 {
-	t_string *node;
+	t_string *arg;
 	char *msg;
 	int i;
 
-	node = arg;
+	arg = proc->arg;
 	ft_putendl_fd("exit", STDOUT_FILENO);
-	while(node->str[i])
+	while(arg->str[i])
 	{
-		if (!ft_isdigit(node->str[i]))
-			error_msg_join("exit: ", node->str);
+		if (!ft_isdigit(arg->str[i]))
+			error_msg_join("exit: ", arg->str, errno);
 		i++;
 	}
-	if (node->next != NULL)
+	if (arg->next != NULL)
 	{
 		errno = 1;
-		catch_error("exit", errno);
+		catch_error("exit", "too many arguments");
 	}
 }

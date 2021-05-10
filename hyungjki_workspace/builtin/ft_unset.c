@@ -1,11 +1,11 @@
 #include "../minishell.h"
 
-void del_env(char *key)
+void del_env(char *key, t_env **g_env)
 {
 	t_env *list;
 	t_env *tmp;
 
-	list = g_env;
+	list = *g_env;
 
 	while (list->next)
 	{
@@ -36,23 +36,25 @@ int check_valid_env_key(char *key)
 	}
 }
 
-void ft_unset(t_string *arg)
+void ft_unset(t_inst *proc, t_env **g_env)
 {
 	char *err_msg;
+	t_string *arg;
 
-	if (g_env || arg)
+	arg = proc->arg;
+	if (*g_env || arg)
 		return ;
 	while (arg)
 	{
 		if (!check_valid_env_key(arg->str))
 		{
 			err_msg = ft_strjoin("\'" ,arg->str);			
-			error_msg_join("unset: `", arg->str);
+			error_msg_join("unset: `", arg->str, errno);
 			free(err_msg);
 			break;
 		}
 		else
-			del_env(arg->str);
+			del_env(arg->str, g_env);
 		arg = arg->next;
 	}
 }
