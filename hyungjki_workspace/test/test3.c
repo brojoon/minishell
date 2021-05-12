@@ -1,15 +1,15 @@
-#include <stdio.h>
+#include <unistd.h>
+#include <termcap.h>
+
+int putchar_tc(int tc)
+{
+	write(1, &tc, 1);
+	return (0);
+}
 
 int main(void)
 {
-	printf("123456789 \b\b\b\b\b\b\n"); // 123456789\n
-	printf("123456789 \b\b\b\b\b\b\n\b"); // 123456789\n
-	printf("123456789 \b\b \b\b\b\b\n\b"); // 12345678\n
-	printf("123456789\b\b\b\b\b\b\n\b"); // 123456789\n
-	printf("123456789 \b\b \b\b \b\b\n\b"); // 1234567\n
-	printf("123456789 \b\b \b\b               \b\b\n\b"); // 1234567\n
-	printf("123456789\b\b\b\b\b\b\b\n"); //123456789
-	printf("123456789\b\b  \b\b\n"); //1234567
-	printf("123456789\b\b\n"); //123456789
-
+	tgetent(NULL, "xterm");
+	char *cm = tgetstr("cm", NULL);
+	tputs(tgoto(cm, 5, 5), 1, putchar_tc);
 }

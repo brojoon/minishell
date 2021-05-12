@@ -2,7 +2,10 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/ioctl.h>
 #include <termcap.h>
+#include <curses.h>
+#include <term.h>
 
 # define BACKSPACE 127
 # define LEFT_ARROW 4479771
@@ -79,7 +82,7 @@ void	delete_end(int *col, int *row, char *cm, char *ce)
 		--(*col);
 	tputs(tgoto(cm, *col, *row), 1, putchar_tc);
 	tputs(ce, 1, putchar_tc);
-}
+} 
 
 int		main(void)
 {
