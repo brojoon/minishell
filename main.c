@@ -860,10 +860,11 @@ char **inst_to_chunks(t_inst *inst)
 
 	if ((ret = (char **)malloc(sizeof(char *) * (ft_lstcount(inst->rd)+ft_lstcount(inst->arg) + 3))) == 0)
 		return (0);
-	*ret = inst->inst;
-	*(ret + 1) = inst->option;
+	st = 0;
+	*(ret + st++)= inst->inst;
+	if (inst->option)
+		*(ret + st++) = inst->option;
 	curr = inst->rd;
-	st = 2;
 	while (curr)
 	{
 		*(ret + (st++)) = curr->str;
