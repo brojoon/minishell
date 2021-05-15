@@ -2,6 +2,7 @@
 # define MINISHELL_H
 
 #include "../libft/libft.h"
+#include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -9,8 +10,10 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <termios.h>
-#include <termcap.h>
 #include <signal.h>
+#include <dirent.h>
+#include <sys/types.h>
+#include "get_next_line.h"
 
 # define FALSE 0
 # define TRUE 1
@@ -51,9 +54,11 @@ struct s_env
 	t_env *next;
 };
 
+t_env *g_env;
+
 typedef struct		s_hist
 {
-	char			*inst;
+	char			*str;
 	struct s_hist	*prev;
 	struct s_hist	*next;
 }					t_hist;
@@ -70,28 +75,34 @@ void ft_pwd(void);
 void ft_unset(t_inst *proc, t_env *g_env);
 
 /*
+export func
+*/
+void quick_sort_list(t_env **list, int first, int last);
+void swap(t_env **list, int i, int j);
+t_env **quick_sort_init(t_env *g_env);
+int get_g_env_size(t_env *g_env);
+void print_export(t_env *g_env);
+int is_valid_export(char *str);
+void add_export(char *str, t_env *g_env);
+
+/*
 signal func
 */
 void set_signal(void);
 void handle_signal(int signo);
 
 /*
-tmp
-*/
-
-
-/*
 error handle
 */
 void	catch_error(char *inst, char *msg);
-void error_msg_join(char *arg1, char *arg2, int errnum);
+void error_msg_join(char *arg1, char *arg2, char *arg3);
 
 /*
 env related
 */
 void edit_env_value(t_env *env, char *key, char *value);
 t_env *get_env(t_env *env, char *key);
-void del_env(char *key, t_env **g_env);
+void del_env(char *key, t_env *g_env);
 int check_valid_env_key(char *key);
 void alter_pwd(t_env *g_env);
 
@@ -120,8 +131,24 @@ void redir_init(t_inst *proc, t_env *g_env);
 exec util
 */
 char *find_value(char *key, t_env *g_env);
+char **envs_to_chunks(t_env *g_env);
 char *get_path(char *inst, t_env *g_env);
-void is_redir(t_inst *proc);
-void is_pipe(t_inst *proc);
+
+
+
+t_string *ft_lstinit(char *s);
+int ft_lstcount(t_string *arg);
+int ft_cnt_lines(char *s, char c);
+void ft_envadd_back(t_env **root, t_env *now);
+t_env *ft_envinit(char *key, char *value);
+t_env *ft_envfind(char *key);
+char **inst_to_chunks(t_inst *proc);
+void ft_free_chunks(char **ret, int ret_st);
+void ft_envchkandadd(t_env **root, t_env *now, int flag);
+void ft_envprint_all(t_env *root);
+void ft_envremove(t_env **root, char *key);
+int ft_chk_key(char *s);
+int ft_chk_export(t_inst *inst);
+char *get_prompt();
 
 #endif

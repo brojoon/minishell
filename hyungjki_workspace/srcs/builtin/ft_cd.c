@@ -20,7 +20,7 @@ void ft_cd(t_inst *inst, t_env *g_env)
 		return ;
 	if (chdir(arg->str) == -1)
 	{
-		error_msg_join("cd: ", arg->str, errno);
+		error_msg_join("cd: ", arg->str, strerror(errno));
 		errno = 1;
 		return ;
 	}

@@ -1,55 +1,55 @@
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
-static int my_strcmp(const char *s1, const char *s2)
+void swap(t_env **list, int i, int j)
 {
-	int index;
+	t_env *tmp;
 
-	index = 0;
-	while (s1[index] || s2[index])
+	tmp = list[i];
+	list[i] = list[j];
+	list[j] = tmp;
+}
+
+void quick_sort_list(t_env **list, int first, int last)
+{
+	int i;
+	int j;
+	int pivot;
+
+	if (first < last)
 	{
-		if (s1[index] != s2[index])
-			return (((unsigned char*)s1)[index] - ((unsigned char*)s2)[index]);
-		++index;
+		pivot = first;
+		i = first;
+		j = last;
+		while (i  < j)
+		{
+			while (ft_strcmp(list[i]->key, list[pivot]->key) <= 0 && i < last)
+				i++;
+			while (ft_strcmp(list[j]->key, list[pivot]->key) > 0)
+				j--;
+			if (i < j)
+				swap(list, i, j);
+		}
+		swap(list, pivot, j);
+		quick_sort_list(list, first, j - 1);
+		quick_sort_list(list, j + 1, last);
 	}
-	return (0);
 }
 
-static void merge(t_env *array[], int low, int middle, int hight, t_env *temp[])
+t_env **quick_sort_init(t_env *g_env)
 {
-    int leftP = low;
-    int rightP = middle + 1;
-    int tempP = low;
+	int size;
+	t_env **sorted_g_env;
 
-    while ((leftP<=middle) && (rightP<=hight))
-    {
-		if(my_strcmp(array[leftP]->key, array[rightP]->key) < 0) temp[tempP++] = array[leftP++];
-        else temp[tempP++] = array[rightP++];
-    }
-
-    while(leftP<=middle) temp[tempP++] = array[leftP++];
-    while(rightP<=hight) temp[tempP++] = array[rightP++];
-
-    tempP--;
-
-    while(tempP >= low) {
-        array[tempP] = temp[tempP];
-        tempP--;
-    }
-}
-
-static void mergeSort_i(t_env *array[], int low, int hight, t_env *temp[])
-{
-    if(low < hight) {
-        int middle = (low + hight) / 2;
-        mergeSort_i(array, low, middle, temp);
-        mergeSort_i(array, middle + 1, hight, temp);
-        merge(array, low, middle, hight, temp);
-    }
-}
-
-void mergeSort(t_env *array[], int low, int hight)
-{
-    t_env **temp = malloc(sizeof(t_env*) * (hight - low + 1));
-    mergeSort_i(array, low, hight, temp);
-    free(temp);
+	size = get_g_env_size(g_env);
+	sorted_g_env = (t_env **)malloc(sizeof(t_env *) * (size + 1));
+	size = 0;
+	while (g_env)
+	{
+		sorted_g_env[size] = g_env;
+		size++;
+		g_env = g_env->next;
+	}
+	sorted_g_env[size] = NULL;
+	quick_sort_list(sorted_g_env, 0, size - 1);
+	return (sorted_g_env);
 }

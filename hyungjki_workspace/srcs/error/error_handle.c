@@ -1,13 +1,13 @@
 #include "../../includes/minishell.h"
 
-void error_msg_join(char *arg1, char *arg2, int errnum)
+void error_msg_join(char *arg1, char *arg2, char *arg3)
 {
 	char *joined;
 	
 	joined = ft_strjoin(arg1, arg2);
 	if (!joined)
 		exit(1);
-	catch_error(joined, strerror(errnum));
+	catch_error(joined, arg3);
 	free(joined);
 }
 

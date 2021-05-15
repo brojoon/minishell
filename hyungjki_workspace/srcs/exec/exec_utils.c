@@ -35,6 +35,32 @@ char *get_path(char *inst, t_env *g_env)
 	return (ft_strdup(inst));
 }
 
+char **envs_to_chunks(t_env *g_env)
+{
+	int size;
+	t_env *list;
+	char **chunks;
+	char *tmp;
+	list = g_env;
+	size = 0;
+	while (list)
+	{
+		list = list->next;
+		size++;
+	}
+	chunks = (char **)malloc(sizeof(t_env) * size + 1);
+	size = 0;
+	while(g_env)
+	{
+		tmp = ft_strjoin(g_env->key, g_env->value);
+		chunks[size] = tmp;
+		size++;
+		g_env = g_env->next;
+	}
+	chunks[size] = NULL;
+	return (chunks);
+}
+
 int *get_status()
 {
 	static int status;

@@ -1,4 +1,4 @@
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 int exec_builtin(t_inst *proc, t_env *g_env)
 {
@@ -10,12 +10,12 @@ int exec_builtin(t_inst *proc, t_env *g_env)
 		ft_env(g_env);
 	else if (ft_strcmp(proc->inst, "exit") == 0)
 		ft_exit(proc);
-	else if (ft_strcmp(proc->inst, "export") == 0)
-		ft_export(proc, g_env);
 	else if (ft_strcmp(proc->inst, "pwd") == 0)
 		ft_pwd();
 	else if (ft_strcmp(proc->inst, "unset") == 0)
 		ft_unset(proc, g_env);
+	else if (ft_strcmp(proc->inst, "export") == 0)
+		ft_export(proc, g_env);
 	else
 		return (1);
 	return (0);
@@ -25,9 +25,13 @@ void exec_child_process(t_inst *proc, t_inst *child, t_env *g_env)
 {
 	int ret;
 	char *path;
-
+	char **argv;
+	char **envs;
+	envs = envs_to_chunks(g_env);
+	argv = inst_to_chunks(proc);
 	ret = 0;
 	path = get_path(proc->inst, g_env);
+	printf("proc: %s\n", proc->inst);
 	if (proc->child != NULL)
 	{
 		dup2(child->fds[1], STDOUT_FILENO);
@@ -39,7 +43,7 @@ void exec_child_process(t_inst *proc, t_inst *child, t_env *g_env)
 		close(proc->fds[0]);
 	}
 	if (exec_builtin(proc, g_env))
-		//(ret = execve(path, proc->arg, g_env));
+		(ret = execve(path, argv, envs));
 	if (ret == -1)
 		catch_error(proc->inst, "command not found");
 	exit(ret);
@@ -51,9 +55,10 @@ void exec_pipe(t_inst *proc, t_env *g_env)
 	pid_t pid;
 	int status;
 
+	child = proc;
 	if (proc->child != NULL)
 	{
-		child = proc->next;
+		child = proc->child;
 		pipe(child->fds);
 	}
 	pid = fork();
@@ -78,7 +83,10 @@ void exec_parent_process(t_inst *proc, t_env *g_env)
 		if (cur->inst)
 		{
 			if (cur->rd)
+			{
+				printf("3\n");
 				redir_init(cur, g_env);
+			}
 			else if (cur->child || exec_builtin(cur, g_env))
 			{
 				exec_pipe(cur, g_env);
