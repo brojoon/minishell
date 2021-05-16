@@ -1,7 +1,5 @@
 #include "main.h"
 
-int get_next_line(int fd, char **line, char *prompt);
-
 /*
  * 프롬프트는 cwd를 가져와서 출력하는 것으로 하였습니다.
  * 추후 cd 명령어로 이동할 때마다 prompt를 변경해주면 될 것 같아요.
@@ -186,14 +184,14 @@ int *get_meta_arr(char *str)
 	return (ret);
 }
 
-int quotes_sub_loop(char **buf, int **meta_arr, char target)
+int quotes_sub_loop(char **buf, int **meta_arr, char target, t_cursor *cursor)
 {
 	char *temp;
 
 	// 짝이 맞지 않는 경우
 	while (cnt_quotes(*buf, target, *meta_arr) % 2 == 1)
 	{
-		get_next_line(0, &temp, "> ");
+		get_next_line(0, &temp, "> ", cursor);
 		ft_resize_and_copy(buf, "\n", 0, 1);
 		ft_resize_and_copy(buf, temp, 0, ft_strlen(temp));
 		free(temp);
@@ -523,49 +521,8 @@ int check_red_error(char *inst)
 	return (0);
 }
 
-int	ft_make_int(const char *ptr, int st, int ed, int sign)
-{
-	unsigned long	ret;
-	unsigned long	mod;
 
-	ret = 0;
-	mod = 1;
-	while (--ed >= st)
-	{
-		ret += ((unsigned long)(ptr[ed] - '0') * mod);
-		mod *= 10;
-	}
-	if (ret > 2147483647 && sign == 1)
-		return (-1);
-	else if (ret > 2147483648 && sign == -1)
-		return (0);
-	return (ret * sign);
-}
 
-int	ft_atoi(const char *nptr)
-{
-	int		st;
-	int		ed;
-	int		sign;
-
-	sign = 1;
-	st = 0;
-	while (nptr[st] && (nptr[st] == ' ' ||
-				(nptr[st] >= 0x09 && nptr[st] <= 0x0D)))
-		st++;
-	if (!nptr[st])
-		return (0);
-	if (nptr[st] == '-')
-		sign = -1;
-	if (sign == -1 || nptr[st] == '+')
-		st++;
-	if (nptr[st] < '0' || nptr[st] > '9')
-		return (0);
-	ed = st;
-	while (nptr[ed] >= '0' && nptr[ed] <= '9')
-		ed++;
-	return (ft_make_int(nptr, st, ed, sign));
-}
 
 /*
  * ret 0 : 정상 fd (0 ~ 2)
@@ -815,7 +772,7 @@ char *decap_quotes(char *str, char *quote)
 /*
  * quotes(", ')사이의 string을 const_strings로 옮기고 %%로 변경
 */
-void handle_quotes(char **buf, t_string **const_strings)
+void handle_quotes(char **buf, t_string **const_strings, t_cursor *cursor)
 {
 	int st;
 	int ed;
@@ -830,7 +787,7 @@ void handle_quotes(char **buf, t_string **const_strings)
 	{
 		if ((now == '\'' || now == '\"') && meta_arr[st] == 1)
 		{
-			quotes_sub_loop(buf, &meta_arr, now);
+			quotes_sub_loop(buf, &meta_arr, now, cursor);
 			rep = encap_quotes("%%", now);
 			ed = ft_get_next_idx(*buf, now, st + 1);
 			while (meta_arr[ed] == 0)
@@ -1190,32 +1147,46 @@ void proc_inst_metachar(t_env *root, t_inst **insts)
 	}
 }
 
+void init_term(t_cursor *cursor)
+{
+	tcgetattr(STDIN_FILENO, &(cursor->term));
+	cursor->term.c_lflag &= ~ICANON;
+	cursor->term.c_lflag &= ~ECHO;
+	cursor->term.c_cc[VMIN] = 1;
+	cursor->term.c_cc[VTIME] = 0;
+	tcsetattr(STDIN_FILENO, TCSANOW, &(cursor->term));
+	tgetent(NULL, "xterm");
+	cursor->cm = tgetstr("cm", 0);
+	cursor->ce = tgetstr("ce", 0);
+}
+
 int main(int argc, char **argv, char **envp){
 	char *buf;
 	char *prompt;
-	t_env env_root;
+	t_env *env_root;
+	struct termios term;
 	t_inst *insts;
 	t_string *const_strings;
-
-	(void)argc;
-	(void)argv;
-	set_genv(&env_root, envp);
+	t_cursor cursor;
+	env_root = 0;
+	set_genv(env_root, envp);
 	prompt = get_prompt();
+	init_term(&cursor);
 	while (1)
 	{
-		get_next_line(0, &buf, prompt);
+		get_next_line(0, &buf, prompt, &cursor);
 		const_strings = 0;
-		handle_quotes(&buf, &const_strings);
+		handle_quotes(&buf, &const_strings, &cursor);
 		insts = split_commands(ft_split(buf, ';'), ft_cnt_lines(buf, ';'));
-		proc_consts(&env_root, &const_strings);
-		proc_inst_metachar(&env_root, &insts);
+		proc_consts(env_root, &const_strings);
+		proc_inst_metachar(env_root, &insts);
 		get_ori_consts(const_strings, &insts);
 		free(buf);
 		t_inst *curr = insts;
 		ft_lstfree_all(const_strings);
 		ft_inst_free(insts);
 	}
-	free_genv(&env_root);
+	free_genv(env_root);
 	free(prompt);
 	return 0;
 }

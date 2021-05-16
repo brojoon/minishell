@@ -6,17 +6,32 @@
 /*   By: hyi <hyi@student.42seoul.kr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/24 00:28:10 by hyi               #+#    #+#             */
-/*   Updated: 2021/05/02 17:34:27 by hyi              ###   ########.fr       */
+/*   Updated: 2021/05/16 20:34:14 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 # define BUFFER_SIZE 1024
+# define KEY_LEFT 4479771
+# define KEY_RIGHT 4414235
+# define KEY_UP 4283163
+# define KEY_DOWN 4348699
+# define ESC 127
+# include <termios.h>
+# include <termcap.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
 
+typedef struct s_cursor
+{
+	struct termios term;
+	char *cm;
+	char *ce;
+	int hpos;
+	int vpos;
+}				t_cursor;
 /*
 ** get_next_line_utils.c
 */
@@ -31,5 +46,5 @@ char	*ft_strdup(char *str);
 int		ft_strlen(char *str);
 int		ft_while_loop(char **line, char *buf, char **buf_ref);
 int		ft_proc_buf_ref(char **line, char **buf_ref);
-int		get_next_line(int fd, char **line, char *prompt);
+int		get_next_line(int fd, char **line, char *prompt, t_cursor *cursor);
 #endif
