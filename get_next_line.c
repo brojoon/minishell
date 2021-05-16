@@ -6,7 +6,7 @@
 /*   By: hyi <hyi@student.42seoul.kr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/03 00:28:24 by hyi               #+#    #+#             */
-/*   Updated: 2021/05/16 21:38:35 by hyi              ###   ########.fr       */
+/*   Updated: 2021/05/16 22:05:00 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,7 @@ int cursor_erase(t_cursor *cursor, int hpos_min, char *buf)
 	return (0);
 }
 
-int cursor_move(t_cursor *cursor, int flag, int hpos_min, char *buf)
+int proc_cursor(t_cursor *cursor, int flag, int hpos_min, char *buf)
 {
 	int	ret;
 
@@ -210,6 +210,11 @@ int cursor_move(t_cursor *cursor, int flag, int hpos_min, char *buf)
 		;
 	else if (flag == ESC)
 		cursor_erase(cursor, hpos_min, buf);
+	else if (flag == CTRLD)
+	{
+		if (ret == 0)
+			exit(1);
+	}
 	else
 	{
 		buf[ret++] = (char)flag;
@@ -241,7 +246,7 @@ int	get_next_line(int fd, char **line, char *prompt, t_cursor *cursor)
 		while((rd = read(fd, &c, sizeof(c))) > 0)
 		{
 			update_cursor_pos(cursor);
-			buf_size = cursor_move(cursor, c, ft_strlen(prompt), buf);
+			buf_size = proc_cursor(cursor, c, ft_strlen(prompt), buf);
 			if (buf_size == BUFFER_SIZE || buf[buf_size - 1] == '\n')
 				break ;
 			c = 0;

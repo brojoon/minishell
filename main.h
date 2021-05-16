@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <sys/types.h>
+#include <signal.h>
 #include "get_next_line.h"
 
 // 1개 명령어 struct

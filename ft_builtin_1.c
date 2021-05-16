@@ -170,6 +170,7 @@ int ft_export(t_env *env, t_inst *inst)
 
 int ft_env(t_env *env, t_inst *inst)
 {
+	(void)inst;
 	ft_envprint_all(env);
 	return (0);
 }

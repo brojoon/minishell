@@ -6,13 +6,14 @@
 /*   By: hyi <hyi@student.42seoul.kr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/24 00:28:10 by hyi               #+#    #+#             */
-/*   Updated: 2021/05/16 20:34:14 by hyi              ###   ########.fr       */
+/*   Updated: 2021/05/16 22:01:10 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 # define BUFFER_SIZE 1024
+# define CTRLD 4
 # define KEY_LEFT 4479771
 # define KEY_RIGHT 4414235
 # define KEY_UP 4283163

@@ -1071,7 +1071,6 @@ void get_ori_consts(t_string *str, t_inst **inst)
 	t_string *const_now;
 	char *temp;
 	int st;
-	int ed;
 
 	curr = *inst;
 	const_now = str;
@@ -1108,7 +1107,6 @@ void get_ori_consts(t_string *str, t_inst **inst)
 void proc_consts(t_env *root, t_string **consts)
 {
 	t_string *now;
-	char * now_str;
 	now = *consts;
 	while (now)
 	{
@@ -1164,7 +1162,6 @@ int main(int argc, char **argv, char **envp){
 	char *buf;
 	char *prompt;
 	t_env *env_root;
-	struct termios term;
 	t_inst *insts;
 	t_string *const_strings;
 	t_cursor cursor;
@@ -1183,7 +1180,6 @@ int main(int argc, char **argv, char **envp){
 		proc_inst_metachar(env_root, &insts);
 		get_ori_consts(const_strings, &insts);
 		free(buf);
-		t_inst *curr = insts;
 		ft_lstfree_all(const_strings);
 		ft_inst_free(insts);
 	}
