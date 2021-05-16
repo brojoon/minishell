@@ -6,7 +6,7 @@
 /*   By: hyi <hyi@student.42seoul.kr>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/03 00:28:24 by hyi               #+#    #+#             */
-/*   Updated: 2021/05/16 21:25:59 by hyi              ###   ########.fr       */
+/*   Updated: 2021/05/16 21:38:35 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,14 +182,18 @@ int cursor_mvright(t_cursor *cursor, int hpos_max)
 	return (0);
 }
 
-int cursor_erase(t_cursor *cursor, int hpos_min)
+int cursor_erase(t_cursor *cursor, int hpos_min, char *buf)
 {
+	int st;
+
 	if (cursor->hpos <= hpos_min)
 		return (1);
 	cursor->hpos--;
 	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
 	tputs(cursor->ce, 1, ft_putchar);
-
+	st = ft_strlen(buf) - 1;
+	while (buf[st])
+		buf[st++] = 0;
 	return (0);
 }
 
@@ -205,10 +209,7 @@ int cursor_move(t_cursor *cursor, int flag, int hpos_min, char *buf)
 	else if (flag == KEY_UP || flag == KEY_DOWN)
 		;
 	else if (flag == ESC)
-	{
-		if (cursor_erase(cursor, hpos_min) == 0)
-			buf[ret--] = 0;
-	}
+		cursor_erase(cursor, hpos_min, buf);
 	else
 	{
 		buf[ret++] = (char)flag;

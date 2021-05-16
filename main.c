@@ -1177,6 +1177,7 @@ int main(int argc, char **argv, char **envp){
 		get_next_line(0, &buf, prompt, &cursor);
 		const_strings = 0;
 		handle_quotes(&buf, &const_strings, &cursor);
+		printf("buf:%s\n", buf);
 		insts = split_commands(ft_split(buf, ';'), ft_cnt_lines(buf, ';'));
 		proc_consts(env_root, &const_strings);
 		proc_inst_metachar(env_root, &insts);
