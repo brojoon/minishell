@@ -3,10 +3,10 @@
 /*
  * 인자가 2개 이상이거나 없는 경우 error
 */
-int ft_cd(t_inst *inst)
+int ft_cd(t_env *env, t_inst *inst)
 {
 	t_string *arg;
-	t_env *env;
+	t_env *temp_env;
 	char buf[BUFFER_SIZE];
 
 	arg = inst->arg;
@@ -16,11 +16,11 @@ int ft_cd(t_inst *inst)
 		return (1);
 	if (chdir(arg->str) == -1)
 		return (1);
-	env = ft_envfind("PWD");
-	if (env)
+	temp_env = ft_envfind(env, "PWD");
+	if (temp_env)
 	{
-		free(env->value);
-		env->value = ft_strdup(getcwd(buf, 1024));
+		free(temp_env->value);
+		temp_env->value = ft_strdup(getcwd(buf, 1024));
 	}
 	return (0);
 }
@@ -121,7 +121,7 @@ int ft_chk_export(t_inst *inst)
  * 0 : 정상
  * 1 : 유효한 식별자가 아님
 */
-int ft_export(t_inst *inst)
+int ft_export(t_env *env, t_inst *inst)
 {
 	t_string *arg;
 	char ** chunk;
@@ -155,9 +155,9 @@ int ft_export(t_inst *inst)
 			if (ft_chk_key(chunk[0]) == 0)
 			{
 				if (ft_cnt_lines(arg->str, '=') == 1)
-					ft_envchkandadd(&g_env, ft_envinit(chunk[0], ""), append_flag);
+					ft_envchkandadd(&env, ft_envinit(chunk[0], ""), append_flag);
 				else
-					ft_envchkandadd(&g_env, ft_envinit(chunk[0], chunk[1]), append_flag);
+					ft_envchkandadd(&env, ft_envinit(chunk[0], chunk[1]), append_flag);
 			}
 			else
 				ret = 1;
@@ -168,20 +168,20 @@ int ft_export(t_inst *inst)
 	return (ret);
 }
 
-int ft_env(t_inst *inst)
+int ft_env(t_env *env, t_inst *inst)
 {
-	ft_envprint_all(g_env);
+	ft_envprint_all(env);
 	return (0);
 }
 
-int ft_unset(t_inst *inst)
+int ft_unset(t_env *env, t_inst *inst)
 {
 	t_string *arg;
 
 	arg = inst->arg;
 	while (arg)
 	{
-		ft_envremove(&g_env, arg->str);
+		ft_envremove(&env, arg->str);
 		arg = arg->next;
 	}
 	return (0);

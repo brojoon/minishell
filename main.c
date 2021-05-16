@@ -892,11 +892,11 @@ t_env *ft_envinit(char *key, char *value)
 	return (env);
 }
 
-t_env *ft_envfind(char *key)
+t_env *ft_envfind(t_env *env, char *key)
 {
 	t_env *curr;
 
-	curr = g_env;
+	curr = env;
 	if (curr == 0)
 		return (0);
 	while (curr && ft_strncmp(curr->key, key, ft_strlen(curr->key)) != 0)
@@ -962,7 +962,7 @@ void ft_envchkandadd(t_env **root, t_env *now, int flag)
 {
 	t_env *curr;
 
-	curr = ft_envfind(now->key);
+	curr = ft_envfind(*root, now->key);
 	if (curr == 0)
 		ft_envadd_back(root, now);
 	else
@@ -989,7 +989,7 @@ void ft_envprint_all(t_env *root)
 		curr = curr->next;
 	}
 }
-void set_genv(char **envp)
+void set_genv(t_env *root, char **envp)
 {
 	char **chunk;
 	char **curr;
@@ -1001,20 +1001,20 @@ void set_genv(char **envp)
 		chunk = ft_split(*curr, '=');
 		cnt_args = ft_cnt_lines(*curr, '=');
 		if (cnt_args == 2)
-			ft_envadd_back(&g_env, ft_envinit(chunk[0], chunk[1]));
+			ft_envadd_back(&root, ft_envinit(chunk[0], chunk[1]));
 		else
-			ft_envadd_back(&g_env, ft_envinit(chunk[0], ""));
+			ft_envadd_back(&root, ft_envinit(chunk[0], ""));
 		ft_free_chunks(chunk, cnt_args);
 		curr++;
 	}
 }
 
-void free_genv()
+void free_genv(t_env *env)
 {
 	t_env *del;
 	t_env *curr;
 
-	curr = g_env;
+	curr = env;
 	while ((del = curr) != 0)
 	{
 		curr = del->next;
@@ -1025,7 +1025,7 @@ void free_genv()
 /*
  * meta char 처리 함수
 */
-char *proc_metachar(char *s)
+char *proc_metachar(t_env *root, char *s)
 {
 	int st;
 	int ed;
@@ -1064,9 +1064,12 @@ char *proc_metachar(char *s)
 			while (s[ed] && ((s[ed] >= 'A' && s[ed] <= 'Z') ||
 						(s[ed] >= '0' && s[ed] <= '9')))
 				ed++;
-			env = ft_envfind(ft_substr(s, st + 1, ed));
+			env = ft_envfind(root, ft_substr(s, st + 1, ed));
 			if (env != 0)
 				ft_resize_and_copy(&ret, env->value, 0, ft_strlen(env->value));
+	// 전역 변수 status를 가져와서 바꿔주는 부분입니다.
+	//		else if (s[ed] == '?')
+	//			ft_resize_and_copy(&ret, g_status, 0, 1);
 			st = ed - 1;
 		}
 		else
@@ -1084,7 +1087,7 @@ char *proc_metachar(char *s)
  * single quotes인 경우 그냥 내용물 출력
  * double quotes인 경우 $, \ 처리
 */
-void proc_quotes(char **now)
+void proc_quotes(t_env *root, char **now)
 {
 	char *decap_str;
 	char *new_str;
@@ -1094,7 +1097,7 @@ void proc_quotes(char **now)
 		return ;
 	decap_str = decap_quotes(*now, &quote);
 	if (quote == '\"')
-		new_str = proc_metachar(decap_str);
+		new_str = proc_metachar(root, decap_str);
 	else
 		new_str = ft_strdup(decap_str);
 	free(*now);
@@ -1145,19 +1148,19 @@ void get_ori_consts(t_string *str, t_inst **inst)
 }
 
 
-void proc_consts(t_string **consts)
+void proc_consts(t_env *root, t_string **consts)
 {
 	t_string *now;
 	char * now_str;
 	now = *consts;
 	while (now)
 	{
-		proc_quotes(&(now->str));
+		proc_quotes(root, &(now->str));
 		now = now->next;
 	}
 }
 
-void proc_inst_metachar(t_inst **insts)
+void proc_inst_metachar(t_env *root, t_inst **insts)
 {
 	t_inst *now;
 	t_inst *children;
@@ -1170,13 +1173,13 @@ void proc_inst_metachar(t_inst **insts)
 		children = now;
 		while (children)
 		{
-			new_str = proc_metachar(children->inst);
+			new_str = proc_metachar(root, children->inst);
 			free(children->inst);
 			children->inst = new_str;
 			arg = children->arg;
 			while (arg != 0)
 			{
-				new_str = proc_metachar(arg->str);
+				new_str = proc_metachar(root, arg->str);
 				free(arg->str);
 				arg->str = new_str;
 				arg = arg->next;
@@ -1186,15 +1189,17 @@ void proc_inst_metachar(t_inst **insts)
 		now = now->next;
 	}
 }
+
 int main(int argc, char **argv, char **envp){
 	char *buf;
 	char *prompt;
+	t_env env_root;
 	t_inst *insts;
 	t_string *const_strings;
 
 	(void)argc;
 	(void)argv;
-	set_genv(envp);
+	set_genv(&env_root, envp);
 	prompt = get_prompt();
 	while (1)
 	{
@@ -1202,91 +1207,15 @@ int main(int argc, char **argv, char **envp){
 		const_strings = 0;
 		handle_quotes(&buf, &const_strings);
 		insts = split_commands(ft_split(buf, ';'), ft_cnt_lines(buf, ';'));
-		proc_consts(&const_strings);
-		proc_inst_metachar(&insts);
+		proc_consts(&env_root, &const_strings);
+		proc_inst_metachar(&env_root, &insts);
 		get_ori_consts(const_strings, &insts);
 		free(buf);
 		t_inst *curr = insts;
-		/*
-		while (curr != 0)
-		{
-			printf("-----parsing result-----\n");
-			printf("inst:%s\n",curr->inst);
-			printf("\toption:%s\n",curr->option);
-			for (t_string *r = curr->rd; r; r = r->next)
-				printf("\t\trd:%s\n",r->str);
-			for (t_string *r = curr->arg; r; r = r->next)
-				printf("\t\t\targ:%s\n",r->str);
-			printf("-----execute result-----\n");
-			// cd
-			if (ft_strnstr(curr->inst, "cd", ft_strlen(curr->inst)) != 0
-					&& ft_strlen(curr->inst) == 2)
-			{
-				if (ft_cd(curr) == 0)
-				{
-					free(prompt);
-					prompt = get_prompt();
-				}
-				else
-					printf("%s: 파일 이나 디렉터리 없음\n", curr->inst);
-
-			}
-			else if (ft_strnstr(curr->inst, "pwd", ft_strlen(curr->inst)) != 0
-					&& ft_strlen(curr->inst) == 3)
-			{
-				if (ft_pwd() == -1)
-					printf("error 발생\n");
-			}
-			else if (ft_strnstr(curr->inst, "ls", ft_strlen(curr->inst)) != 0
-					&& ft_strlen(curr->inst) == 2)
-			{
-				if (ft_ls(curr) == 1)
-				{
-					printf("error 발생\n");
-				}
-			}
-			else if (ft_strnstr(curr->inst, "exit", ft_strlen(curr->inst)) != 0
-					&& ft_strlen(curr->inst) == 4)
-			{
-				free_genv();
-				free(prompt);
-				ft_lstfree_all(const_strings);
-				ft_inst_free(insts);
-				exit(0);
-			}
-			else if (ft_strnstr(curr->inst, "export", ft_strlen(curr->inst)) != 0
-					&& ft_strlen(curr->inst) == 6)
-			{
-				int temp_ret;
-				if ((temp_ret = ft_export(curr)) != 0)
-					printf("error 발생\n");
-				printf("ret:%d\n", temp_ret);
-			}
-			else if (ft_strnstr(curr->inst, "env", ft_strlen(curr->inst)) != 0
-					&& ft_strlen(curr->inst) == 3)
-			{
-				if ((ft_env(curr)) != 0)
-					printf("err?\n");
-			}
-			else if (ft_strnstr(curr->inst, "unset", ft_strlen(curr->inst)) != 0
-					&& ft_strlen(curr->inst) == 5)
-			{
-				if ((ft_unset(curr)) != 0)
-					printf("err?\n");
-			}
-			else if (ft_strnstr(curr->inst, "echo", ft_strlen(curr->inst)) != 0
-					&& ft_strlen(curr->inst) == 4)
-			{
-				if ((ft_echo(curr)) != 0)
-					printf("echo err?\n");
-			}
-			curr = curr->next;
-		}
-	*/
 		ft_lstfree_all(const_strings);
 		ft_inst_free(insts);
 	}
-	free_genv();
+	free_genv(&env_root);
 	free(prompt);
 	return 0;
 }
