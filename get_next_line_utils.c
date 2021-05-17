@@ -1,22 +1,16 @@
 #include "get_next_line.h"
 
-int		ft_memset(char **line, size_t size)
+int	ft_memset(char **line, size_t size)
 {
 	size_t	st;
 
-	if (!(*line = (char *)malloc(sizeof(char) * (size + 1))))
+	*line = (char *)malloc(sizeof(char) * (size + 1));
+	if (*line == 0)
 		return (-1);
 	st = 0;
 	while (st < size)
 		*(*line + st++) = '\0';
 	return (0);
-}
-
-int		ft_get_next_idx(char *s, char c, int st)
-{
-	while (s[st] && s[st] != c)
-		st++;
-	return (st);
 }
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
@@ -53,12 +47,21 @@ void	ft_resize_and_copy(char **line, char *buf, int st, int ed)
 	*line = temp;
 }
 
+void	recover_term(t_cursor *cursor)
+{
+	tcgetattr(STDIN_FILENO, &(cursor->term));
+	cursor->term.c_lflag &= ICANON;
+	cursor->term.c_lflag &= ECHO;
+	tcsetattr(STDIN_FILENO, TCSANOW, &(cursor->term));
+}
+
 char	*ft_strdup(char *str)
 {
 	char	*ret;
 	int		st;
 
-	if (!(ret = (char *)malloc(sizeof(char) * (ft_strlen(str) + 1))))
+	ret = (char *)malloc(sizeof(char) * (ft_strlen(str) + 1));
+	if (ret == 0)
 		return (0);
 	st = 0;
 	while (str[st])
