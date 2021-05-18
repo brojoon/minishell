@@ -11,6 +11,7 @@ struct					s_inst
 	t_string			*arg;
 	t_inst				*next;
 	t_inst				*child;
+	int					fds[2];
 };
 
 void	ft_instadd_sibling(t_inst **root, t_inst *inst);

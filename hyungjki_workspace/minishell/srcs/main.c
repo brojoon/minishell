@@ -1,4 +1,4 @@
-#include "main.h"
+#include "minishell.h"
 
 /*
  * 프롬프트는 cwd를 가져와서 출력하는 것으로 하였습니다.
@@ -99,6 +99,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		now = now->next;
 		}
+		exec_parent_process(insts, &env_root);
 		ft_inst_free(insts);
 	}
 	free_genv(env_root);

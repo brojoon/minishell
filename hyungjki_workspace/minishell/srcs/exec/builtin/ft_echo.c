@@ -8,15 +8,15 @@ void	ft_echo(t_inst *proc, char *op)
 	g_status = 0;
 	if (arg == NULL || arg->str == NULL)
 	{
-		ft_putendl_fd("", STDOUT_FILENO);
+		ft_putendl_fd_j("", STDOUT_FILENO);
 		return ;
 	}
 	while (arg && arg->str)
 	{
-		ft_putstr_fd(arg->str, STDOUT_FILENO);
+		ft_putstr_fd_j(arg->str, STDOUT_FILENO);
 		arg = arg->next;
 	}
-	if (op == NULL || ft_strcmp(op, "-n") != 0)
-		ft_putendl_fd("", STDOUT_FILENO);
+	if (op == NULL || ft_strcmp_j(op, "-n") != 0)
+		ft_putendl_fd_j("", STDOUT_FILENO);
 	return ;
 }

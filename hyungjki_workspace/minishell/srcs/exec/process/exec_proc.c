@@ -5,36 +5,36 @@ void no_inst_redir(void)
 	return ;
 }
 
-int		exec_builtin(t_inst *proc, t_env *envs)
+int		exec_builtin(t_inst *proc, t_env **envs)
 {
-	if (ft_strcmp(proc->inst, "cd") == 0)
-		ft_cd(proc, envs);
-	else if (ft_strcmp(proc->inst, "echo") == 0)
+	if (ft_strcmp_j(proc->inst, "cd") == 0)
+		ft_cd(proc, *envs);
+	else if (ft_strcmp_j(proc->inst, "echo") == 0)
 		ft_echo(proc, proc->option);
-	else if (ft_strcmp(proc->inst, "env") == 0)
-		ft_env(envs);
-	else if (ft_strcmp(proc->inst, "exit") == 0)
+	else if (ft_strcmp_j(proc->inst, "env") == 0)
+		ft_env(*envs);
+	else if (ft_strcmp_j(proc->inst, "exit") == 0)
 		ft_exit(proc);
-	else if (ft_strcmp(proc->inst, "pwd") == 0)
+	else if (ft_strcmp_j(proc->inst, "pwd") == 0)
 		ft_pwd();
-	else if (ft_strcmp(proc->inst, "unset") == 0)
+	else if (ft_strcmp_j(proc->inst, "unset") == 0)
 		ft_unset(proc, envs);
-	else if (ft_strcmp(proc->inst, "export") == 0)
-		ft_export(proc, envs);
-	else if (ft_strcmp(proc->inst, "$?") == 0)
+	else if (ft_strcmp_j(proc->inst, "export") == 0)
+		ft_export(proc, *envs);
+	else if (ft_strcmp_j(proc->inst, "$?") == 0)
 		print_status();
 	else
 		return (1);
 	return (0);
 }
 
-void	exec_child_process(t_inst *proc, t_inst *child, t_env *envs)
+void	exec_child_process(t_inst *proc, t_inst *child, t_env **envs)
 {
 	int ret;
 	char *path;
 
 	ret = 0;
-	path = get_path(proc->inst, envs);
+	path = get_path(proc->inst, *envs);
 	if (proc->child != NULL)
 		dup2(child->fds[1], STDOUT_FILENO);
 	if (proc->fds[0] != 0)
@@ -43,7 +43,7 @@ void	exec_child_process(t_inst *proc, t_inst *child, t_env *envs)
 		close(proc->fds[0]);
 	}
 	if (exec_builtin(proc, envs))
-		(ret = execve(path, inst_to_chunks(proc), envs_to_chunks(envs)));
+		(ret = execve(path, inst_to_chunks(proc), envs_to_chunks(*envs)));
 	if (ret == -1)
 	{
 		catch_error(proc->inst, "command not found");
@@ -53,7 +53,7 @@ void	exec_child_process(t_inst *proc, t_inst *child, t_env *envs)
 	exit(0);
 }
 
-void	exec_pipe(t_inst *proc, t_env *envs)
+void	exec_pipe(t_inst *proc, t_env **envs)
 {
 	t_inst *child;
 	pid_t pid;
@@ -83,7 +83,7 @@ void	exec_pipe(t_inst *proc, t_env *envs)
 		close(child->fds[1]);
 }
 
-void	exec_parent_process(t_inst *proc, t_env *envs)
+void	exec_parent_process(t_inst *proc, t_env **envs)
 {
 	t_inst *cur;
 

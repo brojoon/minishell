@@ -7,8 +7,8 @@ void	alter_pwd(t_env *envs)
 
 	pwd = get_env(envs, "PWD");
 	getcwd(dir, 1024);
-	edit_env_value(envs, "OLDPWD", ft_strdup(pwd->value));
-	edit_env_value(envs, "PWD", ft_strdup(dir));
+	edit_env_value(envs, "OLDPWD", ft_strdup_j(pwd->value));
+	edit_env_value(envs, "PWD", ft_strdup_j(dir));
 }
 
 void	ft_cd(t_inst *inst, t_env *envs)

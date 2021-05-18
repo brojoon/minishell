@@ -8,5 +8,7 @@
 # include <sys/types.h>
 # include "ft_inst_split.h"
 # include "ft_quotes.h"
-# include "ft_inst_split.h"
+# include "libft.h"
+
+char	*get_prompt(void);
 #endif

@@ -11,7 +11,7 @@ void	ft_pwd(void)
 	}
 	else
 	{
-		ft_putendl_fd(buf, STDOUT_FILENO);
+		ft_putendl_fd_j(buf, STDOUT_FILENO);
 		g_status = 0;
 	}
 	return ;

@@ -5,7 +5,7 @@ t_env	*get_env(t_env *envs, char *key)
 	while (envs)
 	{
 		if (envs->key)
-			if (ft_strcmp(envs->key, key) == 0)
+			if (ft_strcmp_j(envs->key, key) == 0)
 				return (envs);
 		envs = envs->next;
 	}
@@ -18,7 +18,7 @@ void	edit_env_value(t_env *envs, char *key, char *value)
 	{
 		if (envs->key)
 		{	
-			if (ft_strcmp(envs->key, key) == 0)
+			if (ft_strcmp_j(envs->key, key) == 0)
 			{
 				free(envs->value);
 				envs->value = value;
@@ -39,9 +39,9 @@ void	ft_env(t_env *envs)
 	{
 		if ((node->key))
 		{
-			ft_putstr_fd(node->key, STDOUT_FILENO);
-			ft_putstr_fd("=", STDOUT_FILENO);
-			ft_putendl_fd(node->value, STDOUT_FILENO);
+			ft_putstr_fd_j(node->key, STDOUT_FILENO);
+			ft_putstr_fd_j("=", STDOUT_FILENO);
+			ft_putendl_fd_j(node->value, STDOUT_FILENO);
 		}
 		node = node->next;
 	}

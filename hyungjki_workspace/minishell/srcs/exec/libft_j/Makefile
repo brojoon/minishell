@@ -1,4 +1,4 @@
-# **************************************************************************** #
+\=ㅎㄱ9 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
@@ -10,23 +10,23 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = libft.a
+NAME = libft_j.a
 CC = gcc
 CFLAGS = -Wall -Werror -Wextra
 AR = ar
 ARFLAGS = rcs
-SRCS = ft_memset.c ft_bzero.c ft_memcpy.c ft_memccpy.c \
-		ft_memmove.c ft_memchr.c ft_memcmp.c ft_strlen.c \
-		ft_strlcpy.c ft_strlcat.c ft_strchr.c ft_strrchr.c \
-		ft_strnstr.c ft_strncmp.c ft_atoi.c ft_isalpha.c \
-		ft_isdigit.c ft_isalnum.c ft_isascii.c ft_isprint.c \
-		ft_toupper.c ft_tolower.c ft_calloc.c ft_strdup.c ft_strcmp.c \
-		ft_substr.c ft_strjoin.c ft_strtrim.c ft_split.c \
-		ft_itoa.c ft_strmapi.c ft_putchar_fd.c ft_putstr_fd.c \
-		ft_putendl_fd.c ft_putnbr_fd.c
-SRCS_BONUS = ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c \
-		ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c \
-		ft_lstmap.c
+SRCS = ft_memset_j.c ft_bzero_j.c ft_memcpy_j.c ft_memccpy_j.c \
+		ft_memmove_j.c ft_memchr_j.c ft_memcmp_j.c ft_strlen_j.c \
+		ft_strlcpy_j.c ft_strlcat_j.c ft_strchr_j.c ft_strrchr_j.c \
+		ft_strnstr_j.c ft_strncmp_j.c ft_atoi_j.c ft_isalpha_j.c \
+		ft_isdigit_j.c ft_isalnum_j.c ft_isascii_j.c ft_isprint_j.c \
+		ft_toupper_j.c ft_tolower_j.c ft_calloc_j.c ft_strdup_j.c ft_strcmp_j.c \
+		ft_substr_j.c ft_strjoin_j.c ft_strtrim_j.c ft_split_j.c \
+		ft_itoa_j.c ft_strmapi_j.c ft_putchar_fd_j.c ft_putstr_fd_j.c \
+		ft_putendl_fd_j.c ft_putnbr_fd_j.c
+SRCS_BONUS = ft_lstnew_j.c ft_lstadd_front_j.c ft_lstsize_j.c ft_lstlast_j.c \
+		ft_lstadd_back_j.c ft_lstdelone_j.c ft_lstclear_j.c ft_lstiter_j.c \
+		ft_lstmap_j.c
 OBJS = $(SRCS:.c=.o)
 OBJS_BONUS = $(SRCS_BONUS:.c=.o)
 ifdef WITH_BONUS

@@ -4,7 +4,7 @@ char	*find_value(char *key, t_env *envs)
 {
 	while (envs)
 	{
-		if (!ft_strcmp(envs->key, key))
+		if (!ft_strcmp_j(envs->key, key))
 			return (envs->value);
 		envs = envs->next;
 	}
@@ -20,19 +20,19 @@ char	*get_path(char *inst, t_env *envs)
 	struct stat	s;
 
 	tmp = find_value("PATH", envs);
-	paths = ft_split(tmp, ':');
+	paths = ft_split_j(tmp, ':');
 	i = 0;
 	while (paths[i])
 	{
-		tmp = ft_strjoin("/", inst);
-		new_path = ft_strjoin(paths[i], tmp);
+		tmp = ft_strjoin_j("/", inst);
+		new_path = ft_strjoin_j(paths[i], tmp);
 		free(tmp);
 		if (stat(new_path, &s) == 0)
 			return (new_path);
 		free(new_path);
 		i++;
 	}
-	return (ft_strdup(inst));
+	return (ft_strdup_j(inst));
 }
 
 char	**envs_to_chunks(t_env *envs)
@@ -47,8 +47,8 @@ char	**envs_to_chunks(t_env *envs)
 	size = 0;
 	while (envs)
 	{
-		tmp = ft_strjoin(envs->key, "=");
-		tmp2 = ft_strjoin(tmp, envs->value);
+		tmp = ft_strjoin_j(envs->key, "=");
+		tmp2 = ft_strjoin_j(tmp, envs->value);
 		chunks[size] = tmp2;
 		free(tmp);
 		size++;
@@ -62,9 +62,9 @@ void	print_status(void)
 {
 	char	*str;
 
-	str = ft_itoa(g_status);
-	ft_putstr_fd(str, STDERR_FILENO);
-	ft_putendl_fd(": command not found", STDERR_FILENO);
+	str = ft_itoa_j(g_status);
+	ft_putstr_fd_j(str, STDERR_FILENO);
+	ft_putendl_fd_j(": command not found", STDERR_FILENO);
 	free(str);
 	g_status = 127;
 }

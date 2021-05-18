@@ -1,21 +1,32 @@
 NAME = minishell
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -lncurses
 AR = ar
 ARFLAGS = rcs
-SRC = main.c get_next_line.c get_next_line_utils.c \
-	  builtin/ft_cd.c builtin/ft_echo.c builtin/ft_env.c  builtin/ft_exit.c \
-	  builtin/ft_pwd.c builtin/ft_unset.c error/error_handle.c builtin/ft_export.c \
-	  builtin/ft_export2.c exec/exec_utils.c exec/process.c exec/signal.c \
-	  redirection/redir_exec.c redirection/redir_skip.c redirection/redir_utils.c
+SRC = main.c parsing/get_next_line/get_next_line.c \
+	  parsing/get_next_line/get_next_line_utils.c parsing/ft_cursor.c \
+	  parsing/ft_instlst.c parsing/env_lst/ft_env_lst_utils.c \
+	  parsing/env_lst/ft_env_lst.c parsing/inst_split/ft_inst_split_01.c \
+	  parsing/inst_split/ft_inst_split_02.c parsing/inst_split/ft_inst_split_03.c \
+	  parsing/inst_split/ft_inst_split_utils.c parsing/libft/ft_itoa.c \
+	  parsing/libft/libft_01.c parsing/libft/libft_02.c parsing/libft/libft_03.c \
+	  parsing/quotes/ft_quotes_01.c parsing/quotes/ft_quotes_02.c \
+	  parsing/quotes/ft_quotes_03.c parsing/quotes/ft_quotes_utils.c \
+	  parsing/string_lst/ft_string_lst.c parsing/string_lst/ft_string_utils.c \
+	  exec/builtin/ft_cd.c exec/builtin/ft_echo.c exec/builtin/ft_env.c \
+	  exec/builtin/ft_exit.c exec/builtin/ft_pwd.c exec/builtin/ft_unset.c \
+	  exec/builtin/ft_export.c exec/builtin/ft_export2.c\
+	  exec/error/error_handle.c exec/process/exec_utils.c exec/process/exec_proc.c \
+	  exec/process/signal.c exec/redirection/redir_exec.c exec/redirection/redir_skip.c \
+	  exec/redirection/redir_utils.c
 
 SRCDIR = ./srcs/
 
-LIBFTDIR = ./libft/
+LIBFTDIR = ./srcs/exec/libft_j/
 
 INCDIR = ./includes
 
-LIBFT = libft.a
+LIBFT = libft_j.a
 
 LIBPOS = $(addprefix $(LIBFTDIR), $(LIBFT))
 
@@ -24,11 +35,11 @@ SRCS = $(addprefix $(SRCDIR), $(SRC))
 OBJS = $(SRCS:.c=.o)
  
 $(NAME): $(LIBPOS) $(OBJS)
-	$(CC) $(CLFAGS) $(OBJS) libft.a -I $(INCDIR) -o $(NAME)
+	$(CC) $(CLFAGS) $(OBJS) libft_j.a -I $(INCDIR) -o $(NAME)
 
 $(LIBPOS):
-	$(MAKE) -C libft/ libft.a
-	cp $(LIBPOS) libft.a
+	$(MAKE) -C ./srcs/exec/libft_j/ libft_j.a
+	cp $(LIBPOS) libft_j.a
 
 $(OBJS): %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(INCDIR)

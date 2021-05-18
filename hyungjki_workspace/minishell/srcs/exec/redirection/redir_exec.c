@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int exec_redir_right(t_inst *proc, t_env *envs)
+int exec_redir_right(t_inst *proc, t_env **envs)
 {
 	int fds[2];
 	char *path;
@@ -20,16 +20,16 @@ int exec_redir_right(t_inst *proc, t_env *envs)
 			close(proc->fds[0]);
 		}
 		dup2(fds[1], fds[0]);
-		path = get_path(proc->inst, envs);
+		path = get_path(proc->inst, *envs);
 		if(exec_builtin(proc, envs))
-			ret = execve(path, inst_to_chunks(proc), envs_to_chunks(envs));
+			ret = execve(path, inst_to_chunks(proc), envs_to_chunks(*envs));
 		if (ret == -1)
 			exit(1);
 	}
 	exit(0);
 }
 
-int exec_redir_dright(t_inst *proc, t_env *envs)
+int exec_redir_dright(t_inst *proc, t_env **envs)
 {
 	int fds[2];
 	char *path;
@@ -50,9 +50,9 @@ int exec_redir_dright(t_inst *proc, t_env *envs)
 		}
 		dup2(fds[1], fds[0]);
 		close(fds[1]);
-		path = get_path(proc->inst, envs);
+		path = get_path(proc->inst, *envs);
 		if(exec_builtin(proc, envs))
-			ret = execve(path, inst_to_chunks(proc), envs_to_chunks(envs));
+			ret = execve(path, inst_to_chunks(proc), envs_to_chunks(*envs));
 	}
 	if (ret == -1)
 	{
@@ -62,7 +62,7 @@ int exec_redir_dright(t_inst *proc, t_env *envs)
 	exit(0);
 }
 
-void	exec_redir_left(t_inst *proc, t_env *envs)
+void	exec_redir_left(t_inst *proc, t_env **envs)
 {
 	int fd;
 	char *path;
@@ -80,9 +80,9 @@ void	exec_redir_left(t_inst *proc, t_env *envs)
 	dup2(fd, STDIN_FILENO);
 	if (proc->child)
 		dup2(STDOUT_FILENO, proc->child->fds[1]);
-	path = get_path(proc->inst, envs);
+	path = get_path(proc->inst, *envs);
 	if(exec_builtin(proc, envs))
-		ret = execve(path, inst_to_chunks(proc), envs_to_chunks(envs));      
+		ret = execve(path, inst_to_chunks(proc), envs_to_chunks(*envs));      
 	if (ret == -1)
 	{
 		catch_error(proc->inst, "command not found");
@@ -93,7 +93,7 @@ void	exec_redir_left(t_inst *proc, t_env *envs)
 	exit(0);
 }
 
-void redir_exec(t_inst *proc, t_env *envs)
+void redir_exec(t_inst *proc, t_env **envs)
 {
 	int type;
 	pid_t pid;
@@ -114,7 +114,7 @@ void redir_exec(t_inst *proc, t_env *envs)
 		close(proc->child->fds[1]);
 }
 
-void redir_init(t_inst *proc, t_env *envs)
+void redir_init(t_inst *proc, t_env **envs)
 {
 	int ret;
 

@@ -35,9 +35,9 @@ void	quick_sort_list(t_env **list, int first, int last)
 		j = last;
 		while (i < j)
 		{
-			while (ft_strcmp(list[i]->key, list[pivot]->key) <= 0 && i < last)
+			while (ft_strcmp_j(list[i]->key, list[pivot]->key) <= 0 && i < last)
 				i++;
-			while (ft_strcmp(list[j]->key, list[pivot]->key) > 0)
+			while (ft_strcmp_j(list[j]->key, list[pivot]->key) > 0)
 				j--;
 			if (i < j)
 				swap(list, i, j);
