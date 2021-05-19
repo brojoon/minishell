@@ -54,3 +54,23 @@ int	recover_term(t_cursor *cursor)
 	tcsetattr(STDIN_FILENO, TCSANOW, &(cursor->term));
 	return (-1);
 }
+
+/*
+ * buf의 st ~ ed를 char *to로 치환하는 함수
+*/
+char	*replace_str(char **buf, int st, int ed, char *to)
+{
+	char	*temp;
+	char	*now_str;
+
+	temp = 0;
+	if (st == ed - 1)
+		return (0);
+	now_str = ft_substr(*buf, st, ed - st + 1);
+	ft_resize_and_copy(&temp, *buf, 0, st);
+	ft_resize_and_copy(&temp, to, 0, ft_strlen(to));
+	ft_resize_and_copy(&temp, *buf, ed + 1, ft_strlen(*buf));
+	free(*buf);
+	*buf = temp;
+	return (now_str);
+}

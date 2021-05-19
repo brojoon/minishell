@@ -50,27 +50,7 @@ int	ft_proc_buf_ref(char **line, char **buf_ref)
 	return (ret);
 }
 
-/*
- * buf의 st ~ ed를 char *to로 치환하는 함수
-*/
-char	*replace_str(char **buf, int st, int ed, char *to)
-{
-	char	*temp;
-	char	*now_str;
-
-	temp = 0;
-	if (st == ed - 1)
-		return (0);
-	now_str = ft_substr(*buf, st, ed - st + 1);
-	ft_resize_and_copy(&temp, *buf, 0, st);
-	ft_resize_and_copy(&temp, to, 0, ft_strlen(to));
-	ft_resize_and_copy(&temp, *buf, ed + 1, ft_strlen(*buf));
-	free(*buf);
-	*buf = temp;
-	return (now_str);
-}
-
-int	get_next_line_subloop(int fd, char *prompt,
+int	get_next_line_subsub(int fd, char *prompt,
 		t_cursor *cursor, char **buf)
 {
 	int		c;
@@ -78,25 +58,39 @@ int	get_next_line_subloop(int fd, char *prompt,
 	int		rd;
 
 	buf_size = 0;
-	write(0, prompt, ft_strlen(prompt));
 	c = 0;
 	while (1)
 	{
 		rd = read(fd, &c, sizeof(c));
 		if (rd <= 0)
-			break ;
+			return (rd);
 		update_cursor_pos(cursor);
-		buf_size = proc_cursor(cursor, c, ft_strlen(prompt), *buf);
+		buf_size = proc_cursor(cursor, c, prompt, buf);
 		if (buf_size == -1)
 		{
 			free(prompt);
 			return (9999);
 		}
 		else if (buf_size == BUFFER_SIZE || (*buf)[buf_size - 1] == '\n')
-			break ;
+			return (rd);
 		c = 0;
 	}
 	return (rd);
+}
+
+int	get_next_line_subloop(int fd, char *prompt,
+		t_cursor *cursor, char **buf)
+{
+	int	flag;
+
+	write(0, prompt, ft_strlen(prompt));
+	flag = get_next_line_subsub(fd, prompt, cursor, buf);
+	if (flag == 9999)
+		return (9999);
+	if (flag > 0 && (*buf)[0] != '\n')
+		cursor->history = ft_lstadd_back(&(cursor->history),
+				ft_lstinit(ft_strdup(*buf)));
+	return (flag);
 }
 
 int	get_next_line(int fd, char **line, char *prompt, t_cursor *cursor)

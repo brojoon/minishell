@@ -58,4 +58,3 @@ int	ft_cnt_lines(char *s, char c)
 	}
 	return (cnt);
 }
-

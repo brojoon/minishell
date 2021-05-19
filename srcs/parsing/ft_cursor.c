@@ -1,51 +1,23 @@
 #include "minishell.h"
 
-int	cursor_mvleft(t_cursor *cursor, int hpos_min)
+int	proc_cursor(t_cursor *cursor, int flag, char *prompt, char **buf)
 {
-	if (cursor->hpos <= hpos_min)
-		return (1);
-	cursor->hpos--;
-	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
-	return (0);
-}
+	int				ret;
+	int				hpos_min;
+	static t_string	*now_history;
 
-int	cursor_mvright(t_cursor *cursor, int hpos_max)
-{
-	if (cursor->hpos >= hpos_max)
-		return (1);
-	cursor->hpos++;
-	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
-	return (0);
-}
-
-int	cursor_erase(t_cursor *cursor, int hpos_min, char *buf)
-{
-	int	st;
-
-	if (cursor->hpos <= hpos_min)
-		return (1);
-	cursor->hpos--;
-	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
-	tputs(cursor->ce, 1, ft_putchar);
-	st = ft_strlen(buf) - 1;
-	while (buf[st])
-		buf[st++] = 0;
-	return (0);
-}
-
-int	proc_cursor(t_cursor *cursor, int flag, int hpos_min, char *buf)
-{
-	int	ret;
-
-	ret = ft_strlen(buf);
+	hpos_min = ft_strlen(prompt);
+	ret = ft_strlen(*buf);
 	if (flag == KEY_LEFT)
 		cursor_mvleft(cursor, hpos_min);
 	else if (flag == KEY_RIGHT)
-		cursor_mvright(cursor, hpos_min + ft_strlen(buf));
-	else if (flag == KEY_UP || flag == KEY_DOWN)
-		;
+		cursor_mvright(cursor, hpos_min + ft_strlen(*buf));
+	else if (flag == KEY_UP)
+		ret = proc_cursor_case_up(&now_history, cursor, prompt, buf);
+	else if (flag == KEY_DOWN)
+		ret = proc_cursor_case_down(&now_history, cursor, prompt, buf);
 	else if (flag == ESC)
-		cursor_erase(cursor, hpos_min, buf);
+		cursor_erase(cursor, hpos_min, *buf);
 	else if (flag == CTRLD)
 	{
 		if (ret == 0)
@@ -53,7 +25,8 @@ int	proc_cursor(t_cursor *cursor, int flag, int hpos_min, char *buf)
 	}
 	else
 	{
-		buf[ret++] = (char)flag;
+		now_history = 0;
+		(*buf)[ret++] = (char)flag;
 		write(0, &flag, 1);
 	}
 	return (ret);

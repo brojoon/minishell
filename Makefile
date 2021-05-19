@@ -6,7 +6,7 @@ ARFLAGS = rcs
 SRC = main.c parsing/get_next_line/get_next_line.c parsing/ft_error.c\
 	  parsing/get_next_line/get_next_line_utils.c parsing/ft_cursor.c \
 	  parsing/ft_instlst.c parsing/env_lst/ft_env_lst.c \
-	  parsing/inst_split/ft_inst_split_01.c \
+	  parsing/inst_split/ft_inst_split_01.c parsing/ft_cursor_cases.c\
 	  parsing/inst_split/ft_inst_split_02.c parsing/inst_split/ft_inst_split_03.c \
 	  parsing/inst_split/ft_inst_split_utils.c parsing/libft/libft_01.c \
 	  parsing/quotes/ft_quotes_01.c parsing/quotes/ft_quotes_02.c \
