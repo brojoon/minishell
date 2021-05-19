@@ -4,7 +4,7 @@ void	error_msg_join(char *arg1, char *arg2, char *arg3)
 {
 	char	*joined;
 
-	joined = ft_strjoin_j(arg1, arg2);
+	joined = ft_strjoin(arg1, arg2);
 	if (!joined)
 		exit(1);
 	catch_error(joined, arg3);
@@ -13,8 +13,8 @@ void	error_msg_join(char *arg1, char *arg2, char *arg3)
 
 void	catch_error(char *inst, char *msg)
 {
-	ft_putstr_fd_j("bash: ", STDERR_FILENO);
-	ft_putstr_fd_j(inst, STDERR_FILENO);
-	ft_putstr_fd_j(": ", STDERR_FILENO);
-	ft_putendl_fd_j(msg, STDERR_FILENO);
+	ft_putstr_fd("bash: ", STDERR_FILENO);
+	ft_putstr_fd(inst, STDERR_FILENO);
+	ft_putstr_fd(": ", STDERR_FILENO);
+	ft_putendl_fd(msg, STDERR_FILENO);
 }

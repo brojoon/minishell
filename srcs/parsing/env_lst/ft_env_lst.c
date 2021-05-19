@@ -1,5 +1,27 @@
 #include "minishell.h"
 
+void	ft_envfree(t_env *env)
+{
+	free(env->key);
+	free(env->value);
+	free(env);
+}
+
+void	ft_envadd_back(t_env **root, t_env *now)
+{
+	t_env	*curr;
+
+	if (*root == 0)
+		*root = now;
+	else
+	{
+		curr = *root;
+		while (curr->next)
+			curr = curr->next;
+		curr->next = now;
+	}
+}
+
 t_env	*ft_envinit(char *key, char *value)
 {
 	t_env	*env;

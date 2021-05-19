@@ -66,8 +66,10 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	while (1)
 	{
+		printf("4\n");
 		insts = main_subloop(prompt, &cursor, env_root);
 		t_inst *now = insts;
+		printf("5\n");
 		while (now)
 		{
 		t_inst *curr = now;
@@ -103,6 +105,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		now = now->next;
 		}
+		printf("exec_init\n");
 		exec_parent_process(insts, &env_root);
 		ft_inst_free(insts);
 	}

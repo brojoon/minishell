@@ -7,21 +7,21 @@ void no_inst_redir(void)
 
 int		exec_builtin(t_inst *proc, t_env **envs)
 {
-	if (ft_strcmp_j(proc->inst, "cd") == 0)
+	if (ft_strcmp(proc->inst, "cd") == 0)
 		ft_cd(proc, *envs);
-	else if (ft_strcmp_j(proc->inst, "echo") == 0)
+	else if (ft_strcmp(proc->inst, "echo") == 0)
 		ft_echo(proc, proc->option);
-	else if (ft_strcmp_j(proc->inst, "env") == 0)
+	else if (ft_strcmp(proc->inst, "env") == 0)
 		ft_env(*envs);
-	else if (ft_strcmp_j(proc->inst, "exit") == 0)
+	else if (ft_strcmp(proc->inst, "exit") == 0)
 		ft_exit(proc);
-	else if (ft_strcmp_j(proc->inst, "pwd") == 0)
+	else if (ft_strcmp(proc->inst, "pwd") == 0)
 		ft_pwd();
-	else if (ft_strcmp_j(proc->inst, "unset") == 0)
+	else if (ft_strcmp(proc->inst, "unset") == 0)
 		ft_unset(proc, envs);
-	else if (ft_strcmp_j(proc->inst, "export") == 0)
+	else if (ft_strcmp(proc->inst, "export") == 0)
 		ft_export(proc, *envs);
-	else if (ft_strcmp_j(proc->inst, "$?") == 0)
+	else if (ft_strcmp(proc->inst, "$?") == 0)
 		print_status();
 	else
 		return (1);

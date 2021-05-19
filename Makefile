@@ -21,11 +21,11 @@ SRC = main.c parsing/get_next_line/get_next_line.c parsing/ft_error.c\
 
 SRCDIR = ./srcs/
 
-LIBFTDIR = ./srcs/exec/libft_j/
+LIBFTDIR = ./srcs/exec/libft/
 
 INCDIR = ./includes
 
-LIBFT = libft_j.a
+LIBFT = libft.a
 
 LIBPOS = $(addprefix $(LIBFTDIR), $(LIBFT))
 
@@ -34,11 +34,11 @@ SRCS = $(addprefix $(SRCDIR), $(SRC))
 OBJS = $(SRCS:.c=.o)
  
 $(NAME): $(LIBPOS) $(OBJS)
-	$(CC) $(CLFAGS) $(OBJS) libft_j.a -I $(INCDIR) -o $(NAME) -lncurses
+	$(CC) $(CLFAGS) $(OBJS) libft.a -I $(INCDIR) -o $(NAME) -lncurses
 
 $(LIBPOS):
-	$(MAKE) -C ./srcs/exec/libft_j/ libft_j.a
-	cp $(LIBPOS) libft_j.a
+	$(MAKE) -C ./srcs/exec/libft/ libft.a
+	cp $(LIBPOS) libft.a
 
 $(OBJS): %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(INCDIR) -lncurses

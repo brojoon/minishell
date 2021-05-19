@@ -1,7 +1,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include "../srcs/exec/libft_j/libft_j.h"
+#include "../srcs/exec/libft/libft.h"
 # include <errno.h>
 # include <signal.h>
 # include <unistd.h>
@@ -152,6 +152,8 @@ int						ft_get_next_idx(char *buf, char c, int st);
 t_env					*ft_envinit(char *key, char *value);
 void					set_genv(t_env **root, char **envp);
 void					free_genv(t_env *env);
+void					ft_envadd_back(t_env **root, t_env *now);
+void					ft_envfree(t_env *env);
 /*
 ** ft_inst_split_utils.c
 */
@@ -213,7 +215,6 @@ int						ft_memset(char **line, size_t size);
 size_t					ft_strlcpy(char *dst, const char *src, size_t dstsize);
 void					ft_resize_and_copy(char **line, char *buf,
 							int st, int ed);
-char					*ft_strdup(char *str);
 int						recover_term(t_cursor *cursor);
 /*
 ** get_next_line.c

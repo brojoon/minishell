@@ -11,18 +11,18 @@ void	handle_signal(int signo)
 	{
 		if (pid == -1)
 		{
-			ft_putstr_fd_j("\b\b  \b\b\n", STDOUT_FILENO);
-			write(0, prompt, ft_strlen_j(prompt));
+			ft_putstr_fd("\b\b  \b\b\n", STDOUT_FILENO);
+			write(0, prompt, ft_strlen(prompt));
 		}
 		else
-			ft_putchar_fd_j('\n', STDOUT_FILENO);
+			ft_putchar_fd('\n', STDOUT_FILENO);
 	}
 	else if (signo == SIGQUIT)
 	{
 		if (pid == -1)
-			ft_putstr_fd_j("\b\b  \b\b", STDOUT_FILENO);
+			ft_putstr_fd("\b\b  \b\b", STDOUT_FILENO);
 		else
-			ft_putstr_fd_j("Quit: 3\n", STDOUT_FILENO);
+			ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
 	}
 }
 

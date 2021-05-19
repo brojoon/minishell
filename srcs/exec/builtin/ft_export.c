@@ -9,14 +9,14 @@ void	print_export(t_env *envs)
 	i = 0;
 	while (sorted_envs[i])
 	{
-		ft_putstr_fd_j("declare -x ", 1);
-		ft_putstr_fd_j(sorted_envs[i]->key, 1);
+		ft_putstr_fd("declare -x ", 1);
+		ft_putstr_fd(sorted_envs[i]->key, 1);
 		if (sorted_envs[i]->value)
-			ft_putstr_fd_j("=\"", 1);
-		ft_putstr_fd_j(sorted_envs[i]->value, 1);
+			ft_putstr_fd("=\"", 1);
+		ft_putstr_fd(sorted_envs[i]->value, 1);
 		if (sorted_envs[i]->value)
-			ft_putchar_fd_j('\"', 1);
-		ft_putchar_fd_j('\n', 1);
+			ft_putchar_fd('\"', 1);
+		ft_putchar_fd('\n', 1);
 		i++;
 	}
 	free(sorted_envs);
@@ -31,7 +31,7 @@ int	is_valid_export(char *str)
 
 	i = -1;
 	key_value_sepa = 0;
-	if (ft_isdigit_j(str[0]) && !(str[0] == '_'))
+	if (ft_isdigit(str[0]) && !(str[0] == '_'))
 		return (1);
 	while (str[++i])
 	{
@@ -39,7 +39,7 @@ int	is_valid_export(char *str)
 			key_value_sepa = 1;
 		else if ((str[i] == '+') && (str[i + 1] == '='))
 			i++;
-		else if(!(ft_isalnum_j(str[i])) && !(str[i] == '_') && \
+		else if(!(ft_isalnum(str[i])) && !(str[i] == '_') && \
 		!(str[i] == '=') && (!(str[i] == '+') || !key_value_sepa))
 			return (1);
 	}
@@ -54,13 +54,13 @@ void	handle_value(char **tmp, t_env *envs)
 	i = 0;
 	while (tmp[++i])
 	{
-		tmp2 = ft_strjoin_j(envs->value, tmp[i]);
+		tmp2 = ft_strjoin(envs->value, tmp[i]);
 		free(envs->value);
 		envs->value = tmp2;
 		free(tmp[i]);
 		if (tmp[i + 1])
 		{
-			tmp2 = ft_strjoin_j(envs->value, "=");
+			tmp2 = ft_strjoin(envs->value, "=");
 			free(envs->value);
 			envs->value = tmp2;
 		}
@@ -73,10 +73,10 @@ void	add_export(char *str, t_env *envs)
 {
 	char	**tmp;
 
-	tmp = ft_split_j(str, '=');
-	while (envs && envs->next && ft_strcmp_j(tmp[0], envs->key))
+	tmp = ft_split(str, '=');
+	while (envs && envs->next && ft_strcmp(tmp[0], envs->key))
 		envs = envs->next;
-	if (!ft_strcmp_j(tmp[0], envs->key))
+	if (!ft_strcmp(tmp[0], envs->key))
 		free(envs->value);
 	else
 	{
@@ -84,7 +84,7 @@ void	add_export(char *str, t_env *envs)
 		envs = envs->next;
 		envs->key = tmp[0];
 	}
-	envs->value = ft_strdup_j("");
+	envs->value = ft_strdup("");
 	handle_value(tmp, envs);
 	free(tmp);
 	g_status = 0;
@@ -103,10 +103,10 @@ void	ft_export(t_inst *proc, t_env *envs)
 		{
 			if (is_valid_export(proc->arg->str))
 			{
-				err_msg = ft_strjoin_j(proc->inst, ": `");
-				tmp = ft_strjoin_j(err_msg, proc->arg->str);
+				err_msg = ft_strjoin(proc->inst, ": `");
+				tmp = ft_strjoin(err_msg, proc->arg->str);
 				free(err_msg);
-				err_msg = ft_strjoin_j(tmp, "\'");
+				err_msg = ft_strjoin(tmp, "\'");
 				catch_error(err_msg, "not a valid identifier");
 				free(err_msg);
 				g_status = 1;

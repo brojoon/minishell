@@ -54,21 +54,3 @@ int	recover_term(t_cursor *cursor)
 	tcsetattr(STDIN_FILENO, TCSANOW, &(cursor->term));
 	return (-1);
 }
-
-char	*ft_strdup(char *str)
-{
-	char	*ret;
-	int		st;
-
-	ret = (char *)malloc(sizeof(char) * (ft_strlen(str) + 1));
-	if (ret == 0)
-		return (0);
-	st = 0;
-	while (str[st])
-	{
-		ret[st] = str[st];
-		st++;
-	}
-	ret[st] = '\0';
-	return (ret);
-}

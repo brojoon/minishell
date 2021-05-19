@@ -20,7 +20,7 @@ void	del_env(char *key, t_env *envs)
 	cur = envs;
 	while (cur && cur->key)
 	{
-		if (!ft_strcmp_j(cur->key, key))
+		if (!ft_strcmp(cur->key, key))
 		{
 			tmp = cur->next;
 			while (envs->next != cur)
@@ -41,11 +41,11 @@ int	check_valid_env_key(char *key)
 {
 	if (!key)
 		return (0);
-	if (ft_isdigit_j(*key))
+	if (ft_isdigit(*key))
 		return (0);
 	while (*key)
 	{
-		if (!ft_isalnum_j(*key) && *key != '_')
+		if (!ft_isalnum(*key) && *key != '_')
 			return (0);
 		key++;
 	}
@@ -65,15 +65,15 @@ void	ft_unset(t_inst *proc, t_env **envs)
 	{
 		if (!check_valid_env_key(arg->str))
 		{
-			tmp = ft_strjoin_j("`", arg->str);
-			err_msg = ft_strjoin_j(tmp, "\': not a valid identifier");
+			tmp = ft_strjoin("`", arg->str);
+			err_msg = ft_strjoin(tmp, "\': not a valid identifier");
 			catch_error(proc->inst, err_msg);
 			free(tmp);
 			free(err_msg);
 			g_status = 1;
 			break ;
 		}
-		else if (!ft_strcmp_j((*envs)->key, arg->str))
+		else if (!ft_strcmp((*envs)->key, arg->str))
 			del_first(envs);
 		else
 			del_env(arg->str, *envs);
