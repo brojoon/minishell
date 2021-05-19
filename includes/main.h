@@ -44,6 +44,7 @@ struct					s_inst
 	t_string			*arg;
 	t_inst				*next;
 	t_inst				*child;
+	int					fds[2];
 };
 struct					s_env
 {
