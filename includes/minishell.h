@@ -1,7 +1,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include "../srcs/exec/libft/libft.h"
+# include "../srcs/exec/libft/libft.h"
 # include <errno.h>
 # include <signal.h>
 # include <unistd.h>
@@ -88,7 +88,9 @@ int						get_envs_size(t_env *envs);
 void					print_export(t_env *envs);
 int						is_valid_export(char *str);
 void					add_export(char *str, t_env *envs);
-
+void					handle_value(char **tmp, t_env *envs);
+void					value_is_null(char *str, t_env *envs);
+void					append_export(char *str, t_env *envs);
 /*
 signal func
 */
@@ -115,7 +117,8 @@ void					del_first(t_env **envs);
 exec func
 */
 int						exec_builtin(t_inst *proc, t_env **envs);
-void					exec_child_process(t_inst *proc, t_inst *child, t_env **envs);
+void					exec_child_process(t_inst *proc, t_inst *child, \
+						t_env **envs);
 void					exec_pipe(t_inst *proc, t_env **envs);
 void					exec_parent_process(t_inst *proc, t_env **envs);
 

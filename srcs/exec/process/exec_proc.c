@@ -8,7 +8,11 @@ void no_inst_redir(void)
 int		exec_builtin(t_inst *proc, t_env **envs)
 {
 	if (ft_strcmp(proc->inst, "cd") == 0)
+	{
+		printf("here1\n");
 		ft_cd(proc, *envs);
+		printf("here2\n");
+	}
 	else if (ft_strcmp(proc->inst, "echo") == 0)
 		ft_echo(proc, proc->option);
 	else if (ft_strcmp(proc->inst, "env") == 0)

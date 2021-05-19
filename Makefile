@@ -14,7 +14,7 @@ SRC = main.c parsing/get_next_line/get_next_line.c parsing/ft_error.c\
 	  parsing/string_lst/ft_string_lst.c parsing/string_lst/ft_string_utils.c \
 	  exec/builtin/ft_cd.c exec/builtin/ft_echo.c exec/builtin/ft_env.c \
 	  exec/builtin/ft_exit.c exec/builtin/ft_pwd.c exec/builtin/ft_unset.c \
-	  exec/builtin/ft_export.c exec/builtin/ft_export2.c\
+	  exec/builtin/ft_export.c exec/builtin/ft_export2.c exec/builtin/ft_export3.c\
 	  exec/error/error_handle.c exec/process/exec_utils.c exec/process/exec_proc.c \
 	  exec/process/signal.c exec/redirection/redir_exec.c exec/redirection/redir_skip.c \
 	  exec/redirection/redir_utils.c
