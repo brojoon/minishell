@@ -1,4 +1,4 @@
-#include "main.h"
+#include "minishell.h"
 
 int	cursor_mvleft(t_cursor *cursor, int hpos_min)
 {

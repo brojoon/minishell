@@ -1,4 +1,4 @@
-#include "main.h"
+#include "minishell.h"
 
 int	cnt_quotes(char *str, char c, int *meta_arr)
 {

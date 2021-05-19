@@ -1,4 +1,4 @@
-#include "main.h"
+#include "minishell.h"
 
 /*
  * 명령어 및 인자에 redireciton이 있는지 확인

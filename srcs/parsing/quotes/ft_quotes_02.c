@@ -1,4 +1,4 @@
-#include "main.h"
+#include "minishell.h"
 
 void	proc_consts(t_env *root, t_string **consts)
 {

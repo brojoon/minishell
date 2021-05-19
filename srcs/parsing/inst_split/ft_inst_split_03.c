@@ -1,4 +1,4 @@
-#include "main.h"
+#include "minishell.h"
 
 /*
  * '-'로 시작하는 경우 option과 arg가 모두 비어있으면 option,

@@ -1,4 +1,4 @@
-#include "main.h"
+#include "minishell.h"
 
 int	ft_while_loop(char **line, char *buf, char **buf_ref)
 {

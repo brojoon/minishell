@@ -1,4 +1,4 @@
-#include "main.h"
+#include "minishell.h"
 
 t_string	*ft_lstfind(t_string *root, char *target)
 {

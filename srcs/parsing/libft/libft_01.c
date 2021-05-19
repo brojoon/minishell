@@ -1,16 +1,4 @@
-#include "main.h"
-
-size_t	ft_strlen(const char *str)
-{
-	size_t	st;
-
-	if (!str || !*str)
-		return (0);
-	st = 0;
-	while (str[st])
-		st++;
-	return (st);
-}
+#include "minishell.h"
 
 int	nbr_length(int n)
 {
@@ -27,52 +15,47 @@ int	nbr_length(int n)
 	return (i);
 }
 
-int	ft_make_int(const char *ptr, int st, int ed, int sign)
-{
-	unsigned long	ret;
-	unsigned long	mod;
-
-	ret = 0;
-	mod = 1;
-	while (--ed >= st)
-	{
-		ret += (((unsigned long)(ptr[ed] - '0')) * mod);
-		mod *= 10;
-	}
-	if (ret > 2147483647 && sign == 1)
-		return (-1);
-	else if (ret > 2147483648 && sign == -1)
-		return (0);
-	return (ret * sign);
-}
-
-int	ft_atoi(const char *nptr)
-{
-	int		st;
-	int		ed;
-	int		sign;
-
-	sign = 1;
-	st = 0;
-	while (nptr[st] && (nptr[st] == ' '
-			|| (nptr[st] >= 0x09 && nptr[st] <= 0x0D)))
-		st++;
-	if (!nptr[st])
-		return (0);
-	if (nptr[st] == '-')
-		sign = -1;
-	if (sign == -1 || nptr[st] == '+')
-		st++;
-	if (nptr[st] < '0' || nptr[st] > '9')
-		return (0);
-	ed = st;
-	while (nptr[ed] >= '0' && nptr[ed] <= '9')
-		ed++;
-	return (ft_make_int(nptr, st, ed, sign));
-}
-
 int	ft_putchar(int c)
 {
 	write(1, &c, 1);
 	return (0);
 }
+
+void	ft_free_chunks(char **ret, int ret_st)
+{
+	int	st;
+
+	st = 0;
+	if (*ret == 0)
+		return ;
+	while (st < ret_st)
+		free(*(ret + (st++)));
+	free(ret);
+}
+
+int	ft_get_next_idx(char *s, char c, int st)
+{
+	while (s[st] && s[st] != c)
+		st++;
+	return (st);
+}
+
+int	ft_cnt_lines(char *s, char c)
+{
+	int	st;
+	int	cnt;
+
+	st = 0;
+	cnt = 0;
+	while (s[st] && s[st] == c)
+		st++;
+	while (s[st])
+	{
+		st = ft_get_next_idx(s, c, st);
+		cnt++;
+		while (s[st] && s[st] == c)
+			st++;
+	}
+	return (cnt);
+}
+

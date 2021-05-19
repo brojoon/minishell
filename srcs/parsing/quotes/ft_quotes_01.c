@@ -1,5 +1,4 @@
-#include "main.h"
-
+#include "minishell.h"
 int	quotes_sub_loop(char **buf, int **meta_arr, char target, t_cursor *cursor)
 {
 	char	*temp;

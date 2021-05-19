@@ -1,4 +1,4 @@
-#include "main.h"
+#include "minishell.h"
 
 int	handle_red_case_01(char **chunks, char *red, t_inst *inst, char *now)
 {

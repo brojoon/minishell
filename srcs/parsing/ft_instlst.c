@@ -1,4 +1,4 @@
-#include "main.h"
+#include "minishell.h"
 /*
  * ;(semi-colon)으로 나뉜 애들은 sibling
 */

@@ -1,4 +1,4 @@
-#include "main.h"
+#include "minishell.h"
 
 int	ft_memset(char **line, size_t size)
 {

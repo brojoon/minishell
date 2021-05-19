@@ -1,4 +1,4 @@
-#include "main.h"
+#include "minishell.h"
 
 t_env	*ft_envinit(char *key, char *value)
 {
@@ -47,17 +47,5 @@ void	free_genv(t_env *env)
 		curr = del->next;
 		ft_envfree(del);
 		del = curr;
-	}
-}
-
-void	ft_envprint_all(t_env *root)
-{
-	t_env	*curr;
-
-	curr = root;
-	while (curr)
-	{
-		printf("%s=%s\n", curr->key, curr->value);
-		curr = curr->next;
 	}
 }

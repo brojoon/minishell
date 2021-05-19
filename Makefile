@@ -1,15 +1,14 @@
 NAME = minishell
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -lncurses
+CFLAGS = -Wall -Werror -Wextra
 AR = ar
 ARFLAGS = rcs
-SRC = main.c parsing/get_next_line/get_next_line.c \
+SRC = main.c parsing/get_next_line/get_next_line.c parsing/ft_error.c\
 	  parsing/get_next_line/get_next_line_utils.c parsing/ft_cursor.c \
-	  parsing/ft_instlst.c parsing/env_lst/ft_env_lst_utils.c \
-	  parsing/env_lst/ft_env_lst.c parsing/inst_split/ft_inst_split_01.c \
+	  parsing/ft_instlst.c parsing/env_lst/ft_env_lst.c \
+	  parsing/inst_split/ft_inst_split_01.c \
 	  parsing/inst_split/ft_inst_split_02.c parsing/inst_split/ft_inst_split_03.c \
-	  parsing/inst_split/ft_inst_split_utils.c parsing/libft/ft_itoa.c \
-	  parsing/libft/libft_01.c parsing/libft/libft_02.c parsing/libft/libft_03.c \
+	  parsing/inst_split/ft_inst_split_utils.c parsing/libft/libft_01.c \
 	  parsing/quotes/ft_quotes_01.c parsing/quotes/ft_quotes_02.c \
 	  parsing/quotes/ft_quotes_03.c parsing/quotes/ft_quotes_utils.c \
 	  parsing/string_lst/ft_string_lst.c parsing/string_lst/ft_string_utils.c \
@@ -35,14 +34,14 @@ SRCS = $(addprefix $(SRCDIR), $(SRC))
 OBJS = $(SRCS:.c=.o)
  
 $(NAME): $(LIBPOS) $(OBJS)
-	$(CC) $(CLFAGS) $(OBJS) libft_j.a -I $(INCDIR) -o $(NAME)
+	$(CC) $(CLFAGS) $(OBJS) libft_j.a -I $(INCDIR) -o $(NAME) -lncurses
 
 $(LIBPOS):
 	$(MAKE) -C ./srcs/exec/libft_j/ libft_j.a
 	cp $(LIBPOS) libft_j.a
 
 $(OBJS): %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INCDIR)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INCDIR) -lncurses
 
 all: $(NAME)
 	

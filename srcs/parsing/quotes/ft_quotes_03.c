@@ -1,4 +1,4 @@
-#include "main.h"
+#include "minishell.h"
 
 int	proc_metachar_case_single(char **out, char *s, int *meta_arr, int *st)
 {
@@ -33,7 +33,7 @@ int	proc_metachar_case_dollar(char **out, char *s, t_env *root, int *st)
 	while (s[ed] && ((s[ed] >= 'A' && s[ed] <= 'Z')
 			|| (s[ed] >= '0' && s[ed] <= '9')))
 		ed++;
-	env = ft_envfind(root, ft_substr(s, *st + 1, ed));
+	env = get_env(root, ft_substr(s, *st + 1, ed));
 	if (env != 0)
 		ft_resize_and_copy(out, env->value, 0, ft_strlen(env->value));
 	else if (s[ed] == '?')

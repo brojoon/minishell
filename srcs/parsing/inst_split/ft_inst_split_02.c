@@ -1,4 +1,4 @@
-#include "main.h"
+#include "minishell.h"
 
 t_inst	*split_commmads_subloop(char **pipe_chunks)
 {
