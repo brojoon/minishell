@@ -26,6 +26,7 @@ void	init_term(t_cursor *cursor)
 	tgetent(NULL, "xterm");
 	cursor->cm = tgetstr("cm", 0);
 	cursor->ce = tgetstr("ce", 0);
+	cursor->history = 0;
 }
 
 t_inst	*main_subloop(char *prompt, t_cursor *cursor, t_env *env_root)

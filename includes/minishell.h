@@ -41,12 +41,14 @@ typedef struct s_cursor
 	char				*ce;
 	int					hpos;
 	int					vpos;
+	t_string			*history;
 }	t_cursor;
 
 struct s_string
 {
 	char				*str;
 	t_string			*next;
+	t_string			*prev;
 };
 struct					s_inst
 {
@@ -117,8 +119,8 @@ void					del_first(t_env **envs);
 exec func
 */
 int						exec_builtin(t_inst *proc, t_env **envs);
-void					exec_child_process(t_inst *proc, t_inst *child, \
-						t_env **envs);
+void					exec_child_process(t_inst *proc, t_inst *child,
+							t_env **envs);
 void					exec_pipe(t_inst *proc, t_env **envs);
 void					exec_parent_process(t_inst *proc, t_env **envs);
 
@@ -210,7 +212,7 @@ t_string				*ft_lstfind(t_string *root, char *target);
 int						ft_lstcount(t_string *arg);
 void					ft_lstadd_front(t_string **root, t_string *s);
 void					ft_lstadd_after(t_string **root, t_string *s);
-void					ft_lstadd_back(t_string **root, t_string *s);
+t_string				*ft_lstadd_back(t_string **root, t_string *s);
 /*
 ** get_next_line_utils.c
 */
@@ -219,24 +221,34 @@ size_t					ft_strlcpy(char *dst, const char *src, size_t dstsize);
 void					ft_resize_and_copy(char **line, char *buf,
 							int st, int ed);
 int						recover_term(t_cursor *cursor);
+char					*replace_str(char **buf, int st, int ed, char *to);
 /*
 ** get_next_line.c
 */
 int						ft_while_loop(char **line, char *buf, char **buf_ref);
 int						ft_proc_buf_ref(char **line, char **buf_ref);
-char					*replace_str(char **buf, int st, int ed, char *to);
+int						get_next_line_subsub(int fd, char *prompt,
+							t_cursor *cursor, char **buf);
 int						get_next_line_subloop(int fd, char *prompt,
 							t_cursor *cursor, char **buf);
 int						get_next_line(int fd, char **line,
 							char *prompt, t_cursor *cursor);
 /*
-** ft_cursor.c
+** ft_cursor_cases.c
 */
 int						cursor_mvleft(t_cursor *cursor, int hpos_min);
 int						cursor_mvright(t_cursor *cursor, int hpos_max);
 int						cursor_erase(t_cursor *cursor, int hpos_min, char *buf);
+int						proc_cursor_case_up(t_string **now_history,
+							t_cursor *cursor, char *prompt, char **buf);
+int						proc_cursor_case_down(t_string **now_history,
+							t_cursor *cursor, char *prompt, char **buf);
+/*
+** ft_cursor.c
+*/
+
 int						proc_cursor(t_cursor *cursor, int flag,
-							int hpos_min, char *buf);
+							char *prompt, char **buf);
 void					update_cursor_pos(t_cursor *cursor);
 /*
 ** ft_quotes_utils.c

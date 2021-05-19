@@ -46,7 +46,9 @@ void	ft_lstadd_front(t_string **root, t_string *s)
 		while (curr->next)
 			curr = curr->next;
 		curr->next = *root;
+		(*root)->prev = curr;
 		*root = s;
+		s->prev = 0;
 	}
 }
 
@@ -56,12 +58,15 @@ void	ft_lstadd_after(t_string **root, t_string *s)
 		*root = s;
 	else
 	{
+		if ((*root)->next)
+			(*root)->next->prev = s;
+		s->prev = (*root);
 		s->next = (*root)->next;
 		(*root)->next = s;
 	}
 }
 
-void	ft_lstadd_back(t_string **root, t_string *s)
+t_string	*ft_lstadd_back(t_string **root, t_string *s)
 {
 	t_string	*curr;
 
@@ -73,5 +78,7 @@ void	ft_lstadd_back(t_string **root, t_string *s)
 		while (curr->next != 0)
 			curr = curr->next;
 		curr->next = s;
+		s->prev = curr;
 	}
+	return (s);
 }

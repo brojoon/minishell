@@ -9,6 +9,7 @@ t_string	*ft_lstinit(char *s)
 		return (0);
 	temp->str = s;
 	temp->next = 0;
+	temp->prev = 0;
 	return (temp);
 }
 
