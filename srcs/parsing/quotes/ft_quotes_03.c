@@ -42,7 +42,7 @@ int	proc_metachar_case_dollar(char **out, char *s, t_env *root, int *st)
 		ft_resize_and_copy(out, num, 0, 1);
 		free(num);
 	}
-	*st = ed - 1;
+	*st = ed;
 	return (0);
 }
 
