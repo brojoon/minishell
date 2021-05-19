@@ -6,7 +6,7 @@
 /*   By: hyungjki <hyungjki@student.42.kr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/26 05:13:34 by hyungjki          #+#    #+#             */
-/*   Updated: 2020/12/31 03:29:50 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/19 17:49:05 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ size_t	ft_strlen(const char *s)
 	size_t	i;
 
 	i = 0;
+	if (!s || !*s)
+		return (i);
 	while (s[i])
 		i++;
 	return (i);
