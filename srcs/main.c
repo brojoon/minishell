@@ -70,6 +70,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	while (1)
 	{
+		prompt = get_prompt();
 		insts = main_subloop(prompt, &cursor, env_root);
 		t_inst *now = insts;
 		while (now)
