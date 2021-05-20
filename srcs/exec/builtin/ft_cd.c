@@ -21,6 +21,9 @@ void	cd_error_handle(char *str1, char *str2)
 
 void	ft_cd(t_inst *proc, t_env *envs)
 {
+	t_env	*tmp;
+
+	tmp = envs;
 	printf("here3");
 	if (proc->arg == NULL || proc->arg->str == NULL)
 	{
@@ -31,7 +34,7 @@ void	ft_cd(t_inst *proc, t_env *envs)
 			if (chdir(envs->value) == -1)
 				cd_error_handle(envs->value, ": No such file or directory");
 			else
-				alter_pwd(envs);
+				alter_pwd(tmp);
 			return ;
 		}
 		else
