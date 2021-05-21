@@ -32,10 +32,13 @@ void	exec_child_process(t_inst *proc, t_inst *child, t_env **envs)
 {
 	int		ret;
 	char	*path;
+	char	**chunked[2];
 
+	chunked[0] = inst_to_chunks(proc);
+	chunked[1] = envs_to_chunks(*envs);
 	ret = 0;
 	path = get_path(proc->inst, *envs);
-	printf("here0");
+	printf("exec_child\n");
 	if (proc->child != NULL)
 		dup2(child->fds[1], STDOUT_FILENO);
 	if (proc->fds[0] != 0)
@@ -44,15 +47,14 @@ void	exec_child_process(t_inst *proc, t_inst *child, t_env **envs)
 		close(proc->fds[0]);
 	}
 	if (exec_builtin(proc, envs))
-		(ret = execve(path, inst_to_chunks(proc), envs_to_chunks(*envs)));
+		(ret = execve(path, chunked[0], chunked[1]));
 	if (ret == -1)
 	{
 		catch_error(proc->inst, "command not found");
 		g_status = 2;
-		printf("here1");
 		exit(1);
 	}
-	printf("here2");
+	printf("exec_child_end\n");
 	exit(0);
 }
 
