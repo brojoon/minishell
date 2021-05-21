@@ -41,13 +41,18 @@ int	handle_red_case_02_sub(char **chunks, char **cmd, t_inst *inst, int *k)
 			temp = ft_lstinit(ft_strdup(chunks[0]));
 			ft_lstadd_back(&(inst->arg), temp);
 		}
+		temp = ft_lstinit(ft_strdup(get_splitter(*(cmd + *k), &splitter)));
 	}
-	ft_lstadd_back(&(inst->rd),
-		ft_lstinit(ft_strdup(get_splitter(*(cmd + *k), &splitter))));
+	else
+	{
+		temp = ft_lstinit(ft_strdup(chunks[0]));
+		get_splitter(*(cmd + *k), &splitter);
+		ft_resize_and_copy(&(temp->str), splitter, 0, ft_strlen(splitter));
+	}
+	ft_lstadd_back(&(inst->rd), temp);
 	if (*(cmd + *k + 1) == 0)
 		return (3);
-	ft_lstadd_back(&(inst->rd),
-		ft_lstinit(ft_strdup(*(cmd + ++(*k)))));
+	ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(*(cmd + ++(*k)))));
 	return (0);
 }
 
