@@ -68,3 +68,16 @@ t_inst	*ft_instinit(void)
 	ret->child = 0;
 	return (ret);
 }
+
+void	ft_lstfree_allrev(t_string *root)
+{
+	t_string	*del;
+
+	del = root;
+	while (del)
+	{
+		root = del->prev;
+		ft_lstfree(del);
+		del = root;
+	}
+}
