@@ -163,6 +163,7 @@ void					ft_envfree(t_env *env);
 /*
 ** ft_inst_split_utils.c
 */
+void					get_splitter(char *str, char **splitter);
 char					**split_redirection(char *str, char **splitter);
 int						check_red_error(char *inst);
 int						is_fd(char *s);
@@ -248,7 +249,7 @@ int						proc_cursor_case_down(t_string **now_history,
 /*
 ** ft_cursor.c
 */
-
+void					ft_memclean(char **buf, int size);
 int						proc_cursor(t_cursor *cursor, int flag,
 							char *prompt, char **buf);
 void					update_cursor_pos(t_cursor *cursor);

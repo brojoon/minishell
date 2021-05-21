@@ -1,5 +1,14 @@
 #include "minishell.h"
 
+void	ft_memclean(char **buf, int size)
+{
+	int	st;
+
+	st = 0;
+	while (st < size)
+		(*buf)[st++] = 0;
+}
+
 int	proc_cursor(t_cursor *cursor, int flag, char *prompt, char **buf)
 {
 	static t_string	*now_history;

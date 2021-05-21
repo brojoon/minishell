@@ -78,7 +78,10 @@ void	proc_quotes(t_env *root, char **now)
 		return ;
 	decap_str = decap_quotes(*now, &quote);
 	if (quote == '\"')
+	{
 		new_str = proc_metachar(root, decap_str);
+		free(decap_str);
+	}
 	else
 		new_str = decap_str;
 	free(*now);

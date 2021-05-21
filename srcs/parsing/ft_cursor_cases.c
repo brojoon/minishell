@@ -55,8 +55,7 @@ int	proc_cursor_case_up(t_string **now_history,
 	write(0, target->str, ft_strlen(target->str));
 	cursor->hpos = ft_strlen(prompt) + ft_strlen(target->str) - 1;
 	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
-	free(buf);
-	ft_memset(buf, BUFFER_SIZE + 1);
+	ft_memclean(buf, BUFFER_SIZE + 1);
 	ft_strlcpy(*buf, target->str, ft_strlen(target->str));
 	ret = ft_strlen(target->str);
 	return (ret);
@@ -84,7 +83,7 @@ int	proc_cursor_case_down(t_string **now_history,
 	write(0, target->str, ft_strlen(target->str));
 	cursor->hpos = ft_strlen(prompt) + ft_strlen(target->str) - 1;
 	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
-	ft_memset(buf, BUFFER_SIZE + 1);
+	ft_memclean(buf, BUFFER_SIZE + 1);
 	ft_strlcpy(*buf, target->str, ft_strlen(target->str));
 	ret = ft_strlen(target->str);
 	return (ret);

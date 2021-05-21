@@ -1,7 +1,7 @@
 #include "minishell.h"
 
 char	*handle_red_case_01_sub(char **chunks,
-			char *red, t_inst *inst, char *now)
+			char *red, t_inst *inst)
 {
 	char	*temp_str;
 
@@ -22,10 +22,7 @@ char	*handle_red_case_01_sub(char **chunks,
 			ft_resize_and_copy(&temp_str, chunks[0], 0, ft_strlen(chunks[0]));
 	}
 	else
-	{
 		ft_write_and_ret(chunks[0], "invalid file descriptor", 1);
-		ft_free_chunks(chunks, ft_cnt_lines(now, red[0]));
-	}
 	return (temp_str);
 }
 
@@ -33,9 +30,12 @@ int	handle_red_case_01(char **chunks, char *red, t_inst *inst, char *now)
 {
 	char	*temp_str;
 
-	temp_str = handle_red_case_01_sub(chunks, red, inst, now);
+	temp_str = handle_red_case_01_sub(chunks, red, inst);
 	if (temp_str == 0)
+	{
+		ft_free_chunks(chunks, ft_cnt_lines(now, red[0]));
 		return (1);
+	}
 	ft_resize_and_copy(&temp_str, red, 0, ft_strlen(red));
 	ft_lstadd_back(&(inst->rd), ft_lstinit(temp_str));
 	ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(chunks[1])));
