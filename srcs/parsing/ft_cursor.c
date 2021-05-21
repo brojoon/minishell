@@ -1,35 +1,40 @@
 #include "minishell.h"
 
+void	ft_memclean(char **buf, int size)
+{
+	int	st;
+
+	st = 0;
+	while (st < size)
+		(*buf)[st++] = 0;
+}
+
 int	proc_cursor(t_cursor *cursor, int flag, char *prompt, char **buf)
 {
-	int				ret;
-	int				hpos_min;
 	static t_string	*now_history;
 
-	hpos_min = ft_strlen(prompt);
-	ret = ft_strlen(*buf);
 	if (flag == KEY_LEFT)
-		cursor_mvleft(cursor, hpos_min);
+		cursor_mvleft(cursor, ft_strlen(prompt));
 	else if (flag == KEY_RIGHT)
-		cursor_mvright(cursor, hpos_min + ft_strlen(*buf));
+		cursor_mvright(cursor, ft_strlen(prompt) + ft_strlen(*buf));
 	else if (flag == KEY_UP)
-		ret = proc_cursor_case_up(&now_history, cursor, prompt, buf);
+		return (proc_cursor_case_up(&now_history, cursor, prompt, buf));
 	else if (flag == KEY_DOWN)
-		ret = proc_cursor_case_down(&now_history, cursor, prompt, buf);
+		return (proc_cursor_case_down(&now_history, cursor, prompt, buf));
 	else if (flag == ESC)
-		cursor_erase(cursor, hpos_min, *buf);
+		cursor_erase(cursor, ft_strlen(prompt), *buf);
 	else if (flag == CTRLD)
 	{
-		if (ret == 0)
+		if (ft_strlen(*buf) == 0)
 			return (-1);
 	}
 	else
 	{
 		now_history = 0;
-		(*buf)[ret++] = (char)flag;
+		(*buf)[ft_strlen(*buf)] = (char)flag;
 		write(0, &flag, 1);
 	}
-	return (ret);
+	return (ft_strlen(*buf));
 }
 
 /*

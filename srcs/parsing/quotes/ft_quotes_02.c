@@ -16,14 +16,15 @@ int	get_ori_consts_subloop(char **arg, t_string **const_now)
 {
 	int			st;
 	char		*temp;
+	char		*encap_str;
 
 	st = 0;
 	temp = 0;
 	while ((*arg)[st])
 	{
+		encap_str = encap_quotes("%%", (*arg)[st]);
 		if (((*arg)[st] == '\'' || (*arg)[st] == '\"')
-				&& (ft_strncmp(*arg + st,
-						encap_quotes("%%", (*arg)[st]), 4) == 0))
+				&& (ft_strncmp(*arg + st, encap_str, 4) == 0))
 		{
 			ft_resize_and_copy(&temp, (*const_now)->str,
 				0, ft_strlen((*const_now)->str));
@@ -32,6 +33,7 @@ int	get_ori_consts_subloop(char **arg, t_string **const_now)
 		}
 		else
 			ft_resize_and_copy(&temp, *arg, st, st + 1);
+		free(encap_str);
 		st++;
 	}
 	free(*arg);
