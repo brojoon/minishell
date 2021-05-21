@@ -72,7 +72,7 @@ char					*get_prompt(void);
 /*
 builtin func
 */
-void					ft_cd(t_inst *proc, t_env *envs);
+void					ft_cd(t_inst *proc, t_env *envs, t_env *envs2);
 void					ft_echo(t_inst *proc, char *op);
 void					ft_env(t_env *envs);
 void					ft_exit(t_inst *proc);
@@ -125,6 +125,7 @@ void					exec_pipe(t_inst *proc, t_env **envs);
 void					exec_parent_process(t_inst *proc, t_env **envs);
 
 /*
+
 redir func
 */
 int						get_redir_type(t_string *rd);

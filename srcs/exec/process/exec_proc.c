@@ -1,18 +1,14 @@
 #include "minishell.h"
 
-void no_inst_redir(void)
+void	no_inst_redir(void)
 {
 	return ;
 }
 
-int		exec_builtin(t_inst *proc, t_env **envs)
+int	exec_builtin(t_inst *proc, t_env **envs)
 {
 	if (ft_strcmp(proc->inst, "cd") == 0)
-	{
-		printf("here1\n");
-		ft_cd(proc, *envs);
-		printf("here2\n");
-	}
+		ft_cd(proc, *envs, *envs);
 	else if (ft_strcmp(proc->inst, "echo") == 0)
 		ft_echo(proc, proc->option);
 	else if (ft_strcmp(proc->inst, "env") == 0)
@@ -34,8 +30,8 @@ int		exec_builtin(t_inst *proc, t_env **envs)
 
 void	exec_child_process(t_inst *proc, t_inst *child, t_env **envs)
 {
-	int ret;
-	char *path;
+	int		ret;
+	char	*path;
 
 	ret = 0;
 	path = get_path(proc->inst, *envs);
@@ -59,22 +55,17 @@ void	exec_child_process(t_inst *proc, t_inst *child, t_env **envs)
 
 void	exec_pipe(t_inst *proc, t_env **envs)
 {
-	t_inst *child;
-	pid_t pid;
-	int state;
+	t_inst	*child;
+	pid_t	pid;
+	int		state;
 
 	child = proc;
 	if (proc->child != NULL)
 	{
 		child = proc->child;
 		pipe(child->fds);
-		if (proc->rd)
-		{
-			redir_init(proc, envs);
-			return ;
-		}
 	}
-	else if (proc->rd)
+	if (proc->rd)
 	{
 		redir_init(proc, envs);
 		return ;
@@ -89,7 +80,7 @@ void	exec_pipe(t_inst *proc, t_env **envs)
 
 void	exec_parent_process(t_inst *proc, t_env **envs)
 {
-	t_inst *cur;
+	t_inst	*cur;
 
 	cur = proc;
 	while (cur != NULL)
@@ -105,7 +96,7 @@ void	exec_parent_process(t_inst *proc, t_env **envs)
 					exec_pipe(cur, envs);
 				}
 			}
-			else
+			else if (cur->rd)
 				redir_init(cur, envs);
 		}
 		else

@@ -1,30 +1,33 @@
 #include "minishell.h"
 
-int get_redir_type(t_string *rd)
+int	get_redir_type(t_string *rd)
 {
-	int i;
-	
+	int	i;
+
 	i = 0;
-	while(rd->str[i] && !(ft_strchr("><", rd->str[i])))
-		i++;
-	if (rd->str[i])
+	if (rd && rd->str)
 	{
-		if (rd->str[i] == '>')
+		while (rd->str[i] && !(ft_strchr("><", rd->str[i])))
+			i++;
+		if (rd->str[i])
 		{
-			if (rd->str[i + 1] == '>')
-				return DRIGHT;
-			return RIGHT;
+			if (rd->str[i] == '>')
+			{
+				if (rd->str[i + 1] == '>')
+					return (DRIGHT);
+				return (RIGHT);
+			}
+			else
+				return (LEFT);
 		}
-		else
-			return LEFT;
 	}
 	return (0);
 }
 
-int get_redir_fd(t_inst *proc, int type)
+int	get_redir_fd(t_inst *proc, int type)
 {
-	int num;
-	int i;
+	int	num;
+	int	i;
 
 	i = 0;
 	num = 0;

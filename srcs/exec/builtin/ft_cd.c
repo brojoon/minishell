@@ -19,13 +19,12 @@ void	cd_error_handle(char *str1, char *str2)
 	return ;
 }
 
-void	ft_cd(t_inst *proc, t_env *envs)
+void	ft_cd(t_inst *proc, t_env *envs, t_env *envs2)
 {
-	t_env	*tmp;
-
-	tmp = envs;
-	printf("here3");
-	if (proc->arg == NULL || proc->arg->str == NULL)
+	g_status = 1;
+	if (proc->arg && proc->arg->next)
+		catch_error(proc->inst, "too many arguments");
+	else if (proc->arg == NULL || proc->arg->str == NULL)
 	{
 		while (envs && envs->next && ft_strcmp(envs->key, "HOME"))
 			envs = envs->next;
@@ -34,12 +33,11 @@ void	ft_cd(t_inst *proc, t_env *envs)
 			if (chdir(envs->value) == -1)
 				cd_error_handle(envs->value, ": No such file or directory");
 			else
-				alter_pwd(tmp);
+				alter_pwd(envs2);
 			return ;
 		}
 		else
 			catch_error("cd", "HOME not set");
-		g_status = 1;
 		return ;
 	}
 	else if (chdir(proc->arg->str) == -1)

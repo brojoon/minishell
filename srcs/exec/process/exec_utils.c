@@ -11,6 +11,19 @@ char	*find_value(char *key, t_env *envs)
 	return (0);
 }
 
+void	ft_free_split(char **paths)
+{
+	int	i;
+
+	i = -1;
+	if (paths)
+	{
+		while (paths[++i])
+			free(paths[i]);
+		free(paths);
+	}
+}
+
 char	*get_path(char *inst, t_env *envs)
 {
 	int			i;
@@ -28,10 +41,14 @@ char	*get_path(char *inst, t_env *envs)
 		new_path = ft_strjoin(paths[i], tmp);
 		free(tmp);
 		if (stat(new_path, &s) == 0)
+		{
+			ft_free_split(paths);
 			return (new_path);
+		}
 		free(new_path);
 		i++;
 	}
+	ft_free_split(paths);
 	return (ft_strdup(inst));
 }
 

@@ -20,7 +20,7 @@ void	handle_signal(int signo)
 	else if (signo == SIGQUIT)
 	{
 		if (pid == -1)
-			ft_putstr_fd("\b\b  \b\b", STDOUT_FILENO);
+			return ;
 		else
 			ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
 	}

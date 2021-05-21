@@ -1,9 +1,9 @@
 #include "minishell.h"
 
-int redir_skip_left(char *str)
+int	redir_skip_left(char *str)
 {
-	char *filename;
-	int fd;
+	char	*filename;
+	int		fd;
 
 	filename = str;
 	fd = open(filename, O_RDONLY, 0644);
@@ -18,10 +18,10 @@ int redir_skip_left(char *str)
 	return (0);
 }
 
-int redir_skip_right(char *str)
+int	redir_skip_right(char *str)
 {
-	char *filename;
-	int fd;
+	char	*filename;
+	int		fd;
 
 	filename = str;
 	fd = open(filename, O_WRONLY | O_CREAT, 0744);
