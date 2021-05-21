@@ -1,5 +1,20 @@
 #include "minishell.h"
 
+void	get_splitter(char *str, char **splitter)
+{
+	if (splitter == 0)
+		*splitter = 0;
+	if (ft_strchr(str, '>') != 0)
+	{
+		if (ft_strnstr(str, ">>", ft_strlen(str)) != 0)
+			*splitter = ">>";
+		else
+			*splitter = ">";
+	}
+	else if (ft_strchr(str, '<') != 0)
+		*splitter = "<";
+}
+
 /*
  * 명령어 및 인자에 redireciton이 있는지 확인
  * redirection은 splitter에 넣어주고 splitter로 자른 char **를 return
@@ -8,23 +23,10 @@ char	**split_redirection(char *str, char **splitter)
 {
 	char	**ret;
 
-	if (splitter == 0)
-		*splitter = 0;
-	if (ft_strchr(str, '>') != 0)
-	{
-		ret = ft_split(str, '>');
-		if (ft_strnstr(str, ">>", ft_strlen(str)) != 0)
-			*splitter = ">>";
-		else
-			*splitter = ">";
-	}
-	else if (ft_strchr(str, '<') != 0)
-	{
-		ret = ft_split(str, '<');
-		*splitter = "<";
-	}
-	else
-		ret = 0;
+	get_splitter(str, splitter);
+	ret = 0;
+	if (splitter)
+		ret = ft_split(str, (*splitter)[0]);
 	return (ret);
 }
 
