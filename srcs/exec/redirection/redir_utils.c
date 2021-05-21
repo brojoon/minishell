@@ -33,10 +33,12 @@ int	get_redir_fd(t_inst *proc, int type)
 	num = 0;
 	while (ft_isdigit(proc->rd->str[i]))
 	{
-		num = num * 10 + proc->rd->str[i];
+		num = num * 10 + (proc->rd->str[i] - '0');
+		printf("real num: %d\n", num);
 		i++;
 	}
 	if (i == 0)
 		return (type);
 	return (num);
 }
+

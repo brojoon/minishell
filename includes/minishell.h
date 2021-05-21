@@ -104,6 +104,7 @@ error handle
 */
 void					catch_error(char *inst, char *msg);
 void					error_msg_join(char *arg1, char *arg2, char *arg3);
+void					exec_error_handle(char *msg1, char *msg2, int status);
 
 /*
 env related
@@ -137,6 +138,7 @@ int						redir_skip_right(char *str);
 int						redir_skip_left(char *str);
 void					redir_exec(t_inst *proc, t_env **envs);
 void					redir_init(t_inst *proc, t_env **envs);
+void					no_inst_redir(t_string *rd);
 
 /*
 exec util

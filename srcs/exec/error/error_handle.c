@@ -18,3 +18,10 @@ void	catch_error(char *inst, char *msg)
 	ft_putstr_fd(": ", STDERR_FILENO);
 	ft_putendl_fd(msg, STDERR_FILENO);
 }
+
+void	exec_error_handle(char *msg1, char *msg2, int status)
+{
+	catch_error(msg1, msg2);
+	g_status = status;
+	exit (1);
+}

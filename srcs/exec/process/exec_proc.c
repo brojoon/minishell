@@ -1,7 +1,30 @@
 #include "minishell.h"
 
-void	no_inst_redir(void)
+void	no_inst_redir(t_string *rd)
 {
+	int		i;
+	int		fd;
+	char	*filename;
+
+	i = 0;
+	while (rd && rd->next)
+	{
+		while (ft_isdigit(rd->str[i]))
+			i++;
+		if (rd->str[i] == '>')
+		{
+			if (rd->str[i + 1] == '>' || rd->str[i + 1] == '\0')
+			{
+				filename = rd->next->str;
+				fd = open(filename, O_WRONLY | O_CREAT, 0744);
+				if (fd < 0)
+					exit(1);
+				close(fd);
+			}
+		}
+		i = 0;
+		rd = rd->next->next;
+	}
 	return ;
 }
 
@@ -49,12 +72,7 @@ void	exec_child_process(t_inst *proc, t_inst *child, t_env **envs)
 	if (exec_builtin(proc, envs))
 		(ret = execve(path, chunked[0], chunked[1]));
 	if (ret == -1)
-	{
-		catch_error(proc->inst, "command not found");
-		g_status = 2;
-		exit(1);
-	}
-	printf("exec_child_end\n");
+		exec_error_handle(proc->inst, "command not found", 127);
 	exit(0);
 }
 
@@ -104,8 +122,8 @@ void	exec_parent_process(t_inst *proc, t_env **envs)
 			else if (cur->rd)
 				redir_init(cur, envs);
 		}
-		else
-			no_inst_redir();
+		else if (cur->rd && cur->rd->next)
+			no_inst_redir(cur->rd);
 		proc = proc->next;
 		cur = proc;
 	}
