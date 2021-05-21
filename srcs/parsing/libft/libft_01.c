@@ -27,7 +27,10 @@ void	ft_free_chunks(char **ret, int ret_st)
 
 	st = 0;
 	if (*ret == 0)
+	{
+		free(ret);
 		return ;
+	}
 	while (st < ret_st)
 		free(*(ret + (st++)));
 	free(ret);
