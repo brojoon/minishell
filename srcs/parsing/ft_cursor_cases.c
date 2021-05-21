@@ -33,7 +33,8 @@ int	cursor_erase(t_cursor *cursor, int hpos_min, char *buf)
 	return (0);
 }
 
-int	proc_cursor_case_up(t_string **now_history, t_cursor *cursor, char *prompt, char **buf)
+int	proc_cursor_case_up(t_string **now_history,
+		t_cursor *cursor, char *prompt, char **buf)
 {
 	t_string	*target;
 	int			ret;
@@ -54,13 +55,15 @@ int	proc_cursor_case_up(t_string **now_history, t_cursor *cursor, char *prompt, 
 	write(0, target->str, ft_strlen(target->str));
 	cursor->hpos = ft_strlen(prompt) + ft_strlen(target->str) - 1;
 	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
+	free(buf);
 	ft_memset(buf, BUFFER_SIZE + 1);
 	ft_strlcpy(*buf, target->str, ft_strlen(target->str));
 	ret = ft_strlen(target->str);
 	return (ret);
 }
 
-int	proc_cursor_case_down(t_string **now_history, t_cursor *cursor, char *prompt, char **buf)
+int	proc_cursor_case_down(t_string **now_history,
+		t_cursor *cursor, char *prompt, char **buf)
 {
 	t_string	*target;
 	int			ret;
@@ -86,4 +89,3 @@ int	proc_cursor_case_down(t_string **now_history, t_cursor *cursor, char *prompt
 	ret = ft_strlen(target->str);
 	return (ret);
 }
-

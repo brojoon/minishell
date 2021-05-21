@@ -35,7 +35,10 @@ int	handle_red_case_01(char **chunks, char *red, t_inst *inst, char *now)
 
 	temp_str = handle_red_case_01_sub(chunks, red, inst, now);
 	if (temp_str == 0)
+	{
+		ft_free_chunks(chunks, ft_cnt_lines(now, red[0]));
 		return (1);
+	}
 	ft_resize_and_copy(&temp_str, red, 0, ft_strlen(red));
 	ft_lstadd_back(&(inst->rd), ft_lstinit(temp_str));
 	ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(chunks[1])));
@@ -83,6 +86,7 @@ int	handle_red_case_03(char **cmd, char *red, t_inst *inst, int *k)
 	}
 	ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(red)));
 	ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(*(cmd + ++(*k)))));
+	ft_free_chunks(chunks, ft_cnt_lines(*(cmd + *k), red[0]));
 	return (0);
 }
 
@@ -102,13 +106,14 @@ int	handle_red_token(t_inst *inst, char **cmd, int *k)
 	red = 0;
 	if (check_red_error(*(cmd + *k)) != 0)
 		return (ft_write_and_ret(*(cmd + *k), "invalid redirection", 2));
-	chunks = split_redirection(*(cmd + *k), &red);
 	if (red == 0)
 		return (-1);
 	if (ft_cnt_lines(*(cmd + *k), red[0]) == 2)
 	{
+		chunks = split_redirection(*(cmd + *k), &red);
 		if (handle_red_case_01(chunks, red, inst, *(cmd + *k)) == 1)
 			return (1);
+		ft_free_chunks(chunks, ft_cnt_lines(*(cmd + *k), red[0]));
 	}
 	else if (ft_cnt_lines(*(cmd + *k), red[0]) == 1)
 	{
@@ -118,6 +123,5 @@ int	handle_red_token(t_inst *inst, char **cmd, int *k)
 	else
 		if (handle_red_case_03(cmd, red, inst, k) == 3)
 			return (ft_write_and_ret(*(cmd + *k), "parse error", 3));
-	ft_free_chunks(chunks, ft_cnt_lines(*(cmd + *k), red[0]));
 	return (0);
 }

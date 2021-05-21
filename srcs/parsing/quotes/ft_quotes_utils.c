@@ -77,7 +77,7 @@ int	*get_meta_arr(char *str)
 	int	*ret;
 	int	st;
 
-	ret = (int *)malloc(sizeof(int) * ft_strlen(str));
+	ret = (int *)malloc(sizeof(int) * ft_strlen(str) + 3);
 	st = 0;
 	while (str[st])
 	{

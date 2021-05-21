@@ -31,7 +31,7 @@ void	handle_quotes_subcase(char **buf,
 	prev_str = replace_str(buf, *st, ed, rep);
 	if (prev_str != 0)
 	{
-		ft_lstadd_back(const_strings, ft_lstinit(ft_strdup(prev_str)));
+		ft_lstadd_back(const_strings, ft_lstinit(prev_str));
 		free(*meta_arr);
 		*meta_arr = get_meta_arr(*buf);
 	}
@@ -80,7 +80,7 @@ void	proc_quotes(t_env *root, char **now)
 	if (quote == '\"')
 		new_str = proc_metachar(root, decap_str);
 	else
-		new_str = ft_strdup(decap_str);
+		new_str = decap_str;
 	free(*now);
 	*now = new_str;
 }
