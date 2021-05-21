@@ -72,7 +72,6 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		insts = main_subloop(prompt, &cursor, env_root);
-		/*
 		t_inst *now = insts;
 		while (now)
 		{
@@ -109,9 +108,8 @@ int	main(int argc, char **argv, char **envp)
 		}
 		now = now->next;
 		}
-		*/
 		printf("exec_init\n");
-		exec_parent_process(insts, &env_root);
+		//exec_parent_process(insts, &env_root);
 		ft_inst_free(insts);
 	}
 	free_genv(env_root);

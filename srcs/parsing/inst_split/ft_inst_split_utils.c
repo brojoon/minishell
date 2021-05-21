@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	get_splitter(char *str, char **splitter)
+char	*get_splitter(char *str, char **splitter)
 {
 	if (splitter == 0)
 		*splitter = 0;
@@ -13,6 +13,7 @@ void	get_splitter(char *str, char **splitter)
 	}
 	else if (ft_strchr(str, '<') != 0)
 		*splitter = "<";
+	return (*splitter);
 }
 
 /*
@@ -54,17 +55,9 @@ int	check_red_error(char *inst)
 */
 int	is_fd(char *s)
 {
-	size_t	st;
-
-	st = 0;
 	if (ft_strlen(s) > 1)
 	{
-		while (s[st] && s[st] >= '0' && s[st] <= '9')
-			st++;
-		if (st == ft_strlen(s))
-			return (2);
-		else
-			return (1);
+		return (1);
 	}
 	if (*s < '0' || *s > '9')
 		return (1);
