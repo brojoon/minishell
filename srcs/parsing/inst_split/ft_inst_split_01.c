@@ -1,38 +1,22 @@
 #include "minishell.h"
 
-char	*handle_red_case_01_sub(char **chunks,
-			char *red, t_inst *inst)
+int	handle_red_case_01(char **chunks, char *red, t_inst *inst, char *now)
 {
 	char	*temp_str;
 
 	temp_str = 0;
 	if (is_fd(chunks[0]) == 0)
-	{
-		if (chunks[0][0] == '2' && red[0] == '>')
-			chunks[0][0] = '0';
-		if (!(chunks[0][0] == '1' && red[0] == '>')
-			&& !(chunks[0][0] == '0' && red[0] == '<'))
-			ft_resize_and_copy(&temp_str, chunks[0], 0, ft_strlen(chunks[0]));
-	}
+		ft_resize_and_copy(&temp_str, chunks[0], 0, ft_strlen(chunks[0]));
 	else if (is_fd(chunks[0]) == 1)
 	{
 		if (inst->inst == 0)
 			inst->inst = ft_strdup(chunks[0]);
 		else
-			ft_resize_and_copy(&temp_str, chunks[0], 0, ft_strlen(chunks[0]));
+			ft_lstadd_back(&(inst->arg), ft_lstinit(ft_strdup(chunks[0])));
 	}
 	else
-		ft_write_and_ret(chunks[0], "invalid file descriptor", 1);
-	return (temp_str);
-}
-
-int	handle_red_case_01(char **chunks, char *red, t_inst *inst, char *now)
-{
-	char	*temp_str;
-
-	temp_str = handle_red_case_01_sub(chunks, red, inst);
-	if (temp_str == 0)
 	{
+		ft_write_and_ret(chunks[0], "invalid file descriptor", 1);
 		ft_free_chunks(chunks, ft_cnt_lines(now, red[0]));
 		return (1);
 	}
@@ -43,36 +27,63 @@ int	handle_red_case_01(char **chunks, char *red, t_inst *inst, char *now)
 	return (0);
 }
 
+int	handle_red_case_02_sub(char **chunks, char **cmd, t_inst *inst, int *k)
+{
+	t_string	*temp;
+	char		*splitter;
+
+	if (is_fd(chunks[0]) == 1)
+	{
+		if (inst->inst == 0)
+			inst->inst = ft_strdup(chunks[0]);
+		else
+		{
+			temp = ft_lstinit(ft_strdup(chunks[0]));
+			ft_lstadd_back(&(inst->arg), temp);
+		}
+	}
+	ft_lstadd_back(&(inst->rd),
+		ft_lstinit(ft_strdup(get_splitter(*(cmd + *k), &splitter))));
+	if (*(cmd + *k + 1) == 0)
+		return (3);
+	ft_lstadd_back(&(inst->rd),
+		ft_lstinit(ft_strdup(*(cmd + ++(*k)))));
+	return (0);
+}
+
 int	handle_red_case_02(char **cmd, char *red, t_inst *inst, int *k)
 {
 	char	**chunks;
-	char	*now;
 
-	now = *(cmd + *k);
-	chunks = split_redirection(now, &red);
-	if (ft_strncmp(now, red, ft_strlen(red)) == 0)
+	chunks = split_redirection(*(cmd + *k), &red);
+	if (is_fd(chunks[0]) == 2)
+	{
+		(*k)++;
+		ft_write_and_ret(chunks[0], "invalid file descriptor", 2);
+		ft_free_chunks(chunks, ft_cnt_lines(*(cmd + *k - 1), red[0]));
+		return (2);
+	}
+	else if (ft_strncmp(*(cmd + *k), red, ft_strlen(red)) == 0)
 	{
 		ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(chunks[0])));
 		ft_lstadd_front(&(inst->rd), ft_lstinit(ft_strdup(red)));
+		ft_free_chunks(chunks, ft_cnt_lines(*(cmd + *k), red[0]));
 	}
 	else
 	{
-		ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(now)));
-		if (*(cmd + *k + 1) == 0)
+		if (handle_red_case_02_sub(chunks, cmd, inst, k) == 3)
 		{
-			ft_free_chunks(chunks, ft_cnt_lines(now, red[0]));
-			return (3);
+			ft_free_chunks(chunks, ft_cnt_lines(*(cmd + *k), red[0]));
+			return (ft_write_and_ret(*(cmd + *k), "parse error", 3));
 		}
-		ft_lstadd_back(&(inst->rd),
-			ft_lstinit(ft_strdup(*(cmd + ++(*k)))));
 	}
-	ft_free_chunks(chunks, ft_cnt_lines(now, red[0]));
 	return (0);
 }
 
 int	handle_red_case_03(char **cmd, char *red, t_inst *inst, int *k)
 {
 	t_string	*ptr;
+
 	if (*(cmd + *k + 1) == 0)
 		return (3);
 	ptr = ft_lstinit(ft_strdup(red));
@@ -98,20 +109,15 @@ int	handle_red_token(t_inst *inst, char **cmd, int *k)
 	red = 0;
 	if (check_red_error(*(cmd + *k)) != 0)
 		return (ft_write_and_ret(*(cmd + *k), "invalid redirection", 2));
-	get_splitter(*(cmd + *k), &red);
-	if (red == 0)
+	if (get_splitter(*(cmd + *k), &red) == 0)
 		return (-1);
 	if (ft_cnt_lines(*(cmd + *k), red[0]) == 2)
 	{
 		chunks = split_redirection(*(cmd + *k), &red);
-		if (handle_red_case_01(chunks, red, inst, *(cmd + *k)) == 1)
-			return (1);
+		return (handle_red_case_01(chunks, red, inst, *(cmd + *k)));
 	}
 	else if (ft_cnt_lines(*(cmd + *k), red[0]) == 1)
-	{
-		if (handle_red_case_02(cmd, red, inst, k) == 3)
-			return (ft_write_and_ret(*(cmd + *k), "parse error", 3));
-	}
+		return (handle_red_case_02(cmd, red, inst, k));
 	else
 		if (handle_red_case_03(cmd, red, inst, k) == 3)
 			return (ft_write_and_ret(*(cmd + *k), "parse error", 3));

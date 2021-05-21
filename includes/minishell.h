@@ -163,7 +163,7 @@ void					ft_envfree(t_env *env);
 /*
 ** ft_inst_split_utils.c
 */
-void					get_splitter(char *str, char **splitter);
+char					*get_splitter(char *str, char **splitter);
 char					**split_redirection(char *str, char **splitter);
 int						check_red_error(char *inst);
 int						is_fd(char *s);

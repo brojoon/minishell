@@ -72,7 +72,6 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		insts = main_subloop(prompt, &cursor, env_root);
-		
 		t_inst *now = insts;
 		while (now)
 		{
