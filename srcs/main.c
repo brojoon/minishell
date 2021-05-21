@@ -111,7 +111,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		*/
 		printf("exec_init\n");
-		//exec_parent_process(insts, &env_root);
+		exec_parent_process(insts, &env_root);
 		ft_inst_free(insts);
 	}
 	free_genv(env_root);

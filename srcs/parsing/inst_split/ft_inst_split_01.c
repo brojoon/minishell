@@ -50,7 +50,9 @@ int	handle_red_case_02(char **cmd, char *red, t_inst *inst, int *k)
 
 	now = *(cmd + *k);
 	chunks = split_redirection(now, &red);
-	if (ft_strncmp(now, red, ft_strlen(red)) == 0)
+	if (is_fd(chunks[0]) == 2)
+		ft_write_and_ret(chunks[0], "invalid file descriptor", 1);
+	else if (ft_strncmp(now, red, ft_strlen(red)) == 0)
 	{
 		ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(chunks[0])));
 		ft_lstadd_front(&(inst->rd), ft_lstinit(ft_strdup(red)));
@@ -73,6 +75,7 @@ int	handle_red_case_02(char **cmd, char *red, t_inst *inst, int *k)
 int	handle_red_case_03(char **cmd, char *red, t_inst *inst, int *k)
 {
 	t_string	*ptr;
+
 	if (*(cmd + *k + 1) == 0)
 		return (3);
 	ptr = ft_lstinit(ft_strdup(red));
