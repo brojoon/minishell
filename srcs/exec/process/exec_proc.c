@@ -35,6 +35,7 @@ void	exec_child_process(t_inst *proc, t_inst *child, t_env **envs)
 
 	ret = 0;
 	path = get_path(proc->inst, *envs);
+	printf("here0");
 	if (proc->child != NULL)
 		dup2(child->fds[1], STDOUT_FILENO);
 	if (proc->fds[0] != 0)
@@ -48,8 +49,10 @@ void	exec_child_process(t_inst *proc, t_inst *child, t_env **envs)
 	{
 		catch_error(proc->inst, "command not found");
 		g_status = 2;
+		printf("here1");
 		exit(1);
 	}
+	printf("here2");
 	exit(0);
 }
 
