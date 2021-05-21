@@ -198,6 +198,7 @@ void					ft_instadd_sibling(t_inst **root, t_inst *inst);
 void					ft_instadd_child(t_inst **root, t_inst *inst);
 void					ft_inst_free(t_inst *root);
 t_inst					*ft_instinit(void);
+void					ft_lstfree_allrev(t_string *root);
 /*
 ** ft_string_lst.c
 */
