@@ -64,10 +64,15 @@ char	**envs_to_chunks(t_env *envs)
 	size = 0;
 	while (envs && envs->key)
 	{
-		tmp = ft_strjoin(envs->key, "=");
-		tmp2 = ft_strjoin(tmp, envs->value);
-		chunks[size] = tmp2;
-		free(tmp);
+		if (envs->value)
+		{
+			tmp = ft_strjoin(envs->key, "=");
+			tmp2 = ft_strjoin(tmp, envs->value);
+			chunks[size] = tmp2;
+			free(tmp);
+		}
+		else
+			chunks[size] = ft_strdup(envs->key);
 		size++;
 		envs = envs->next;
 	}
