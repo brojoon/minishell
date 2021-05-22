@@ -39,7 +39,7 @@ int	proc_metachar_case_dollar(char **out, char *s, t_env *root, int *st)
 	else if (s[ed] == '?')
 	{
 		num = ft_itoa(g_status);
-		ft_resize_and_copy(out, num, 0, 1);
+		ft_resize_and_copy(out, num, 0, ft_strlen(num));
 		free(num);
 	}
 	*st = ed;
