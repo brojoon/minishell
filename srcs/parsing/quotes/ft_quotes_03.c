@@ -28,12 +28,15 @@ int	proc_metachar_case_dollar(char **out, char *s, t_env *root, int *st)
 	int		ed;
 	t_env	*env;
 	char	*num;
+	char	*target;
 
 	ed = *st + 1;
 	while (s[ed] && ((s[ed] >= 'A' && s[ed] <= 'Z')
 			|| (s[ed] >= '0' && s[ed] <= '9')))
 		ed++;
-	env = get_env(root, ft_substr(s, *st + 1, ed));
+	target = ft_substr(s, *st + 1, ed);
+	env = get_env(root, target);
+	free(target);
 	if (env != 0)
 		ft_resize_and_copy(out, env->value, 0, ft_strlen(env->value));
 	else if (s[ed] == '?')
