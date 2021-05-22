@@ -72,7 +72,6 @@ int	handle_red_case_02(char **cmd, char *red, t_inst *inst, int *k)
 	{
 		ft_lstadd_back(&(inst->rd), ft_lstinit(ft_strdup(chunks[0])));
 		ft_lstadd_front(&(inst->rd), ft_lstinit(ft_strdup(red)));
-		ft_free_chunks(chunks, ft_cnt_lines(*(cmd + *k), red[0]));
 	}
 	else
 	{
@@ -82,6 +81,7 @@ int	handle_red_case_02(char **cmd, char *red, t_inst *inst, int *k)
 			return (ft_write_and_ret(*(cmd + *k), "parse error", 3));
 		}
 	}
+	ft_free_chunks(chunks, ft_cnt_lines(*(cmd + *k), red[0]));
 	return (0);
 }
 

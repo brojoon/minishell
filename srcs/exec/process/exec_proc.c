@@ -112,6 +112,7 @@ void	exec_parent_process(t_inst *proc, t_env **envs)
 		{
 			if (cur->child || (!(cur->rd) && exec_builtin(cur, envs)))
 			{
+				printf("here1\n");
 				exec_pipe(cur, envs);
 				while (cur->child)
 				{
@@ -120,7 +121,10 @@ void	exec_parent_process(t_inst *proc, t_env **envs)
 				}
 			}
 			else if (cur->rd)
+			{
+				printf("here2\n");
 				redir_init(cur, envs);
+			}
 		}
 		else if (cur->rd && cur->rd->next)
 			no_inst_redir(cur->rd);

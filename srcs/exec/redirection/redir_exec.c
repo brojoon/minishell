@@ -111,24 +111,26 @@ void	redir_exec(t_inst *proc, t_env **envs)
 void	redir_init(t_inst *proc, t_env **envs)
 {
 	int	ret;
+	t_string *rd;
 
-	while (proc->rd && proc->rd->next)
+	rd = proc-> rd;
+	while (rd && rd->next)
 	{
-		while (proc->rd != NULL && proc->rd->next
-			&& proc->rd->next->next && proc->rd->next->next->next \
-			&& !ft_strcmp(proc->rd->str, proc->rd->next->next->str))
+		while (rd != NULL && rd->next
+			&& rd->next->next && rd->next->next->next \
+			&& !ft_strcmp(rd->str, rd->next->next->str))
 		{
-			if (get_redir_type(proc->rd) == RIGHT || \
-				get_redir_type(proc->rd) == DRIGHT)
-				ret = redir_skip_right(proc->rd->next->str);
-			else if (get_redir_type(proc->rd) == LEFT)
-				ret = redir_skip_left(proc->rd->next->str);
+			if (get_redir_type(rd) == RIGHT || \
+				get_redir_type(rd) == DRIGHT)
+				ret = redir_skip_right(rd->next->str);
+			else if (get_redir_type(rd) == LEFT)
+				ret = redir_skip_left(rd->next->str);
 			if (ret == -1)
 				return ;
-			proc->rd = proc->rd->next->next;
+			rd = rd->next->next;
 		}
 		printf("redir_exec\n");
 		redir_exec(proc, envs);
-		proc->rd = proc->rd->next->next;
+		rd = rd->next->next;
 	}
 }
