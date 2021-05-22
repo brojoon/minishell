@@ -22,6 +22,5 @@ void	catch_error(char *inst, char *msg)
 void	exec_error_handle(char *msg1, char *msg2, int status)
 {
 	catch_error(msg1, msg2);
-	g_status = status;
-	exit (1);
+	exit(status);
 }

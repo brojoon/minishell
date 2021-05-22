@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	exec_redir_right(t_inst *proc, t_env **envs)
+int	exec_redir_right(t_inst *proc, t_env **envs, t_cursor *cursor, t_string *rd)
 {
 	int		fds[2];
 	char	*path;
@@ -10,8 +10,8 @@ int	exec_redir_right(t_inst *proc, t_env **envs)
 
 	chunked[0] = inst_to_chunks(proc);
 	chunked[1] = envs_to_chunks(*envs);
-	filename = proc->rd->next->str;
-	fds[0] = get_redir_fd(proc, 1);
+	filename = rd->next->str;
+	fds[0] = get_redir_fd(rd, 1);
 	fds[1] = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0744);
 	if (fds[1] < 0)
 		exit(1);
@@ -22,14 +22,15 @@ int	exec_redir_right(t_inst *proc, t_env **envs)
 	}
 	dup2(fds[1], fds[0]);
 	path = get_path(proc->inst, *envs);
-	if (exec_builtin(proc, envs))
+	if (exec_builtin(proc, envs, cursor))
 		ret = execve(path, chunked[0], chunked[1]);
 	if (ret == -1)
-		exec_error_handle(proc->inst, "command not found", 127);
+		exec_error_handle(proc->inst, ERR_CNF, 127);
 	exit(0);
 }
 
-int	exec_redir_dright(t_inst *proc, t_env **envs)
+int	exec_redir_dright(t_inst *proc, t_env **envs, t_cursor *cursor, \
+t_string *rd)
 {
 	int		fds[2];
 	char	*path;
@@ -39,8 +40,8 @@ int	exec_redir_dright(t_inst *proc, t_env **envs)
 
 	chunked[0] = inst_to_chunks(proc);
 	chunked[1] = envs_to_chunks(*envs);
-	filename = proc->rd->next->str;
-	fds[0] = get_redir_fd(proc, 1);
+	filename = rd->next->str;
+	fds[0] = get_redir_fd(rd, 1);
 	fds[1] = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0744);
 	if (fds[1] < 0)
 		exit(1);
@@ -51,14 +52,15 @@ int	exec_redir_dright(t_inst *proc, t_env **envs)
 	}
 	dup2(fds[1], fds[0]);
 	path = get_path(proc->inst, *envs);
-	if (exec_builtin(proc, envs))
+	if (exec_builtin(proc, envs, cursor))
 		ret = execve(path, chunked[0], chunked[1]);
 	if (ret == -1)
-		exec_error_handle(proc->inst, "command not found", 127);
+		exec_error_handle(proc->inst, ERR_CNF, 127);
 	exit(0);
 }
 
-void	exec_redir_left(t_inst *proc, t_env **envs)
+void	exec_redir_left(t_inst *proc, t_env **envs, t_cursor *cursor, \
+t_string *rd)
 {
 	int		fds[2];
 	char	*path;
@@ -68,24 +70,24 @@ void	exec_redir_left(t_inst *proc, t_env **envs)
 
 	chunked[0] = inst_to_chunks(proc);
 	chunked[1] = envs_to_chunks(*envs);
-	filename = proc->rd->next->str;
-	fds[0] = get_redir_fd(proc, 0);
+	filename = rd->next->str;
+	fds[0] = get_redir_fd(rd, 0);
 	fds[1] = open(filename, O_RDONLY, 0644);
 	if (fds[1] < 0)
-		exec_error_handle(filename, "No such file or directory", 2);
+		exec_error_handle(filename, ERR_NSFOD, 2);
 	dup2(fds[1], fds[0]);
 	if (proc->child)
 		dup2(STDOUT_FILENO, proc->child->fds[1]);
 	path = get_path(proc->inst, *envs);
-	if (exec_builtin(proc, envs))
+	if (exec_builtin(proc, envs, cursor))
 		ret = execve(path, chunked[0], chunked[1]);
 	if (ret == -1)
-		exec_error_handle(proc->inst, "command not found", 127);
+		exec_error_handle(proc->inst, ERR_CNF, 127);
 	g_status = 0;
 	exit(0);
 }
 
-void	redir_exec(t_inst *proc, t_env **envs)
+void	redir_exec(t_inst *proc, t_env **envs, t_cursor *cursor, t_string *rd)
 {
 	int		type;
 	pid_t	pid;
@@ -93,25 +95,23 @@ void	redir_exec(t_inst *proc, t_env **envs)
 	pid = fork();
 	if (pid == 0)
 	{
-		type = get_redir_type(proc->rd);
+		type = get_redir_type(rd);
 		if (type == RIGHT)
-		{
-			exec_redir_right(proc, envs);
-		}
+			exec_redir_right(proc, envs, cursor, rd);
 		else if (type == DRIGHT)
-			exec_redir_dright(proc, envs);
+			exec_redir_dright(proc, envs, cursor, rd);
 		else if (type == LEFT)
-			exec_redir_left(proc, envs);
+			exec_redir_left(proc, envs, cursor, rd);
 	}
 	wait(&g_status);
 	if (proc->child)
 		close(proc->child->fds[1]);
 }
 
-void	redir_init(t_inst *proc, t_env **envs)
+void	redir_init(t_inst *proc, t_env **envs, t_cursor *cursor)
 {
-	int	ret;
-	t_string *rd;
+	int			ret;
+	t_string	*rd;
 
 	rd = proc-> rd;
 	while (rd && rd->next)
@@ -128,9 +128,10 @@ void	redir_init(t_inst *proc, t_env **envs)
 			if (ret == -1)
 				return ;
 			rd = rd->next->next;
+			printf("redir_while\n");
 		}
 		printf("redir_exec\n");
-		redir_exec(proc, envs);
+		redir_exec(proc, envs, cursor, rd);
 		rd = rd->next->next;
 	}
 }

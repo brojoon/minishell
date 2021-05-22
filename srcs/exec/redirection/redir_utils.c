@@ -24,16 +24,16 @@ int	get_redir_type(t_string *rd)
 	return (0);
 }
 
-int	get_redir_fd(t_inst *proc, int type)
+int	get_redir_fd(t_string *rd, int type)
 {
 	int	num;
 	int	i;
 
 	i = 0;
 	num = 0;
-	while (ft_isdigit(proc->rd->str[i]))
+	while (ft_isdigit(rd->str[i]))
 	{
-		num = num * 10 + (proc->rd->str[i] - '0');
+		num = num * 10 + (rd->str[i] - '0');
 		printf("real num: %d\n", num);
 		i++;
 	}
@@ -41,4 +41,3 @@ int	get_redir_fd(t_inst *proc, int type)
 		return (type);
 	return (num);
 }
-

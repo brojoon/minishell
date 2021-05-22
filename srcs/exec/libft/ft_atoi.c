@@ -23,19 +23,21 @@ int	ft_atoi(const char *str)
 	int				number;
 	unsigned char	*ptr;
 	int				sign;
+	int				i;
 
 	number = 0;
 	sign = 1;
+	i = 0;
 	ptr = (unsigned char *)str;
-	while (is_blank(*ptr))
-		ptr++;
-	if (*ptr == '-' || *ptr == '+')
+	while (is_blank(ptr[i]))
+		i++;
+	if (ptr[i] == '-' || ptr[i] == '+')
 	{
-		if (*ptr == '-')
+		if (ptr[i] == '-')
 			sign *= -1;
-		ptr++;
+		i++;
 	}
-	while (*ptr >= '0' && *ptr <= '9')
-		number = number * 10 + *ptr++ - '0';
+	while (ptr[i] >= '0' && ptr[i] <= '9')
+		number = number * 10 + ptr[i++] - '0';
 	return (number * sign);
 }

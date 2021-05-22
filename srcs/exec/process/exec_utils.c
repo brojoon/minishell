@@ -62,7 +62,7 @@ char	**envs_to_chunks(t_env *envs)
 	size = get_envs_size(envs);
 	chunks = (char **)malloc(sizeof(t_env) * size + 1);
 	size = 0;
-	while (envs)
+	while (envs && envs->key)
 	{
 		tmp = ft_strjoin(envs->key, "=");
 		tmp2 = ft_strjoin(tmp, envs->value);

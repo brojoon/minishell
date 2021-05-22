@@ -4,9 +4,10 @@ void	handle_signal(int signo)
 {
 	pid_t	pid;
 	char	*prompt;
+	int		status;
 
 	prompt = get_prompt();
-	pid = waitpid(-1, &g_status, WNOHANG);
+	pid = waitpid(-1, &status, WNOHANG);
 	if (signo == SIGINT)
 	{
 		if (pid == -1)
@@ -16,6 +17,7 @@ void	handle_signal(int signo)
 		}
 		else
 			ft_putchar_fd('\n', STDOUT_FILENO);
+		g_status = 130;
 	}
 	else if (signo == SIGQUIT)
 	{
@@ -23,6 +25,7 @@ void	handle_signal(int signo)
 			return ;
 		else
 			ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
+		g_status = 131;
 	}
 }
 

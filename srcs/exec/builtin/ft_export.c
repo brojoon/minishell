@@ -32,6 +32,7 @@ int	is_valid_export(char *str)
 
 	i = 0;
 	key_value_sepa = 0;
+	g_status = 1;
 	if (!ft_isalpha(str[0]) && !(str[0] == '_'))
 		return (1);
 	while (str[++i])
@@ -43,6 +44,7 @@ int	is_valid_export(char *str)
 		(!(str[i] == '+') || !(str[i + 1] == '=')))
 			return (1);
 	}
+	g_status = 0;
 	return (0);
 }
 
@@ -93,11 +95,10 @@ void	ft_export(t_inst *proc, t_env *envs)
 				err_msg = ft_strjoin(tmp, "\'");
 				catch_error(err_msg, "not a valid identifier");
 				free(err_msg);
-				g_status = 1;
+				free(tmp);
 				return ;
 			}
 			check_export(proc->arg->str, envs);
-			g_status = 0;
 			proc->arg = proc->arg->next;
 		}
 	}

@@ -20,17 +20,16 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 
 	if (!s)
 		return (NULL);
-	idx = -1;
-	size = ft_strlen(s);
-	if (size <= start)
-	{
-		result = (char *)malloc(1);
-		*result = '\0';
-		return (result);
-	}
+	idx = ft_strlen(s);
+	if (idx <= (int)start)
+		return (0);
+	size = ft_strlen(s + start);
+	if (size < len)
+		len = size;
 	result = (char *)malloc((len + 1));
 	if (result)
 	{
+		idx = -1;
 		while (++idx < (int)len)
 			result[idx] = s[(int)start + idx];
 		result[len] = '\0';

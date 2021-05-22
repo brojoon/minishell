@@ -45,14 +45,14 @@ void	add_export(char *str, t_env *envs)
 
 void	value_is_null(char *str, t_env *envs)
 {
-	while (envs && ft_strcmp(str, envs->key))
+	while (envs && envs->next && ft_strcmp(str, envs->key))
 		envs = envs->next;
-	if (!envs)
+	if (ft_strcmp(str, envs->key))
 	{
-		envs = (t_env *)malloc(sizeof(t_env));
-		envs->key = ft_strdup(str);
-		envs->value = NULL;
-		envs->next = NULL;
+		envs->next = (t_env *)malloc(sizeof(t_env));
+		envs->next->key = ft_strdup(str);
+		envs->next->value = NULL;
+		envs->next->next = NULL;
 	}
 }
 

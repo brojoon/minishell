@@ -35,15 +35,12 @@ t_inst	*main_subloop(char *prompt, t_cursor *cursor, t_env *env_root)
 	t_inst		*insts;
 	t_string	*const_strings;
 
-	printf("1\n");
 	if (get_next_line(0, &buf, prompt, cursor) == 9999)
 	{
-		printf("3\n");
 		free_genv(env_root);
 		recover_term(cursor);
 		exit(1);
 	}
-	printf("2\n");
 	const_strings = 0;
 	handle_quotes(&buf, &const_strings, cursor);
 	insts = split_commands(ft_split(buf, ';'), ft_cnt_lines(buf, ';'));
@@ -111,7 +108,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		*/
 		printf("exec_init\n");
-		exec_parent_process(insts, &env_root);
+		exec_parent_process(insts, &env_root, &cursor);
 		ft_inst_free(insts);
 	}
 	free_genv(env_root);

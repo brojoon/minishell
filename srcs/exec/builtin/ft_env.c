@@ -40,8 +40,12 @@ void	ft_env(t_env *envs)
 		if ((node->key))
 		{
 			ft_putstr_fd(node->key, STDOUT_FILENO);
-			ft_putstr_fd("=", STDOUT_FILENO);
-			ft_putendl_fd(node->value, STDOUT_FILENO);
+			if (node->value)
+			{
+				ft_putstr_fd("=", STDOUT_FILENO);
+				ft_putstr_fd(node->value, STDOUT_FILENO);
+			}
+			ft_putchar_fd('\n', STDOUT_FILENO);
 		}
 		node = node->next;
 	}

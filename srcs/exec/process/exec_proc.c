@@ -25,10 +25,10 @@ void	no_inst_redir(t_string *rd)
 		i = 0;
 		rd = rd->next->next;
 	}
-	return ;
+	g_status = 0;
 }
 
-int	exec_builtin(t_inst *proc, t_env **envs)
+int	exec_builtin(t_inst *proc, t_env **envs, t_cursor *cursor)
 {
 	if (ft_strcmp(proc->inst, "cd") == 0)
 		ft_cd(proc, *envs, *envs);
@@ -37,7 +37,7 @@ int	exec_builtin(t_inst *proc, t_env **envs)
 	else if (ft_strcmp(proc->inst, "env") == 0)
 		ft_env(*envs);
 	else if (ft_strcmp(proc->inst, "exit") == 0)
-		ft_exit(proc);
+		ft_exit(proc, cursor);
 	else if (ft_strcmp(proc->inst, "pwd") == 0)
 		ft_pwd();
 	else if (ft_strcmp(proc->inst, "unset") == 0)
@@ -51,7 +51,8 @@ int	exec_builtin(t_inst *proc, t_env **envs)
 	return (0);
 }
 
-void	exec_child_process(t_inst *proc, t_inst *child, t_env **envs)
+void	child_process(t_inst *proc, t_inst *child, \
+t_env **envs, t_cursor *cursor)
 {
 	int		ret;
 	char	*path;
@@ -69,18 +70,17 @@ void	exec_child_process(t_inst *proc, t_inst *child, t_env **envs)
 		dup2(proc->fds[0], STDIN_FILENO);
 		close(proc->fds[0]);
 	}
-	if (exec_builtin(proc, envs))
+	if (exec_builtin(proc, envs, cursor))
 		(ret = execve(path, chunked[0], chunked[1]));
 	if (ret == -1)
-		exec_error_handle(proc->inst, "command not found", 127);
+		exec_error_handle(proc->inst, ERR_CNF, 1);
 	exit(0);
 }
 
-void	exec_pipe(t_inst *proc, t_env **envs)
+void	exec_pipe(t_inst *proc, t_env **envs, t_cursor *cursor)
 {
 	t_inst	*child;
 	pid_t	pid;
-	int		state;
 
 	child = proc;
 	if (proc->child != NULL)
@@ -90,18 +90,20 @@ void	exec_pipe(t_inst *proc, t_env **envs)
 	}
 	if (proc->rd)
 	{
-		redir_init(proc, envs);
+		redir_init(proc, envs, cursor);
 		return ;
 	}
 	pid = fork();
 	if (pid == 0)
-		exec_child_process(proc, child, envs);
-	waitpid(pid, &state, 0);
+		child_process(proc, child, envs, cursor);
+	waitpid(pid, &g_status, 0);
+	if (g_status == 256)
+		g_status = 127;
 	if (proc->child)
 		close(child->fds[1]);
 }
 
-void	exec_parent_process(t_inst *proc, t_env **envs)
+void	exec_parent_process(t_inst *proc, t_env **envs, t_cursor *cursor)
 {
 	t_inst	*cur;
 
@@ -110,21 +112,17 @@ void	exec_parent_process(t_inst *proc, t_env **envs)
 	{
 		if (cur->inst)
 		{
-			if (cur->child || (!(cur->rd) && exec_builtin(cur, envs)))
+			if (cur->child || (!(cur->rd) && exec_builtin(cur, envs, cursor)))
 			{
-				printf("here1\n");
-				exec_pipe(cur, envs);
+				exec_pipe(cur, envs, cursor);
 				while (cur->child)
 				{
 					cur = cur->child;
-					exec_pipe(cur, envs);
+					exec_pipe(cur, envs, cursor);
 				}
 			}
 			else if (cur->rd)
-			{
-				printf("here2\n");
-				redir_init(cur, envs);
-			}
+				redir_init(cur, envs, cursor);
 		}
 		else if (cur->rd && cur->rd->next)
 			no_inst_redir(cur->rd);

@@ -23,7 +23,7 @@ void	ft_cd(t_inst *proc, t_env *envs, t_env *envs2)
 {
 	g_status = 1;
 	if (proc->arg && proc->arg->next)
-		catch_error(proc->inst, "too many arguments");
+		catch_error(proc->inst, ERR_TMA);
 	else if (proc->arg == NULL || proc->arg->str == NULL)
 	{
 		while (envs && envs->next && ft_strcmp(envs->key, "HOME"))

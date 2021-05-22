@@ -29,6 +29,10 @@
 # define KEY_DOWN 4348699
 # define ESC 127
 # define DIVISOR 10
+# define ERR_CNF "command not found"
+# define ERR_NSFOD "No such file or directory"
+# define ERR_TMA "too many arguments"
+# define ERR_NAR "numeric argument required"
 
 int						g_status;
 typedef struct s_string	t_string;
@@ -69,83 +73,112 @@ struct					s_env
 
 void					print_status(void);
 char					*get_prompt(void);
-/*
-builtin func
-*/
-void					ft_cd(t_inst *proc, t_env *envs, t_env *envs2);
-void					ft_echo(t_inst *proc, char *op);
-void					ft_env(t_env *envs);
-void					ft_exit(t_inst *proc);
-void					ft_export(t_inst *proc, t_env *envs);
-void					ft_pwd(void);
-void					ft_unset(t_inst *proc, t_env **envs);
 
 /*
-export func
+** ft_cd.c
 */
+void					ft_cd(t_inst *proc, t_env *envs, t_env *envs2);
+void					cd_error_handle(char *str1, char *str2);
+void					alter_pwd(t_env *envs);
+/*
+** ft_echo.c
+*/
+void					ft_echo(t_inst *proc, char *op);
+/*
+** ft_env.c
+*/
+void					ft_env(t_env *envs);
+void					edit_env_value(t_env *envs, char *key, char *value);
+t_env					*get_env(t_env *envs, char *key);
+/*
+** ft_exit.c
+*/
+void					ft_exit(t_inst *proc, t_cursor *cursor);
+/*
+** ft_export.c
+*/
+void					ft_export(t_inst *proc, t_env *envs);
+void					check_export(char *str, t_env *envs);
+int						is_valid_export(char *str);
+void					print_export(t_env *envs);
+/*
+** ft_export2.c
+*/
+t_env					**quick_sort_init(t_env *envs);
 void					quick_sort_list(t_env **list, int first, int last);
 void					swap(t_env **list, int i, int j);
-t_env					**quick_sort_init(t_env *envs);
 int						get_envs_size(t_env *envs);
-void					print_export(t_env *envs);
-int						is_valid_export(char *str);
+/*
+** ft_export3.c
+*/
+void					append_export(char *str, t_env *envs);
+void					value_is_null(char *str, t_env *envs);
 void					add_export(char *str, t_env *envs);
 void					handle_value(char **tmp, t_env *envs);
-void					value_is_null(char *str, t_env *envs);
-void					append_export(char *str, t_env *envs);
 /*
-signal func
+** ft_pwd.c
+*/
+void					ft_pwd(void);
+/*
+** ft_unset.c
+*/
+void					ft_unset(t_inst *proc, t_env **envs);
+int						check_valid_env_key(char *key);
+void					del_env(char *key, t_env *envs);
+void					del_first(t_env **envs);
+/*
+** error_handle.c
+*/
+void					exec_error_handle(char *msg1, char *msg2, int status);
+void					catch_error(char *inst, char *msg);
+void					error_msg_join(char *arg1, char *arg2, char *arg3);
+/*
+** exec_proc.c
+*/
+void					exec_parent_process(t_inst *proc, t_env **envs, \
+							t_cursor *cursor);
+void					exec_pipe(t_inst *proc, t_env **envs, t_cursor *cursor);
+void					child_process(t_inst *proc, t_inst *child, t_env **envs, \
+							 t_cursor *cursor);
+int						exec_builtin(t_inst *proc, t_env **envs, \
+							t_cursor *cursor);
+void					no_inst_redir(t_string *rd);
+/*
+** exec_utils.c
+*/
+void					print_status(void);
+char					**envs_to_chunks(t_env *envs);
+char					*get_path(char *inst, t_env *envs);
+void					ft_free_split(char **paths);
+char					*find_value(char *key, t_env *envs);
+/*
+** signal.c
 */
 void					set_signal(void);
 void					handle_signal(int signo);
-
 /*
-error handle
+** redir_exec.c
 */
-void					catch_error(char *inst, char *msg);
-void					error_msg_join(char *arg1, char *arg2, char *arg3);
-void					exec_error_handle(char *msg1, char *msg2, int status);
-
+void					redir_init(t_inst *proc, t_env **envs, \
+							t_cursor *cursor);
+void					redir_exec(t_inst *proc, t_env **envs, \
+							t_cursor *cursor, t_string *rd);
+void					exec_redir_left(t_inst *proc, t_env **envs, \
+							t_cursor *cursor, t_string *rd);
+int						exec_redir_dright(t_inst *proc, t_env **envs, \
+							t_cursor *cursor, t_string *rd);
+int						exec_redir_right(t_inst *proc, t_env **envs, \
+							t_cursor *cursor, t_string *rd);
 /*
-env related
+** redir_skip.c
 */
-void					edit_env_value(t_env *env, char *key, char *value);
-t_env					*get_env(t_env *env, char *key);
-void					del_env(char *key, t_env *envs);
-int						check_valid_env_key(char *key);
-void					alter_pwd(t_env *envs);
-void					del_first(t_env **envs);
-
-/*
-exec func
-*/
-int						exec_builtin(t_inst *proc, t_env **envs);
-void					exec_child_process(t_inst *proc, t_inst *child,
-							t_env **envs);
-void					exec_pipe(t_inst *proc, t_env **envs);
-void					exec_parent_process(t_inst *proc, t_env **envs);
-
-/*
-
-redir func
-*/
-int						get_redir_type(t_string *rd);
-int						get_redir_fd(t_inst *proc, int type);
-int						exec_redir_right(t_inst *proc, t_env **envs);
-int						exec_redir_dright(t_inst *proc, t_env **envs);
-void					exec_redir_left(t_inst *proc, t_env **envs);
 int						redir_skip_right(char *str);
 int						redir_skip_left(char *str);
-void					redir_exec(t_inst *proc, t_env **envs);
-void					redir_init(t_inst *proc, t_env **envs);
-void					no_inst_redir(t_string *rd);
-
 /*
-exec util
+** redir_utils.c
 */
-char					*find_value(char *key, t_env *envs);
-char					**envs_to_chunks(t_env *envs);
-char					*get_path(char *inst, t_env *envs);
+int						get_redir_fd(t_string *rd, int type);
+int						get_redir_type(t_string *rd);
 /*
 ** libft_01.c
 */
