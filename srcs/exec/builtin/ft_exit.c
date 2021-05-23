@@ -9,7 +9,7 @@ void	exit_number(t_inst *proc, t_cursor *cursor)
 		i = ft_atoi(proc->arg->str);
 	recover_term(cursor);
 	printf("exit: %d", i & 255);
-	exit(i);
+	exit(i & 255);
 }
 
 void	ft_exit(t_inst *proc, t_cursor *cursor)

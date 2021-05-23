@@ -37,7 +37,7 @@ void	ft_env(t_env *envs)
 	g_status = 0;
 	while (node)
 	{
-		if ((node->key))
+		if (node->key && node->value)
 		{
 			ft_putstr_fd(node->key, STDOUT_FILENO);
 			if (node->value)

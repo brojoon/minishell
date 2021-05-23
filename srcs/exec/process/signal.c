@@ -1,22 +1,27 @@
 #include "minishell.h"
 
+void	printf_prompt(void)
+{
+	char	*prompt;
+
+	prompt = get_prompt();
+	ft_putstr_fd("\b\b  \b\b\n", STDOUT_FILENO);
+	write(0, prompt, ft_strlen(prompt));
+	free(prompt);
+}
+
 void	handle_signal(int signo)
 {
 	pid_t	pid;
-	char	*prompt;
 	int		status;
 
-	prompt = get_prompt();
 	pid = waitpid(-1, &status, WNOHANG);
 	if (signo == SIGINT)
 	{
 		if (pid == -1)
-		{
-			ft_putstr_fd("\b\b  \b\b\n", STDOUT_FILENO);
-			write(0, prompt, ft_strlen(prompt));
-		}
+			printf_prompt();
 		else
-			ft_putchar_fd('\n', STDOUT_FILENO);
+			ft_putchar_fd('\n', STDERR_FILENO);
 		g_status = 130;
 	}
 	else if (signo == SIGQUIT)
@@ -24,7 +29,7 @@ void	handle_signal(int signo)
 		if (pid == -1)
 			return ;
 		else
-			ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
+			ft_putstr_fd("Quit: 3\n", STDERR_FILENO);
 		g_status = 131;
 	}
 }
