@@ -1,6 +1,7 @@
 #include "minishell.h"
 
-int	exec_redir_right(t_inst *proc, t_env **envs, t_cursor *cursor, t_string *rd)
+void	exec_redir_right(t_inst *proc, t_env **envs, t_cursor *cursor, \
+t_string *rd)
 {
 	int		fds[2];
 	char	*path;
@@ -26,10 +27,10 @@ int	exec_redir_right(t_inst *proc, t_env **envs, t_cursor *cursor, t_string *rd)
 		ret = execve(path, chunked[0], chunked[1]);
 	if (ret == -1)
 		exec_error_handle(proc->inst, ERR_CNF, 1);
-	exit(0);
+	exit_status(g_status);
 }
 
-int	exec_redir_dright(t_inst *proc, t_env **envs, t_cursor *cursor, \
+void	exec_redir_dright(t_inst *proc, t_env **envs, t_cursor *cursor, \
 t_string *rd)
 {
 	int		fds[2];
@@ -56,7 +57,7 @@ t_string *rd)
 		ret = execve(path, chunked[0], chunked[1]);
 	if (ret == -1)
 		exec_error_handle(proc->inst, ERR_CNF, 1);
-	exit(0);
+	exit_status(g_status);
 }
 
 void	exec_redir_left(t_inst *proc, t_env **envs, t_cursor *cursor, \
@@ -83,7 +84,7 @@ t_string *rd)
 		ret = execve(path, chunked[0], chunked[1]);
 	if (ret == -1)
 		exec_error_handle(proc->inst, ERR_CNF, 1);
-	exit(0);
+	exit_status(g_status);
 }
 
 void	redir_exec(t_inst *proc, t_env **envs, t_cursor *cursor, t_string *rd)
@@ -103,8 +104,7 @@ void	redir_exec(t_inst *proc, t_env **envs, t_cursor *cursor, t_string *rd)
 			exec_redir_left(proc, envs, cursor, rd);
 	}
 	waitpid(pid, &g_status, 0);
-	if (g_status == 256)
-		g_status = 127;
+	set_g_status();
 	if (proc->child)
 		close(proc->child->fds[1]);
 }
@@ -129,9 +129,7 @@ void	redir_init(t_inst *proc, t_env **envs, t_cursor *cursor)
 			if (ret == -1)
 				return ;
 			rd = rd->next->next;
-			printf("redir_while\n");
 		}
-		printf("redir_exec\n");
 		redir_exec(proc, envs, cursor, rd);
 		rd = rd->next->next;
 	}

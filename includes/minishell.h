@@ -135,6 +135,8 @@ void					del_first(t_env **envs);
 void					exec_error_handle(char *msg1, char *msg2, int status);
 void					catch_error(char *inst, char *msg);
 void					error_msg_join(char *arg1, char *arg2, char *arg3);
+void					set_g_status(void);
+void					exit_status(int status);
 /*
 ** exec_proc.c
 */
@@ -168,9 +170,9 @@ void					redir_exec(t_inst *proc, t_env **envs, \
 							t_cursor *cursor, t_string *rd);
 void					exec_redir_left(t_inst *proc, t_env **envs, \
 							t_cursor *cursor, t_string *rd);
-int						exec_redir_dright(t_inst *proc, t_env **envs, \
+void					exec_redir_dright(t_inst *proc, t_env **envs, \
 							t_cursor *cursor, t_string *rd);
-int						exec_redir_right(t_inst *proc, t_env **envs, \
+void					exec_redir_right(t_inst *proc, t_env **envs, \
 							t_cursor *cursor, t_string *rd);
 /*
 ** redir_skip.c

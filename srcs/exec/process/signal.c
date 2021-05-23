@@ -13,9 +13,8 @@ void	printf_prompt(void)
 void	handle_signal(int signo)
 {
 	pid_t	pid;
-	int		status;
 
-	pid = waitpid(-1, &status, WNOHANG);
+	pid = waitpid(-1, &g_status, 0);
 	if (signo == SIGINT)
 	{
 		if (pid == -1)
@@ -30,8 +29,11 @@ void	handle_signal(int signo)
 			return ;
 		else
 			ft_putstr_fd("Quit: 3\n", STDERR_FILENO);
-		g_status = 131;
 	}
+	if (g_status == 2)
+		g_status = 130;
+	if (g_status == 3)
+		g_status = 131;
 }
 
 void	set_signal(void)

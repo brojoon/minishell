@@ -8,7 +8,6 @@ void	exit_number(t_inst *proc, t_cursor *cursor)
 	if (proc->arg && proc->arg->str)
 		i = ft_atoi(proc->arg->str);
 	recover_term(cursor);
-	printf("exit: %d", i & 255);
 	exit(i & 255);
 }
 
@@ -19,7 +18,7 @@ void	ft_exit(t_inst *proc, t_cursor *cursor)
 	i = 0;
 	while (proc->arg && proc->arg->str[i])
 	{
-		if (!ft_isdigit(proc->arg->str[i]))	
+		if (!ft_isdigit(proc->arg->str[i]))
 		{
 			error_msg_join("exit: ", proc->arg->str, ERR_NAR);
 			g_status = 2;

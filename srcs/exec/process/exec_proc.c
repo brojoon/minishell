@@ -62,7 +62,6 @@ t_env **envs, t_cursor *cursor)
 	chunked[1] = envs_to_chunks(*envs);
 	ret = 0;
 	path = get_path(proc->inst, *envs);
-	printf("exec_child\n");
 	if (proc->child != NULL)
 		dup2(child->fds[1], STDOUT_FILENO);
 	if (proc->fds[0] != 0)
@@ -74,7 +73,7 @@ t_env **envs, t_cursor *cursor)
 		(ret = execve(path, chunked[0], chunked[1]));
 	if (ret == -1)
 		exec_error_handle(proc->inst, ERR_CNF, 1);
-	exit(0);
+	exit_status(g_status);
 }
 
 void	exec_pipe(t_inst *proc, t_env **envs, t_cursor *cursor)
@@ -97,8 +96,7 @@ void	exec_pipe(t_inst *proc, t_env **envs, t_cursor *cursor)
 	if (pid == 0)
 		child_process(proc, child, envs, cursor);
 	waitpid(pid, &g_status, 0);
-	if (g_status == 256)
-		g_status = 127;
+	set_g_status();
 	if (proc->child)
 		close(child->fds[1]);
 }

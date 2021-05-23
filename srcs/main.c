@@ -109,7 +109,6 @@ int	main(int argc, char **argv, char **envp)
 		now = now->next;
 		}
 		*/
-		printf("exec_init\n");
 		exec_parent_process(insts, &env_root, &cursor);
 		ft_inst_free(insts);
 	}
