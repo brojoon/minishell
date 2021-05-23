@@ -26,6 +26,8 @@ void	init_term(t_cursor *cursor)
 	tgetent(NULL, "xterm");
 	cursor->cm = tgetstr("cm", 0);
 	cursor->ce = tgetstr("ce", 0);
+	if (cursor->history)
+		ft_lstfree_allrev(cursor->history);
 	cursor->history = 0;
 }
 
@@ -63,13 +65,15 @@ int	main(int argc, char **argv, char **envp)
 	env_root = 0;
 	set_signal();
 	set_genv(&env_root, envp);
-	prompt = get_prompt();
-	init_term(&cursor);
+	cursor.history = 0;
 	(void)argc;
 	(void)argv;
 	while (1)
 	{
+		init_term(&cursor);
+		prompt = get_prompt();
 		insts = main_subloop(prompt, &cursor, env_root);
+		free(prompt);
 		/*
 		t_inst *now = insts;
 		while (now)
@@ -114,6 +118,5 @@ int	main(int argc, char **argv, char **envp)
 	}
 	free_genv(env_root);
 	recover_term(&cursor);
-	free(prompt);
 	return (0);
 }
