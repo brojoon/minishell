@@ -4,6 +4,8 @@ void	proc_consts(t_env *root, t_string **consts)
 {
 	t_string	*now;
 
+	if (consts == 0)
+		return ;
 	now = *consts;
 	while (now)
 	{

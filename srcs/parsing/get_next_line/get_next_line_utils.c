@@ -50,6 +50,8 @@ void	ft_resize_and_copy(char **line, char *buf, int st, int ed)
 int	recover_term(t_cursor *cursor)
 {
 	ft_lstfree_allrev(cursor->history);
+	tputs(tgoto(cursor->cm, 0, cursor->vpos), 1, ft_putchar);
+	tputs(cursor->ce, 1, ft_putchar);
 	cursor->term.c_lflag |= ICANON;
 	cursor->term.c_lflag |= ECHO;
 	tcsetattr(STDIN_FILENO, TCSANOW, &(cursor->term));
