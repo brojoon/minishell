@@ -25,7 +25,7 @@ int	exec_redir_right(t_inst *proc, t_env **envs, t_cursor *cursor, t_string *rd)
 	if (exec_builtin(proc, envs, cursor))
 		ret = execve(path, chunked[0], chunked[1]);
 	if (ret == -1)
-		exec_error_handle(proc->inst, ERR_CNF, 127);
+		exec_error_handle(proc->inst, ERR_CNF, 1);
 	exit(0);
 }
 
@@ -55,7 +55,7 @@ t_string *rd)
 	if (exec_builtin(proc, envs, cursor))
 		ret = execve(path, chunked[0], chunked[1]);
 	if (ret == -1)
-		exec_error_handle(proc->inst, ERR_CNF, 127);
+		exec_error_handle(proc->inst, ERR_CNF, 1);
 	exit(0);
 }
 
@@ -82,8 +82,7 @@ t_string *rd)
 	if (exec_builtin(proc, envs, cursor))
 		ret = execve(path, chunked[0], chunked[1]);
 	if (ret == -1)
-		exec_error_handle(proc->inst, ERR_CNF, 127);
-	g_status = 0;
+		exec_error_handle(proc->inst, ERR_CNF, 1);
 	exit(0);
 }
 
@@ -103,7 +102,9 @@ void	redir_exec(t_inst *proc, t_env **envs, t_cursor *cursor, t_string *rd)
 		else if (type == LEFT)
 			exec_redir_left(proc, envs, cursor, rd);
 	}
-	wait(&g_status);
+	waitpid(pid, &g_status, 0);
+	if (g_status == 256)
+		g_status = 127;
 	if (proc->child)
 		close(proc->child->fds[1]);
 }
