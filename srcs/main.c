@@ -46,7 +46,8 @@ t_inst	*main_subloop(char *prompt, t_cursor *cursor, t_env *env_root)
 	insts = split_commands(ft_split(buf, ';'), ft_cnt_lines(buf, ';'));
 	proc_consts(env_root, &const_strings);
 	proc_inst_metachar(env_root, &insts);
-	get_ori_consts(const_strings, &insts);
+	if (const_strings)
+		get_ori_consts(const_strings, &insts);
 	free(buf);
 	ft_lstfree_all(const_strings);
 	return (insts);
