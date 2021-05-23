@@ -33,6 +33,9 @@
 # define ERR_NSFOD "No such file or directory"
 # define ERR_TMA "too many arguments"
 # define ERR_NAR "numeric argument required"
+# define ERR_FD "invalid file descriptor"
+# define ERR_RED "invalied redirection"
+# define ERR_SYN "syntax error near unexpected token"
 
 int						g_status;
 typedef struct s_string	t_string;
@@ -200,7 +203,7 @@ void					ft_envfree(t_env *env);
 */
 char					*get_splitter(char *str, char **splitter);
 char					**split_redirection(char *str, char **splitter);
-int						check_red_error(char *inst);
+int						check_red_error(char *inst, char **cmd, int k);
 int						is_fd(char *s);
 void					echo_merge_args(t_inst **inst);
 /*

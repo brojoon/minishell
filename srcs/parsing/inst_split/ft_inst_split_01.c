@@ -16,7 +16,7 @@ int	handle_red_case_01(char **chunks, char *red, t_inst *inst, char *now)
 	}
 	else
 	{
-		ft_write_and_ret(chunks[0], "invalid file descriptor", 1);
+		ft_write_and_ret(chunks[0], ERR_FD, 1);
 		ft_free_chunks(chunks, ft_cnt_lines(now, red[0]));
 		return (1);
 	}
@@ -64,9 +64,9 @@ int	handle_red_case_02(char **cmd, char *red, t_inst *inst, int *k)
 	if (is_fd(chunks[0]) == 2)
 	{
 		(*k)++;
-		ft_write_and_ret(chunks[0], "invalid file descriptor", 2);
+		ft_write_and_ret(chunks[0], ERR_FD, 1);
 		ft_free_chunks(chunks, ft_cnt_lines(*(cmd + *k - 1), red[0]));
-		return (2);
+		return (1);
 	}
 	else if (ft_strncmp(*(cmd + *k), red, ft_strlen(red)) == 0)
 	{
@@ -78,7 +78,7 @@ int	handle_red_case_02(char **cmd, char *red, t_inst *inst, int *k)
 		if (handle_red_case_02_sub(chunks, cmd, inst, k) == 3)
 		{
 			ft_free_chunks(chunks, ft_cnt_lines(*(cmd + *k), red[0]));
-			return (ft_write_and_ret(*(cmd + *k), "parse error", 3));
+			return (ft_write_and_ret(ERR_SYN, *(cmd + *k), 3));
 		}
 	}
 	ft_free_chunks(chunks, ft_cnt_lines(*(cmd + *k), red[0]));
@@ -110,10 +110,12 @@ int	handle_red_token(t_inst *inst, char **cmd, int *k)
 {
 	char	*red;
 	char	**chunks;
+	int		ret;
 
 	red = 0;
-	if (check_red_error(*(cmd + *k)) != 0)
-		return (ft_write_and_ret(*(cmd + *k), "invalid redirection", 2));
+	ret = check_red_error(*(cmd + *k), cmd, *k);
+	if (ret != 0)
+		return (ret);
 	if (get_splitter(*(cmd + *k), &red) == 0)
 		return (-1);
 	if (ft_cnt_lines(*(cmd + *k), red[0]) == 2)
@@ -125,6 +127,6 @@ int	handle_red_token(t_inst *inst, char **cmd, int *k)
 		return (handle_red_case_02(cmd, red, inst, k));
 	else
 		if (handle_red_case_03(cmd, red, inst, k) == 3)
-			return (ft_write_and_ret(*(cmd + *k), "parse error", 3));
+			return (ft_write_and_ret(ERR_SYN, *(cmd + *k), 3));
 	return (0);
 }

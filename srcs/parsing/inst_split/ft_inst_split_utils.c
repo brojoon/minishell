@@ -34,17 +34,27 @@ char	**split_redirection(char *str, char **splitter)
 /*
  * 한번에 2개 이상의 redirection이 붙어있는 경우 error
 */
-int	check_red_error(char *inst)
+int	check_red_error(char *inst, char **cmd, int k)
 {
-	int	num_of_lines;
-	int	num_of_lines2;
+	char	rd;
+	int		st;
 
-	num_of_lines = ft_cnt_lines(inst, '>');
-	num_of_lines2 = ft_cnt_lines(inst, '<');
-	if (num_of_lines > 2 || num_of_lines2 > 2)
-		return (1);
-	if (ft_strchr(inst, '<') && ft_strchr(inst, '>'))
-		return (1);
+	(void)cmd;
+	(void)k;
+	if (!inst || (!ft_strchr(inst, '<') && !ft_strchr(inst, '>')))
+		return (0);
+	if (ft_strchr(inst, '<'))
+		rd = '<';
+	else
+		rd = '>';
+	inst = ft_strchr(inst, rd);
+	st = 0;
+	while (inst && inst[st] && inst[st] == rd)
+		st++;
+	if ((rd == '>' && st > 2) || (rd == '<' && st != 1))
+		return (ft_write_and_ret(ERR_SYN, &inst[--st], 3));
+	else if (!inst[st] && !*(cmd + k + 1))
+		return (ft_write_and_ret(ERR_SYN, "'new line'", 3));
 	return (0);
 }
 
