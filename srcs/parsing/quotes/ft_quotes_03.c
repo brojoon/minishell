@@ -31,8 +31,7 @@ int	proc_metachar_case_dollar(char **out, char *s, t_env *root, int *st)
 	char	*target;
 
 	ed = *st + 1;
-	while (s[ed] && ((s[ed] >= 'A' && s[ed] <= 'Z')
-			|| (s[ed] >= '0' && s[ed] <= '9')))
+	while (s[ed] && ((ft_isalnum(s[ed]) || s[ed] =='_')))
 		ed++;
 	target = ft_substr(s, *st + 1, ed);
 	env = get_env(root, target);
