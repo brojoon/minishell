@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	nbr_length(int n)
+int		nbr_length(int n)
 {
 	int	i;
 
@@ -15,7 +15,7 @@ int	nbr_length(int n)
 	return (i);
 }
 
-int	ft_putchar(int c)
+int		ft_putchar(int c)
 {
 	write(1, &c, 1);
 	return (0);
@@ -36,14 +36,14 @@ void	ft_free_chunks(char **ret, int ret_st)
 	free(ret);
 }
 
-int	ft_get_next_idx(char *s, char c, int st)
+int		ft_get_next_idx(char *s, char c, int st)
 {
 	while (s[st] && s[st] != c)
 		st++;
 	return (st);
 }
 
-int	ft_cnt_lines(char *s, char c)
+int		ft_cnt_lines(char *s, char c)
 {
 	int	st;
 	int	cnt;

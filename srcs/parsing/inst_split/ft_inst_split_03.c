@@ -1,9 +1,10 @@
 #include "minishell.h"
 
 /*
- * '-'로 시작하는 경우 option과 arg가 모두 비어있으면 option,
- * arg가 이미 나온 경우에는 arg에 붙여줌
+** '-'로 시작하는 경우 option과 arg가 모두 비어있으면 option,
+** arg가 이미 나온 경우에는 arg에 붙여줌
 */
+
 void	make_command_case_op(t_inst *inst, char *str)
 {
 	t_string	*arg;
@@ -18,8 +19,9 @@ void	make_command_case_op(t_inst *inst, char *str)
 }
 
 /*
- * ["", ''] 같은 빈 문자열은 날려줌
+** ["", ''] 같은 빈 문자열은 날려줌
 */
+
 void	make_command_case_arg(t_inst *inst, char *str)
 {
 	t_string	*arg;
@@ -33,7 +35,7 @@ void	make_command_case_arg(t_inst *inst, char *str)
 		ft_lstadd_back(&inst->arg, arg);
 }
 
-int	make_command_case_01(t_inst *new_inst, char **space_chunks, int k)
+int		make_command_case_01(t_inst *new_inst, char **space_chunks, int k)
 {
 	if (new_inst->inst == 0)
 		new_inst->inst = ft_strdup(*(space_chunks + k));
@@ -45,10 +47,11 @@ int	make_command_case_01(t_inst *new_inst, char **space_chunks, int k)
 }
 
 /*
- * redirection은 어느 위치든 나올 수 있음
- * -로 시작하면 option으로 인식(인자 뒤에 나올 경우 인자로 인식)
- * -로 시작하는 option이 여러개인 경우 첫 번째만 인식
+** redirection은 어느 위치든 나올 수 있음
+** -로 시작하면 option으로 인식(인자 뒤에 나올 경우 인자로 인식)
+** -로 시작하는 option이 여러개인 경우 첫 번째만 인식
 */
+
 t_inst	*make_command(char **space_chunks, int line_cnt)
 {
 	int			k;

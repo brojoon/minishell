@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	handle_red_case_01(char **chunks, char *red, t_inst *inst, char *now)
+int		handle_red_case_01(char **chunks, char *red, t_inst *inst, char *now)
 {
 	char	*temp_str;
 
@@ -27,7 +27,7 @@ int	handle_red_case_01(char **chunks, char *red, t_inst *inst, char *now)
 	return (0);
 }
 
-int	handle_red_case_02_sub(char **chunks, char **cmd, t_inst *inst, int *k)
+int		handle_red_case_02_sub(char **chunks, char **cmd, t_inst *inst, int *k)
 {
 	t_string	*temp;
 	char		*splitter;
@@ -56,7 +56,7 @@ int	handle_red_case_02_sub(char **chunks, char **cmd, t_inst *inst, int *k)
 	return (0);
 }
 
-int	handle_red_case_02(char **cmd, char *red, t_inst *inst, int *k)
+int		handle_red_case_02(char **cmd, char *red, t_inst *inst, int *k)
 {
 	char	**chunks;
 
@@ -85,7 +85,7 @@ int	handle_red_case_02(char **cmd, char *red, t_inst *inst, int *k)
 	return (0);
 }
 
-int	handle_red_case_03(char **cmd, char *red, t_inst *inst, int *k)
+int		handle_red_case_03(char **cmd, char *red, t_inst *inst, int *k)
 {
 	t_string	*ptr;
 
@@ -99,14 +99,15 @@ int	handle_red_case_03(char **cmd, char *red, t_inst *inst, int *k)
 }
 
 /*
- * space 단위로 쪼개진 chunk에서 '<', '>', '>>' catch
- * redirection으로 쪼갰을 때 2개가 나오면 왼쪽은 fd 혹은 명령어/인자
- * ret 0 : 정상
- * ret 1 : fd가 잘못된 경우
- * ret 2 : redirection 오류
- * ret 3 : parse error
+** space 단위로 쪼개진 chunk에서 '<', '>', '>>' catch
+** redirection으로 쪼갰을 때 2개가 나오면 왼쪽은 fd 혹은 명령어/인자
+** ret 0 : 정상
+** ret 1 : fd가 잘못된 경우
+** ret 2 : redirection 오류
+** ret 3 : parse error
 */
-int	handle_red_token(t_inst *inst, char **cmd, int *k)
+
+int		handle_red_token(t_inst *inst, char **cmd, int *k)
 {
 	char	*red;
 	char	**chunks;
@@ -126,7 +127,9 @@ int	handle_red_token(t_inst *inst, char **cmd, int *k)
 	else if (ft_cnt_lines(*(cmd + *k), red[0]) == 1)
 		return (handle_red_case_02(cmd, red, inst, k));
 	else
+	{
 		if (handle_red_case_03(cmd, red, inst, k) == 3)
 			return (ft_write_and_ret(ERR_SYN, *(cmd + *k), 3));
+	}
 	return (0);
 }

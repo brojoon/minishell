@@ -53,7 +53,7 @@ int						g_status;
 typedef struct s_string	t_string;
 typedef struct s_inst	t_inst;
 typedef struct s_env	t_env;
-typedef struct s_cursor
+typedef struct			s_cursor
 {
 	struct termios		term;
 	char				*cm;
@@ -61,9 +61,9 @@ typedef struct s_cursor
 	int					hpos;
 	int					vpos;
 	t_string			*history;
-}	t_cursor;
+}						t_cursor;
 
-struct s_string
+struct					s_string
 {
 	char				*str;
 	t_string			*next;
@@ -155,8 +155,8 @@ void					exit_status(int status);
 void					exec_parent_process(t_inst *proc, t_env **envs, \
 							t_cursor *cursor);
 void					exec_pipe(t_inst *proc, t_env **envs, t_cursor *cursor);
-void					child_process(t_inst *proc, t_inst *child, t_env **envs, \
-							 t_cursor *cursor);
+void					child_process(t_inst *proc, t_inst *child,
+							t_env **envs, t_cursor *cursor);
 int						exec_builtin(t_inst *proc, t_env **envs, \
 							t_cursor *cursor);
 void					no_inst_redir(t_string *rd);

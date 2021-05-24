@@ -30,9 +30,10 @@ t_inst	*split_commmads_subloop(char **pipe_chunks)
 }
 
 /*
- * 여러 줄으로 입력받은 명령어 문자열을 |, ; 단위로 split 후 make_command 함수 호출
- * ;(semi colon)은 inst->next, |(pipe)는 inst->child로 attach
+** 여러 줄으로 입력받은 명령어 문자열을 |, ; 단위로 split 후 make_command 함수 호출
+** ;(semi colon)은 inst->next, |(pipe)는 inst->child로 attach
 */
+
 t_inst	*split_commands(char **semi_chunks, int line_cnt)
 {
 	int		i;
@@ -60,8 +61,9 @@ t_inst	*split_commands(char **semi_chunks, int line_cnt)
 }
 
 /*
- * execve에 넣기 위한 t_string *의 형식 변경 함수
+** execve에 넣기 위한 t_string *의 형식 변경 함수
 */
+
 char	**inst_to_chunks(t_inst *inst)
 {
 	char		**ret;

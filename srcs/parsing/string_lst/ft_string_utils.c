@@ -14,7 +14,7 @@ t_string	*ft_lstfind(t_string *root, char *target)
 	return (0);
 }
 
-int	ft_lstcount(t_string *arg)
+int			ft_lstcount(t_string *arg)
 {
 	t_string	*curr;
 	int			cnt;
@@ -34,7 +34,7 @@ int	ft_lstcount(t_string *arg)
 	return (cnt);
 }
 
-void	ft_lstadd_front(t_string **root, t_string *s)
+void		ft_lstadd_front(t_string **root, t_string *s)
 {
 	t_string	*curr;
 
@@ -52,7 +52,7 @@ void	ft_lstadd_front(t_string **root, t_string *s)
 	}
 }
 
-void	ft_lstadd_after(t_string **root, t_string *s)
+void		ft_lstadd_after(t_string **root, t_string *s)
 {
 	if (*root == 0)
 		*root = s;

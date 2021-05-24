@@ -13,7 +13,7 @@ t_string	*ft_lstinit(char *s)
 	return (temp);
 }
 
-void	ft_lstfree(t_string *del)
+void		ft_lstfree(t_string *del)
 {
 	free(del->str);
 	free(del);
@@ -45,7 +45,7 @@ t_string	*ft_lstremove(t_string **root, t_string *target)
 	return (prev->next);
 }
 
-void	ft_lstfree_all(t_string *root)
+void		ft_lstfree_all(t_string *root)
 {
 	t_string	*del;
 
@@ -58,7 +58,7 @@ void	ft_lstfree_all(t_string *root)
 	}
 }
 
-int	ft_lst_get_len(t_string *root)
+int			ft_lst_get_len(t_string *root)
 {
 	t_string	*curr;
 	int			cnt;
