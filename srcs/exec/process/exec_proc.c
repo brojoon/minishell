@@ -82,7 +82,11 @@ t_env **envs, t_cursor *cursor)
 		close(proc->fds[0]);
 	}
 	if (exec_builtin(proc, envs, cursor))
+	{
+		recover_term(cursor);
 		(ret = execve(path, chunked[0], chunked[1]));
+		init_term(cursor);
+	}
 	if (ret == -1)
 		exec_error_handle(proc->inst, ERR_CNF, 1);
 	exit_status(g_status);

@@ -88,6 +88,7 @@ struct					s_env
 
 void					print_status(void);
 char					*get_prompt(void);
+void					init_term(t_cursor *cursor);
 
 /*
 ** ft_cd.c
