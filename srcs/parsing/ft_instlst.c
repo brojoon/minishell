@@ -13,7 +13,7 @@
 #include "minishell.h"
 
 /*
- * (semi-colon)으로 나뉜 애들은 sibling
+** (semi-colon)으로 나뉜 애들은 sibling
 */
 
 void	ft_instadd_sibling(t_inst **root, t_inst *inst)

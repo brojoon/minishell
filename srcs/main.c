@@ -13,8 +13,9 @@
 #include "minishell.h"
 
 /*
- * 프롬프트는 cwd를 가져와서 출력
+** 프롬프트는 cwd를 가져와서 출력
 */
+
 char	*get_prompt(void)
 {
 	char	buf[BUFFER_SIZE];
@@ -64,7 +65,7 @@ t_inst	*main_subloop(char *prompt, t_cursor *cursor, t_env *env_root)
 	return (insts);
 }
 
-int	main(int argc, char **argv, char **envp)
+int		main(int argc, char **argv, char **envp)
 {
 	char		*prompt;
 	t_env		*env_root;
@@ -83,44 +84,6 @@ int	main(int argc, char **argv, char **envp)
 		prompt = get_prompt();
 		insts = main_subloop(prompt, &cursor, env_root);
 		free(prompt);
-		/*
-		t_inst *now = insts;
-		while (now)
-		{
-		t_inst *curr = now;
-		while (curr)
-		{
-			if (curr->inst)
-				printf("inst:%s\n", curr->inst);
-			if (curr->rd)
-			{
-				t_string *rd_curr = curr->rd;
-				printf("\trd:");
-				while (rd_curr)
-				{
-					printf("%s, ", rd_curr->str);
-					rd_curr = rd_curr->next;
-				}
-				printf("\n");
-			}
-			if (curr->option)
-				printf("\t\toption:%s\n", curr->option);
-			if (curr->arg)
-			{
-				t_string *arg_curr = curr->arg;
-				printf("\t\targ:");
-				while (arg_curr)
-				{
-					printf("%s, ", arg_curr->str);
-					arg_curr = arg_curr->next;
-				}
-				printf("\n");
-			}
-			curr = curr->child;
-		}
-		now = now->next;
-		}
-		*/
 		exec_parent_process(insts, &env_root, &cursor);
 		ft_inst_free(insts);
 	}
