@@ -47,6 +47,5 @@ void	ft_exit(t_inst *proc, t_cursor *cursor)
 		g_status = 1;
 		return ;
 	}
-	ft_putendl_fd("exit", STDOUT_FILENO);
 	exit_number(proc, cursor);
 }
