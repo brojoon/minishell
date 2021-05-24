@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyungjki <hyungjki@student.42.kr>          +#+  +:+       +#+        */
+/*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/28 04:53:40 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/01/03 02:47:34 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/24 13:34:13 by hyungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void	insert_null(int cur, char **result)
 		(*result)[cur] = '\0';
 }
 
-char	*ft_strtrim(char const *s1, char const *set)
+char		*ft_strtrim(char const *s1, char const *set)
 {
 	int		start;
 	int		end;

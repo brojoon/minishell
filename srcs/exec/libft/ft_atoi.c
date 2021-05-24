@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyungjki <hyungjki@student.42.kr>          +#+  +:+       +#+        */
+/*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/28 03:48:24 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/01/03 22:28:45 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/24 13:34:42 by hyungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static	int	is_blank(char a)
+static int	is_blank(char a)
 {
 	return (a == '\t' || a == '\v' || a == '\f' \
 	|| a == '\r' || a == '\n' || a == ' ');
 }
 
-int	ft_atoi(const char *str)
+int			ft_atoi(const char *str)
 {
 	int				number;
 	unsigned char	*ptr;

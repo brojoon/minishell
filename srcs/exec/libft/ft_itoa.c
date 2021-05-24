@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyungjki <hyungjki@student.42.kr>          +#+  +:+       +#+        */
+/*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/28 04:54:44 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/01/01 06:40:01 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/24 13:35:09 by hyungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int	len_th(long long n)
 	return (result);
 }
 
-void	set_numbers(char **result, long long *numbers, long long n)
+void		set_numbers(char **result, long long *numbers, long long n)
 {
 	if (n <= 0)
 	{
@@ -44,7 +44,7 @@ void	set_numbers(char **result, long long *numbers, long long n)
 		*numbers = n;
 }
 
-char	*ft_itoa(int n)
+char		*ft_itoa(int n)
 {
 	char		*result;
 	long long	numbers;

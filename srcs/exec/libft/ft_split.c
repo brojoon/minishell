@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyungjki <hyungjki@student.42.kr>          +#+  +:+       +#+        */
+/*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/28 04:54:26 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/01/03 06:34:07 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/24 13:35:50 by hyungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static size_t	strslen(const char *s, char c)
 {
-	size_t		result;
+	size_t	result;
 
 	result = 0;
 	while (*s)
@@ -70,7 +70,7 @@ static size_t	init_split(char **result, const char *s, char c, size_t len)
 	return (0);
 }
 
-char	**ft_split(char const *s, char c)
+char			**ft_split(char const *s, char c)
 {
 	char	**result;
 	size_t	len;

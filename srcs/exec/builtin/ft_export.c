@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 12:51:23 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 12:51:25 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/24 13:28:36 by hyungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	print_export(t_env *envs)
 	return ;
 }
 
-int	is_valid_export(char *str)
+int		is_valid_export(char *str)
 {
 	int	i;
 	int	key_value_sepa;

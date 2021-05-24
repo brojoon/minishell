@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 12:52:34 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 12:52:36 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/24 13:29:14 by hyungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	del_first(t_env **envs)
+void		del_first(t_env **envs)
 {
-	t_env	*tmp;
+	t_env		*tmp;
 
 	tmp = (*envs)->next;
 	free((*envs)->key);
@@ -24,10 +24,10 @@ void	del_first(t_env **envs)
 	g_status = 0;
 }
 
-void	del_env(char *key, t_env *envs)
+void		del_env(char *key, t_env *envs)
 {
-	t_env	*tmp;
-	t_env	*cur;
+	t_env		*tmp;
+	t_env		*cur;
 
 	cur = envs;
 	while (cur && cur->key)
@@ -49,7 +49,7 @@ void	del_env(char *key, t_env *envs)
 	g_status = 0;
 }
 
-int	check_valid_env_key(char *key)
+int			check_valid_env_key(char *key)
 {
 	if (!key)
 		return (0);
@@ -64,7 +64,7 @@ int	check_valid_env_key(char *key)
 	return (1);
 }
 
-void	ft_unset(t_inst *proc, t_env **envs)
+void		ft_unset(t_inst *proc, t_env **envs)
 {
 	char		*err_msg;
 	char		*tmp;

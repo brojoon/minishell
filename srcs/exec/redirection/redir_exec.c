@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redir_exec.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/05/24 13:21:06 by hyungjki          #+#    #+#             */
+/*   Updated: 2021/05/24 13:40:26 by hyungjki         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	exec_redir_right(t_inst *proc, t_env **envs, t_cursor *cursor, \
@@ -5,15 +17,13 @@ t_string *rd)
 {
 	int		fds[2];
 	char	*path;
-	char	*filename;
 	int		ret;
 	char	**chunked[2];
 
 	chunked[0] = inst_to_chunks(proc);
 	chunked[1] = envs_to_chunks(*envs);
-	filename = rd->next->str;
 	fds[0] = get_redir_fd(rd, 1);
-	fds[1] = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0744);
+	fds[1] = open(rd->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0744);
 	if (fds[1] < 0)
 		exit(1);
 	if (proc->fds[1] != 0)
@@ -36,15 +46,13 @@ t_string *rd)
 {
 	int		fds[2];
 	char	*path;
-	char	*filename;
 	int		ret;
 	char	**chunked[2];
 
 	chunked[0] = inst_to_chunks(proc);
 	chunked[1] = envs_to_chunks(*envs);
-	filename = rd->next->str;
 	fds[0] = get_redir_fd(rd, 1);
-	fds[1] = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0744);
+	fds[1] = open(rd->next->str, O_WRONLY | O_CREAT | O_APPEND, 0744);
 	if (fds[1] < 0)
 		exit(1);
 	if (proc->fds[1] != 0)
@@ -117,7 +125,7 @@ void	redir_init(t_inst *proc, t_env **envs, t_cursor *cursor)
 	int			ret;
 	t_string	*rd;
 
-	rd = proc-> rd;
+	rd = proc->rd;
 	ret = 0;
 	while (rd && rd->next)
 	{

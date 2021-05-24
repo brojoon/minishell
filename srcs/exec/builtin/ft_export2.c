@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 12:51:44 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 12:51:45 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/24 13:27:47 by hyungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	get_envs_size(t_env *envs)
+int		get_envs_size(t_env *envs)
 {
-	int	size;
+	int			size;
 
 	size = 0;
 	while (envs)
@@ -36,9 +36,9 @@ void	swap(t_env **list, int i, int j)
 
 void	quick_sort_list(t_env **list, int first, int last)
 {
-	int	i;
-	int	j;
-	int	pivot;
+	int			i;
+	int			j;
+	int			pivot;
 
 	if (first < last)
 	{
@@ -62,8 +62,8 @@ void	quick_sort_list(t_env **list, int first, int last)
 
 t_env	**quick_sort_init(t_env *envs)
 {
-	int		size;
-	t_env	**sorted_envs;
+	int			size;
+	t_env		**sorted_envs;
 
 	size = get_envs_size(envs);
 	sorted_envs = (t_env **)malloc(sizeof(t_env *) * (size + 1));

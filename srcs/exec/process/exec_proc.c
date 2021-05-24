@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_proc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 13:03:47 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 13:03:48 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/24 13:30:00 by hyungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	no_inst_redir(t_string *rd)
 	g_status = 0;
 }
 
-int	exec_builtin(t_inst *proc, t_env **envs, t_cursor *cursor)
+int		exec_builtin(t_inst *proc, t_env **envs, t_cursor *cursor)
 {
 	if (ft_strcmp(proc->inst, "cd") == 0)
 		ft_cd(proc, *envs, *envs);

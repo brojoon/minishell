@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 12:51:00 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 12:51:02 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/24 13:23:43 by hyungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,13 @@ void	edit_env_value(t_env *envs, char *key, char *value)
 	while (envs)
 	{
 		if (envs->key)
-		{	
+		{
 			if (ft_strcmp(envs->key, key) == 0)
 			{
 				free(envs->value);
 				envs->value = value;
 				break ;
-			}	
+			}
 		}
 		envs = envs->next;
 	}
