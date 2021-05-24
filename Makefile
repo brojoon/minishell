@@ -34,14 +34,14 @@ SRCS = $(addprefix $(SRCDIR), $(SRC))
 OBJS = $(SRCS:.c=.o)
  
 $(NAME): $(LIBPOS) $(OBJS)
-	$(CC) $(CLFAGS) $(OBJS) libft.a -I $(INCDIR) -o $(NAME) -lncurses -fsanitize=address -static-libasan
+	$(CC) $(CLFAGS) $(OBJS) libft.a -I $(INCDIR) -o $(NAME) -lncurses #-fsanitize=address
 
 $(LIBPOS):
 	$(MAKE) -C ./srcs/exec/libft/ libft.a
 	cp $(LIBPOS) libft.a
 
 $(OBJS): %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(INCDIR) -lncurses
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(INCDIR)
 
 all: $(NAME)
 	

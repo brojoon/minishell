@@ -21,6 +21,7 @@ t_string *rd)
 		dup2(proc->fds[0], STDIN_FILENO);
 		close(proc->fds[0]);
 	}
+	ret = 0;
 	dup2(fds[1], fds[0]);
 	path = get_path(proc->inst, *envs);
 	if (exec_builtin(proc, envs, cursor))
@@ -53,6 +54,7 @@ t_string *rd)
 	}
 	dup2(fds[1], fds[0]);
 	path = get_path(proc->inst, *envs);
+	ret = 0;
 	if (exec_builtin(proc, envs, cursor))
 		ret = execve(path, chunked[0], chunked[1]);
 	if (ret == -1)
@@ -80,6 +82,7 @@ t_string *rd)
 	if (proc->child)
 		dup2(STDOUT_FILENO, proc->child->fds[1]);
 	path = get_path(proc->inst, *envs);
+	ret = 0;
 	if (exec_builtin(proc, envs, cursor))
 		ret = execve(path, chunked[0], chunked[1]);
 	if (ret == -1)
@@ -115,6 +118,7 @@ void	redir_init(t_inst *proc, t_env **envs, t_cursor *cursor)
 	t_string	*rd;
 
 	rd = proc-> rd;
+	ret = 0;
 	while (rd && rd->next)
 	{
 		while (rd != NULL && rd->next
