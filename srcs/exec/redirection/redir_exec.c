@@ -35,7 +35,7 @@ t_string *rd)
 	dup2(fds[1], fds[0]);
 	path = get_path(proc->inst, *envs);
 	if (exec_builtin(proc, envs, cursor))
-		ret = execve(path, chunked[0], chunked[1]);
+		(ret = execve_before_term(path, chunked[0], chunked[1], cursor));
 	if (ret == -1)
 		exec_error_handle(proc->inst, ERR_CNF, 1);
 	exit_status(g_status);
@@ -64,7 +64,7 @@ t_string *rd)
 	path = get_path(proc->inst, *envs);
 	ret = 0;
 	if (exec_builtin(proc, envs, cursor))
-		ret = execve(path, chunked[0], chunked[1]);
+		(ret = execve_before_term(path, chunked[0], chunked[1], cursor));
 	if (ret == -1)
 		exec_error_handle(proc->inst, ERR_CNF, 1);
 	exit_status(g_status);
@@ -92,7 +92,7 @@ t_string *rd)
 	path = get_path(proc->inst, *envs);
 	ret = 0;
 	if (exec_builtin(proc, envs, cursor))
-		ret = execve(path, chunked[0], chunked[1]);
+		(ret = execve_before_term(path, chunked[0], chunked[1], cursor));
 	if (ret == -1)
 		exec_error_handle(proc->inst, ERR_CNF, 1);
 	exit_status(g_status);

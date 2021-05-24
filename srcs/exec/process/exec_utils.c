@@ -71,8 +71,7 @@ char	**envs_to_chunks(t_env *envs)
 	char	*tmp;
 	char	*tmp2;
 
-	size = get_envs_size(envs);
-	chunks = (char **)malloc(sizeof(t_env) * size + 1);
+	chunks = (char **)malloc(sizeof(t_env) * (get_envs_size(envs) + 1));
 	size = 0;
 	while (envs && envs->key)
 	{

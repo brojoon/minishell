@@ -62,3 +62,13 @@ void add_shlvl(t_env *env)
 	i++;
 	env->value = ft_itoa(i);
 }
+
+int	execve_before_term(char *path, char **args, char **envs, t_cursor *cursor)
+{
+	int ret;
+
+	recover_term(cursor);
+	ret = execve(path, args, envs);
+	init_term(cursor);
+	return (ret);
+}

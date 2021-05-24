@@ -198,6 +198,8 @@ int						redir_skip_left(char *str);
 int						get_redir_fd(t_string *rd, int type);
 int						get_redir_type(t_string *rd);
 void					add_shlvl(t_env *env);
+int						execve_before_term(char *path, char **args, \
+							char **envs, t_cursor *cursor);
 /*
 ** libft_01.c
 */
