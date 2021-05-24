@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 13:03:55 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 13:03:56 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/24 18:19:02 by hyungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ char	*get_path(char *inst, t_env *envs)
 	tmp = find_value("PATH", envs);
 	paths = ft_split(tmp, ':');
 	i = 0;
-	while (paths[i])
+	while (paths && paths[i])
 	{
 		tmp = ft_strjoin("/", inst);
 		new_path = ft_strjoin(paths[i], tmp);
@@ -79,6 +79,8 @@ char	**envs_to_chunks(t_env *envs)
 		if (envs->value)
 		{
 			tmp = ft_strjoin(envs->key, "=");
+			if (!ft_strcmp(envs->key, "SHLVL"))
+				add_shlvl(envs);
 			tmp2 = ft_strjoin(tmp, envs->value);
 			chunks[size] = tmp2;
 			free(tmp);

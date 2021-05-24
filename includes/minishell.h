@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 12:48:06 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 12:48:09 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/24 18:18:27 by hyungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,7 @@ int						redir_skip_left(char *str);
 */
 int						get_redir_fd(t_string *rd, int type);
 int						get_redir_type(t_string *rd);
+void					add_shlvl(t_env *env);
 /*
 ** libft_01.c
 */

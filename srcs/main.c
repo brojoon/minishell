@@ -6,7 +6,7 @@
 /*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 13:02:06 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 13:17:57 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/24 18:04:02 by hyungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ int		main(int argc, char **argv, char **envp)
 		init_term(&cursor);
 		prompt = get_prompt();
 		insts = main_subloop(prompt, &cursor, env_root);
+		printf("insts:%s\n", insts->inst);
 		free(prompt);
 		exec_parent_process(insts, &env_root, &cursor);
 		ft_inst_free(insts);

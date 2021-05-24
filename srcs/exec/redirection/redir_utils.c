@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 13:21:30 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 13:21:32 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/24 18:21:55 by hyungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,14 @@ int	get_redir_fd(t_string *rd, int type)
 	if (i == 0)
 		return (type);
 	return (num);
+}
+
+void add_shlvl(t_env *env)
+{
+	int i;
+
+	i = ft_atoi(env->value);
+	free(env->value);
+	i++;
+	env->value = ft_itoa(i);
 }
