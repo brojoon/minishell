@@ -17,9 +17,10 @@ char	*get_splitter(char *str, char **splitter)
 }
 
 /*
- * 명령어 및 인자에 redireciton이 있는지 확인
- * redirection은 splitter에 넣어주고 splitter로 자른 char **를 return
+** 명령어 및 인자에 redireciton이 있는지 확인
+** redirection은 splitter에 넣어주고 splitter로 자른 char **를 return
 */
+
 char	**split_redirection(char *str, char **splitter)
 {
 	char	**ret;
@@ -32,9 +33,10 @@ char	**split_redirection(char *str, char **splitter)
 }
 
 /*
- * 한번에 2개 이상의 redirection이 붙어있는 경우 error
+** 한번에 2개 이상의 redirection이 붙어있는 경우 error
 */
-int	check_red_error(char *inst, char **cmd, int k)
+
+int		check_red_error(char *inst, char **cmd, int k)
 {
 	char	rd;
 	int		st;
@@ -59,11 +61,12 @@ int	check_red_error(char *inst, char **cmd, int k)
 }
 
 /*
- * ret 0 : 정상 fd (0 ~ 2)
- * ret 1 : not fd (inst or argument)
- * ret 2 : 3 ~ 9 사이의 fd
+** ret 0 : 정상 fd (0 ~ 2)
+** ret 1 : not fd (inst or argument)
+** ret 2 : 3 ~ 9 사이의 fd
 */
-int	is_fd(char *s)
+
+int		is_fd(char *s)
 {
 	if (ft_strlen(s) > 1)
 	{
@@ -77,9 +80,10 @@ int	is_fd(char *s)
 }
 
 /*
- * echo인 경우 arg를 모두 합침
- * arg + ' ' + arg 형식
+** echo인 경우 arg를 모두 합침
+** arg + ' ' + arg 형식
 */
+
 void	echo_merge_args(t_inst **inst)
 {
 	t_string	*arg;

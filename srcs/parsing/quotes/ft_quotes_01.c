@@ -1,5 +1,7 @@
 #include "minishell.h"
-int	quotes_sub_loop(char **buf, int **meta_arr, char target, t_cursor *cursor)
+
+int		quotes_sub_loop(char **buf, int **meta_arr,
+			char target, t_cursor *cursor)
 {
 	char	*temp;
 
@@ -40,8 +42,9 @@ void	handle_quotes_subcase(char **buf,
 }
 
 /*
- * quotes(", ')사이의 string을 const_strings로 옮기고 %%로 변경
+** quotes(", ')사이의 string을 const_strings로 옮기고 %%로 변경
 */
+
 void	handle_quotes(char **buf, t_string **const_strings, t_cursor *cursor)
 {
 	int		st;
@@ -64,10 +67,11 @@ void	handle_quotes(char **buf, t_string **const_strings, t_cursor *cursor)
 }
 
 /*
- * Quotes(", ')에 묶인 문자열 처리 함수
- * single quotes인 경우 그냥 내용물 출력
- * double quotes인 경우 $, \ 처리
+** Quotes(", ')에 묶인 문자열 처리 함수
+** single quotes인 경우 그냥 내용물 출력
+** double quotes인 경우 $, \ 처리
 */
+
 void	proc_quotes(t_env *root, char **now)
 {
 	char	*decap_str;

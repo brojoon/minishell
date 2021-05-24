@@ -14,7 +14,7 @@ void	proc_consts(t_env *root, t_string **consts)
 	}
 }
 
-int	get_ori_consts_subloop(char **arg, t_string **const_now)
+int		get_ori_consts_subloop(char **arg, t_string **const_now)
 {
 	int			st;
 	char		*temp;
@@ -44,8 +44,9 @@ int	get_ori_consts_subloop(char **arg, t_string **const_now)
 }
 
 /*
- * const_strings에 묶인 문자열을 inst에 있는 문자열 %%와 치환
+** const_strings에 묶인 문자열을 inst에 있는 문자열 %%와 치환
 */
+
 void	get_ori_consts(t_string *str, t_inst **inst_now)
 {
 	t_inst		*curr;

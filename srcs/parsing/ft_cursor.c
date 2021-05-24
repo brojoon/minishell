@@ -9,7 +9,7 @@ void	ft_memclean(char **buf, int size)
 		(*buf)[st++] = 0;
 }
 
-int	proc_cursor(t_cursor *cursor, int flag, char *prompt, char **buf)
+int		proc_cursor(t_cursor *cursor, int flag, char *prompt, char **buf)
 {
 	static t_string	*now_history;
 
@@ -38,9 +38,10 @@ int	proc_cursor(t_cursor *cursor, int flag, char *prompt, char **buf)
 }
 
 /*
- * \033[6n의 결과로 먼저 나오는 숫자가 row, 뒤에 나오는 숫자가 col
- * order_flag == 0 -> row, order_flag == 1 -> col
+** \033[6n의 결과로 먼저 나오는 숫자가 row, 뒤에 나오는 숫자가 col
+** order_flag == 0 -> row, order_flag == 1 -> col
 */
+
 void	update_cursor_pos(t_cursor *cursor)
 {
 	char	buf[255];

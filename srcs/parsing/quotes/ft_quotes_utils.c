@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	cnt_quotes(char *str, char c, int *meta_arr)
+int		cnt_quotes(char *str, char c, int *meta_arr)
 {
 	int	st;
 	int	cnt;
@@ -19,8 +19,9 @@ int	cnt_quotes(char *str, char c, int *meta_arr)
 }
 
 /*
- * quotes로 str을 감싸는 함수
+** quotes로 str을 감싸는 함수
 */
+
 char	*encap_quotes(char *str, char quote)
 {
 	char	*ret;
@@ -33,8 +34,9 @@ char	*encap_quotes(char *str, char quote)
 }
 
 /*
- * quotes로 감싸진 str의 내용물만 return
+** quotes로 감싸진 str의 내용물만 return
 */
+
 char	*decap_quotes(char *str, char *quote)
 {
 	char	*ret;
@@ -44,7 +46,7 @@ char	*decap_quotes(char *str, char *quote)
 	return (ret);
 }
 
-int	get_meta_arr_sub(char *str, int st, int *ret)
+int		get_meta_arr_sub(char *str, int st, int *ret)
 {
 	if (str[st] == '\'')
 	{
@@ -69,10 +71,11 @@ int	get_meta_arr_sub(char *str, int st, int *ret)
 }
 
 /*
- * 일반 문자, / 뒤에 있는 $, ", `는 meta x(0)
- * 그 외에는 meta (1)
+** 일반 문자, / 뒤에 있는 $, ", `는 meta x(0)
+** 그 외에는 meta (1)
 */
-int	*get_meta_arr(char *str)
+
+int		*get_meta_arr(char *str)
 {
 	int	*ret;
 	int	st;

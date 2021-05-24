@@ -1,11 +1,11 @@
 #include "minishell.h"
 
-int	proc_metachar_case_single(char **out, char *s, int *meta_arr, int *st)
+int		proc_metachar_case_single(char **out, char *s, int *meta_arr, int *st)
 {
 	int	ed;
 
 	(*st)++;
-	if (s[*st] != '$' && s[*st] != '`' && s[*st] !='"' && s[*st] != '\\')
+	if (s[*st] != '$' && s[*st] != '`' && s[*st] != '"' && s[*st] != '\\')
 	{
 		meta_arr[--(*st)] = 0;
 		return (1);
@@ -23,7 +23,7 @@ int	proc_metachar_case_single(char **out, char *s, int *meta_arr, int *st)
 	return (0);
 }
 
-int	proc_metachar_case_dollar(char **out, char *s, t_env *root, int *st)
+int		proc_metachar_case_dollar(char **out, char *s, t_env *root, int *st)
 {
 	int		ed;
 	t_env	*env;
@@ -31,7 +31,7 @@ int	proc_metachar_case_dollar(char **out, char *s, t_env *root, int *st)
 	char	*target;
 
 	ed = *st + 1;
-	while (s[ed] && ((ft_isalnum(s[ed]) || s[ed] =='_')))
+	while (s[ed] && ((ft_isalnum(s[ed]) || s[ed] == '_')))
 		ed++;
 	target = ft_substr(s, *st + 1, ed);
 	env = get_env(root, target);
@@ -48,7 +48,7 @@ int	proc_metachar_case_dollar(char **out, char *s, t_env *root, int *st)
 	return (0);
 }
 
-int	proc_metachar_subloop(char **out, t_env *root, char *s, int *st)
+int		proc_metachar_subloop(char **out, t_env *root, char *s, int *st)
 {
 	int		*meta_arr;
 	int		ret;
@@ -71,8 +71,9 @@ int	proc_metachar_subloop(char **out, t_env *root, char *s, int *st)
 }
 
 /*
- * meta char 처리 함수
+** meta char 처리 함수
 */
+
 char	*proc_metachar(t_env *root, char *s)
 {
 	int		st;

@@ -1,7 +1,9 @@
 #include "minishell.h"
+
 /*
- * ;(semi-colon)으로 나뉜 애들은 sibling
+ * (semi-colon)으로 나뉜 애들은 sibling
 */
+
 void	ft_instadd_sibling(t_inst **root, t_inst *inst)
 {
 	t_inst	*curr;
@@ -18,8 +20,9 @@ void	ft_instadd_sibling(t_inst **root, t_inst *inst)
 }
 
 /*
- * |(pipe)로 나뉜 애들은 child
+** (pipe)로 나뉜 애들은 child
 */
+
 void	ft_instadd_child(t_inst **root, t_inst *inst)
 {
 	t_inst	*curr;

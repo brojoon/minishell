@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	ft_memset(char **line, size_t size)
+int		ft_memset(char **line, size_t size)
 {
 	size_t	st;
 
@@ -47,7 +47,7 @@ void	ft_resize_and_copy(char **line, char *buf, int st, int ed)
 	*line = temp;
 }
 
-int	recover_term(t_cursor *cursor)
+int		recover_term(t_cursor *cursor)
 {
 	ft_lstfree_allrev(cursor->history);
 	cursor->term.c_lflag |= ICANON;
@@ -58,8 +58,9 @@ int	recover_term(t_cursor *cursor)
 }
 
 /*
- * buf의 st ~ ed를 char *to로 치환하는 함수
+** buf의 st ~ ed를 char *to로 치환하는 함수
 */
+
 char	*replace_str(char **buf, int st, int ed, char *to)
 {
 	char	*temp;
