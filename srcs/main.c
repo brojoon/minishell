@@ -78,51 +78,51 @@ int		main(int argc, char **argv, char **envp)
 	cursor.history = 0;
 	(void)argc;
 	(void)argv;
-	while (1)
-	{
-		init_term(&cursor);
-		prompt = get_prompt();
-		insts = main_subloop(prompt, &cursor, env_root);
-		free(prompt);
-		t_inst *now = insts;
-		while (now)
-		{
-		t_inst *curr = now;
-		while (curr)
-		{
-			if (curr->inst)
-				printf("inst:%s\n", curr->inst);
-			if (curr->rd)
-			{
-				t_string *rd_curr = curr->rd;
-				printf("\trd:");
-				while (rd_curr)
-				{
-					printf("%s, ", rd_curr->str);
-					rd_curr = rd_curr->next;
-				}
-				printf("\n");
-			}
-			if (curr->option)
-				printf("\t\toption:%s\n", curr->option);
-			if (curr->arg)
-			{
-				t_string *arg_curr = curr->arg;
-				printf("\t\targ:");
-				while (arg_curr)
-				{
-					printf("%s, ", arg_curr->str);
-					arg_curr = arg_curr->next;
-				}
-				printf("\n");
-			}
-			curr = curr->child;
-		}
-		now = now->next;
-		}
-		exec_parent_process(insts, &env_root, &cursor);
-		ft_inst_free(insts);
-	}
+	// while (1)
+	// {
+	// 	init_term(&cursor);
+	// 	prompt = get_prompt();
+	// 	insts = main_subloop(prompt, &cursor, env_root);
+	// 	free(prompt);
+	// 	t_inst *now = insts;
+	// 	while (now)
+	// 	{
+	// 	t_inst *curr = now;
+	// 	while (curr)
+	// 	{
+	// 		if (curr->inst)
+	// 			printf("inst:%s\n", curr->inst);
+	// 		if (curr->rd)
+	// 		{
+	// 			t_string *rd_curr = curr->rd;
+	// 			printf("\trd:");
+	// 			while (rd_curr)
+	// 			{
+	// 				printf("%s, ", rd_curr->str);
+	// 				rd_curr = rd_curr->next;
+	// 			}
+	// 			printf("\n");
+	// 		}
+	// 		if (curr->option)
+	// 			printf("\t\toption:%s\n", curr->option);
+	// 		if (curr->arg)
+	// 		{
+	// 			t_string *arg_curr = curr->arg;
+	// 			printf("\t\targ:");
+	// 			while (arg_curr)
+	// 			{
+	// 				printf("%s, ", arg_curr->str);
+	// 				arg_curr = arg_curr->next;
+	// 			}
+	// 			printf("\n");
+	// 		}
+	// 		curr = curr->child;
+	// 	}
+	// 	now = now->next;
+	// 	}
+	// 	exec_parent_process(insts, &env_root, &cursor);
+	// 	ft_inst_free(insts);
+	// }
 	free_genv(env_root);
 	recover_term(&cursor);
 	return (0);
