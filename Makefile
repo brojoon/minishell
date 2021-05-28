@@ -21,7 +21,7 @@ SRC = main.c parsing/get_next_line/get_next_line.c parsing/ft_error.c\
 
 SRCDIR = ./srcs/
 
-LIBFTDIR = ./srcs/exec/libft/
+LIBFTDIR = ./libft/
 
 INCDIR = ./includes
 
@@ -34,10 +34,10 @@ SRCS = $(addprefix $(SRCDIR), $(SRC))
 OBJS = $(SRCS:.c=.o)
  
 $(NAME): $(LIBPOS) $(OBJS)
-	$(CC) $(CLFAGS) $(OBJS) libft.a -I $(INCDIR) -o $(NAME) -lncurses #-fsanitize=address
+	$(CC) $(CLFAGS) $(OBJS) libft.a -I $(INCDIR) -o $(NAME) -lncurses -fsanitize=address
 
 $(LIBPOS):
-	$(MAKE) -C ./srcs/exec/libft/ libft.a
+	$(MAKE) -C ./libft/ libft.a
 	cp $(LIBPOS) libft.a
 
 $(OBJS): %.o: %.c
@@ -52,6 +52,7 @@ clean:
 fclean: clean
 	rm -rf $(NAME)
 	cd $(LIBFTDIR) && rm -rf $(LIBFT)
+	rm -rf $(LIBFT)
 	
 re: fclean all
 

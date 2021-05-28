@@ -37,7 +37,7 @@ int	redir_skip_right(char *str)
 	int		fd;
 
 	filename = str;
-	fd = open(filename, O_WRONLY | O_CREAT, 0744);
+	fd = open(filename, O_WRONLY | O_CREAT, 0644);
 	close(fd);
 	return (0);
 }

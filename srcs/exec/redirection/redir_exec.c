@@ -23,7 +23,7 @@ t_string *rd)
 	chunked[0] = inst_to_chunks(proc);
 	chunked[1] = envs_to_chunks(*envs);
 	fds[0] = get_redir_fd(rd, 1);
-	fds[1] = open(rd->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0744);
+	fds[1] = open(rd->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fds[1] < 0)
 		exit(1);
 	if (proc->fds[1] != 0)
@@ -52,7 +52,7 @@ t_string *rd)
 	chunked[0] = inst_to_chunks(proc);
 	chunked[1] = envs_to_chunks(*envs);
 	fds[0] = get_redir_fd(rd, 1);
-	fds[1] = open(rd->next->str, O_WRONLY | O_CREAT | O_APPEND, 0744);
+	fds[1] = open(rd->next->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fds[1] < 0)
 		exit(1);
 	if (proc->fds[1] != 0)
@@ -88,7 +88,7 @@ t_string *rd)
 		exec_error_handle(filename, ERR_NSFOD, 2);
 	dup2(fds[1], fds[0]);
 	if (proc->child)
-		dup2(STDOUT_FILENO, proc->child->fds[1]);
+		dup2(proc->child->fds[1], STDOUT_FILENO);
 	path = get_path(proc->inst, *envs);
 	ret = 0;
 	if (exec_builtin(proc, envs, cursor))

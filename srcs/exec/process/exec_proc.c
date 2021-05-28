@@ -28,7 +28,7 @@ void	no_inst_redir(t_string *rd)
 			if (rd->str[i + 1] == '>' || rd->str[i + 1] == '\0')
 			{
 				filename = rd->next->str;
-				fd = open(filename, O_WRONLY | O_CREAT, 0744);
+				fd = open(filename, O_WRONLY | O_CREAT, 0644);
 				if (fd < 0)
 					exit(1);
 				close(fd);
@@ -81,6 +81,7 @@ t_env **envs, t_cursor *cursor)
 		dup2(proc->fds[0], STDIN_FILENO);
 		close(proc->fds[0]);
 	}
+	printf("hi\n");
 	if (exec_builtin(proc, envs, cursor))
 		(ret = execve_before_term(path, chunked[0], chunked[1], cursor));
 	if (ret == -1)

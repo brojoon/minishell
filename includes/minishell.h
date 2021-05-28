@@ -13,7 +13,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "../srcs/exec/libft/libft.h"
+# include "../libft/libft.h"
 # include <errno.h>
 # include <signal.h>
 # include <unistd.h>
