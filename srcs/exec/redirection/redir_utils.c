@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	get_redir_type(t_string *rd)
+int		get_redir_type(t_string *rd)
 {
 	int	i;
 
@@ -36,7 +36,7 @@ int	get_redir_type(t_string *rd)
 	return (0);
 }
 
-int	get_redir_fd(t_string *rd, int type)
+int		get_redir_fd(t_string *rd, int type)
 {
 	int	num;
 	int	i;
@@ -53,7 +53,7 @@ int	get_redir_fd(t_string *rd, int type)
 	return (num);
 }
 
-void add_shlvl(t_env *env)
+void	add_shlvl(t_env *env)
 {
 	int i;
 
@@ -63,7 +63,8 @@ void add_shlvl(t_env *env)
 	env->value = ft_itoa(i);
 }
 
-int	execve_before_term(char *path, char **args, char **envs, t_cursor *cursor)
+int		execve_before_term(char *path, char **args, \
+char **envs, t_cursor *cursor)
 {
 	int ret;
 

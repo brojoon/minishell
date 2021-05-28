@@ -131,7 +131,7 @@ void	redir_init(t_inst *proc, t_env **envs, t_cursor *cursor)
 	{
 		while (rd != NULL && rd->next
 			&& rd->next->next && rd->next->next->next \
-			&& !ft_strcmp(rd->str, rd->next->next->str))
+			&& redir_cmp(rd, rd->next->next))
 		{
 			if (get_redir_type(rd) == RIGHT || \
 				get_redir_type(rd) == DRIGHT)

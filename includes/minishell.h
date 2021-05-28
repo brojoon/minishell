@@ -192,6 +192,7 @@ void					exec_redir_right(t_inst *proc, t_env **envs, \
 */
 int						redir_skip_right(char *str);
 int						redir_skip_left(char *str);
+int						redir_cmp(t_string *s1, t_string *s2);
 /*
 ** redir_utils.c
 */
