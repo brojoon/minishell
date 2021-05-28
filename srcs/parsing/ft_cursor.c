@@ -6,7 +6,7 @@
 /*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 12:58:16 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 12:58:17 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/28 16:06:41 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,7 @@ int		proc_cursor(t_cursor *cursor, int flag, char *prompt, char **buf)
 {
 	static t_string	*now_history;
 
-	if (flag == KEY_LEFT)
-		cursor_mvleft(cursor, ft_strlen(prompt));
-	else if (flag == KEY_RIGHT)
-		cursor_mvright(cursor, ft_strlen(prompt) + ft_strlen(*buf));
-	else if (flag == KEY_UP)
+	if (flag == KEY_UP)
 		return (proc_cursor_case_up(&now_history, cursor, prompt, buf));
 	else if (flag == KEY_DOWN)
 		return (proc_cursor_case_down(&now_history, cursor, prompt, buf));

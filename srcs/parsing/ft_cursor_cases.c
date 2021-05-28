@@ -6,29 +6,11 @@
 /*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 12:58:30 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 12:58:32 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/28 16:00:32 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	cursor_mvleft(t_cursor *cursor, int hpos_min)
-{
-	if (cursor->hpos <= hpos_min)
-		return (1);
-	cursor->hpos--;
-	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
-	return (0);
-}
-
-int	cursor_mvright(t_cursor *cursor, int hpos_max)
-{
-	if (cursor->hpos >= hpos_max)
-		return (1);
-	cursor->hpos++;
-	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
-	return (0);
-}
 
 int	cursor_erase(t_cursor *cursor, int hpos_min, char *buf)
 {
@@ -45,6 +27,14 @@ int	cursor_erase(t_cursor *cursor, int hpos_min, char *buf)
 	return (0);
 }
 
+int	change_buf(char **buf, char *str)
+{
+	ft_memclean(buf, BUFFER_SIZE + 1);
+	ft_strlcpy(*buf, str, ft_strlen(str));
+	return (ft_strlen(str));
+}
+
+
 int	proc_cursor_case_up(t_string **now_history,
 		t_cursor *cursor, char *prompt, char **buf)
 {
@@ -59,7 +49,10 @@ int	proc_cursor_case_up(t_string **now_history,
 	else
 		target = (*now_history)->prev;
 	if (target == 0)
+	{
+		ft_memclean(buf, BUFFER_SIZE + 1);
 		return (ret);
+	}
 	cursor->hpos = ft_strlen(prompt);
 	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
 	tputs(cursor->ce, 1, ft_putchar);
@@ -67,9 +60,7 @@ int	proc_cursor_case_up(t_string **now_history,
 	write(0, target->str, ft_strlen(target->str));
 	cursor->hpos = ft_strlen(prompt) + ft_strlen(target->str) - 1;
 	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
-	ft_memclean(buf, BUFFER_SIZE + 1);
-	ft_strlcpy(*buf, target->str, ft_strlen(target->str));
-	ret = ft_strlen(target->str);
+	ret = change_buf(buf, target->str);
 	return (ret);
 }
 
@@ -90,13 +81,14 @@ int	proc_cursor_case_down(t_string **now_history,
 	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
 	tputs(cursor->ce, 1, ft_putchar);
 	if (target == 0)
+	{
+		ft_memclean(buf, BUFFER_SIZE + 1);
 		return (ret);
+	}
 	*now_history = target;
 	write(0, target->str, ft_strlen(target->str));
 	cursor->hpos = ft_strlen(prompt) + ft_strlen(target->str) - 1;
 	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
-	ft_memclean(buf, BUFFER_SIZE + 1);
-	ft_strlcpy(*buf, target->str, ft_strlen(target->str));
-	ret = ft_strlen(target->str);
+	ret = change_buf(buf, target->str);
 	return (ret);
 }

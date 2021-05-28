@@ -6,7 +6,7 @@
 /*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 12:48:06 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 18:18:27 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/28 15:39:03 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,8 +295,6 @@ int						get_next_line(int fd, char **line,
 /*
 ** ft_cursor_cases.c
 */
-int						cursor_mvleft(t_cursor *cursor, int hpos_min);
-int						cursor_mvright(t_cursor *cursor, int hpos_max);
 int						cursor_erase(t_cursor *cursor, int hpos_min, char *buf);
 int						proc_cursor_case_up(t_string **now_history,
 							t_cursor *cursor, char *prompt, char **buf);

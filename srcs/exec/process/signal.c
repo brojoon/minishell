@@ -6,7 +6,7 @@
 /*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 13:04:02 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 13:04:03 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/28 15:25:10 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,6 @@ void	handle_signal(int signo)
 
 void	set_signal(void)
 {
-	signal(SIGINT, handle_signal);
+	//signal(SIGINT, handle_signal);
 	signal(SIGQUIT, handle_signal);
 }
