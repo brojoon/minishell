@@ -75,19 +75,20 @@ t_string *rd)
 {
 	int		fds[2];
 	char	*path;
-	char	*filename;
 	int		ret;
 	char	**chunked[2];
 
 	chunked[0] = inst_to_chunks(proc);
 	chunked[1] = envs_to_chunks(*envs);
-	filename = rd->next->str;
 	fds[0] = get_redir_fd(rd, 0);
-	fds[1] = open(filename, O_RDONLY, 0644);
+	fds[1] = open(rd->next->str, O_RDONLY, 0644);
 	if (fds[1] < 0)
-		exec_error_handle(filename, ERR_NSFOD, 2);
+		exec_error_handle(rd->next->str, ERR_NSFOD, 2);
 	dup2(fds[1], fds[0]);
-	if (proc->child)
+	printf("here1");
+	if (rd->next && rd->next->next)
+		handle_redir_right(rd->next->next);
+	else if (proc->child)
 		dup2(proc->child->fds[1], STDOUT_FILENO);
 	path = get_path(proc->inst, *envs);
 	ret = 0;
@@ -133,8 +134,7 @@ void	redir_init(t_inst *proc, t_env **envs, t_cursor *cursor)
 			&& rd->next->next && rd->next->next->next \
 			&& redir_cmp(rd, rd->next->next))
 		{
-			if (get_redir_type(rd) == RIGHT || \
-				get_redir_type(rd) == DRIGHT)
+			if (get_redir_type(rd) == RIGHT || get_redir_type(rd) == DRIGHT)
 				ret = redir_skip_right(rd->next->str);
 			else if (get_redir_type(rd) == LEFT)
 				ret = redir_skip_left(rd->next->str);
@@ -143,6 +143,9 @@ void	redir_init(t_inst *proc, t_env **envs, t_cursor *cursor)
 			rd = rd->next->next;
 		}
 		redir_exec(proc, envs, cursor, rd);
+		if (get_redir_type(rd) == LEFT && \
+		get_redir_type(rd->next->next) == RIGHT)
+			return ;
 		rd = rd->next->next;
 	}
 }

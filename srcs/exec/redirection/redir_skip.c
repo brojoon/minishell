@@ -58,3 +58,31 @@ int		redir_skip_right(char *str)
 	close(fd);
 	return (0);
 }
+
+void	handle_redir_right(t_string *rd)
+{
+	int		fd;
+	int		ret;
+	int		type;
+
+	while (rd != NULL && rd->next
+		&& rd->next->next && rd->next->next->next \
+		&& redir_cmp(rd, rd->next->next))
+	{
+		if (get_redir_type(rd) == RIGHT || \
+			get_redir_type(rd) == DRIGHT)
+			ret = redir_skip_right(rd->next->str);
+		else if (get_redir_type(rd) == LEFT)
+			ret = redir_skip_left(rd->next->str);
+		if (ret == -1)
+			return ;
+		rd = rd->next->next;
+	}
+	printf("here2");
+	type = get_redir_type(rd);
+	if (type == RIGHT)
+		fd = open(rd->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	else
+		fd = open(rd->next->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	dup2(fd, STDOUT_FILENO);
+}

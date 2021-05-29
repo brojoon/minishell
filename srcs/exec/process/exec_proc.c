@@ -75,13 +75,15 @@ t_env **envs, t_cursor *cursor)
 	ret = 0;
 	path = get_path(proc->inst, *envs);
 	if (proc->child != NULL)
+	{
 		dup2(child->fds[1], STDOUT_FILENO);
+		close(child->fds[1]);
+	}
 	if (proc->fds[0] != 0)
 	{
 		dup2(proc->fds[0], STDIN_FILENO);
 		close(proc->fds[0]);
 	}
-	printf("hi\n");
 	if (exec_builtin(proc, envs, cursor))
 		(ret = execve_before_term(path, chunked[0], chunked[1], cursor));
 	if (ret == -1)
@@ -112,6 +114,8 @@ void	exec_pipe(t_inst *proc, t_env **envs, t_cursor *cursor)
 	set_g_status();
 	if (proc->child)
 		close(child->fds[1]);
+	if (proc->fds && proc->fds[0] != 0)
+		close(proc->fds[0]);
 }
 
 void	exec_parent_process(t_inst *proc, t_env **envs, t_cursor *cursor)
