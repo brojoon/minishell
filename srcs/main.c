@@ -72,6 +72,8 @@ int		main(int argc, char **argv, char **envp)
 	t_inst		*insts;
 	t_cursor	cursor;
 
+	g_bash.status = 0;
+	g_bash.clean = 0;
 	env_root = 0;
 	set_signal();
 	set_genv(&env_root, envp);

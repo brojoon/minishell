@@ -78,7 +78,6 @@ void	handle_redir_right(t_string *rd)
 			return ;
 		rd = rd->next->next;
 	}
-	printf("here2");
 	type = get_redir_type(rd);
 	if (type == RIGHT)
 		fd = open(rd->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);

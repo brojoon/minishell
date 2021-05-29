@@ -85,7 +85,6 @@ t_string *rd)
 	if (fds[1] < 0)
 		exec_error_handle(rd->next->str, ERR_NSFOD, 2);
 	dup2(fds[1], fds[0]);
-	printf("here1");
 	if (rd->next && rd->next->next)
 		handle_redir_right(rd->next->next);
 	else if (proc->child)

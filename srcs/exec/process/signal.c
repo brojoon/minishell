@@ -17,10 +17,10 @@ void	printf_prompt(void)
 	char	*prompt;
 
 	prompt = get_prompt();
-	fflush(STDIN_FILENO);
 	ft_putstr_fd("\b\b  \b\b\n", STDIN_FILENO);
 	write(0, prompt, ft_strlen(prompt));
 	free(prompt);
+	g_bash.clean = 1;
 }
 
 void	handle_signal(int signo)
