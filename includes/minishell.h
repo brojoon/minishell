@@ -65,7 +65,7 @@ typedef struct			s_cursor
 struct					s_bash
 {
 	int					status;
-	char				*buf;
+	int					clean;
 };
 struct					s_string
 {

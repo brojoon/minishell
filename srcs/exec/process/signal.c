@@ -17,7 +17,8 @@ void	printf_prompt(void)
 	char	*prompt;
 
 	prompt = get_prompt();
-	ft_putstr_fd("\b\b  \b\b\n", STDOUT_FILENO);
+	fflush(STDIN_FILENO);
+	ft_putstr_fd("\b\b  \b\b\n", STDIN_FILENO);
 	write(0, prompt, ft_strlen(prompt));
 	free(prompt);
 }
@@ -50,6 +51,6 @@ void	handle_signal(int signo)
 
 void	set_signal(void)
 {
-	//signal(SIGINT, handle_signal);
+	signal(SIGINT, handle_signal);
 	signal(SIGQUIT, handle_signal);
 }

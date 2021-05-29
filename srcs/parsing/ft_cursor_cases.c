@@ -30,7 +30,7 @@ int	cursor_erase(t_cursor *cursor, int hpos_min, char *buf)
 int	change_buf(char **buf, char *str)
 {
 	ft_memclean(buf, BUFFER_SIZE + 1);
-	ft_strlcpy(*buf, str, ft_strlen(str));
+	ft_strlcpy(*buf, str, ft_strlen(str) + 1);
 	return (ft_strlen(str));
 }
 
@@ -58,7 +58,7 @@ int	proc_cursor_case_up(t_string **now_history,
 	tputs(cursor->ce, 1, ft_putchar);
 	*now_history = target;
 	write(0, target->str, ft_strlen(target->str));
-	cursor->hpos = ft_strlen(prompt) + ft_strlen(target->str) - 1;
+	cursor->hpos = ft_strlen(prompt) + ft_strlen(target->str);
 	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
 	ret = change_buf(buf, target->str);
 	return (ret);
@@ -87,7 +87,7 @@ int	proc_cursor_case_down(t_string **now_history,
 	}
 	*now_history = target;
 	write(0, target->str, ft_strlen(target->str));
-	cursor->hpos = ft_strlen(prompt) + ft_strlen(target->str) - 1;
+	cursor->hpos = ft_strlen(prompt) + ft_strlen(target->str);
 	tputs(tgoto(cursor->cm, cursor->hpos, cursor->vpos), 1, ft_putchar);
 	ret = change_buf(buf, target->str);
 	return (ret);
