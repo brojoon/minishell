@@ -17,7 +17,7 @@ void	ft_echo(t_inst *proc, char *op)
 	t_string	*arg;
 
 	arg = proc->arg;
-	g_status = 0;
+	g_bash.status = 0;
 	if (arg == NULL || arg->str == NULL)
 	{
 		ft_putendl_fd("", STDOUT_FILENO);

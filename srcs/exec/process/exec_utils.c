@@ -97,9 +97,9 @@ void	print_status(void)
 {
 	char	*str;
 
-	str = ft_itoa(g_status);
+	str = ft_itoa(g_bash.status);
 	ft_putstr_fd(str, STDERR_FILENO);
 	ft_putendl_fd(": command not found", STDERR_FILENO);
 	free(str);
-	g_status = 127;
+	g_bash.status = 127;
 }

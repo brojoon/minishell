@@ -21,19 +21,19 @@ void	alter_pwd(t_env *envs)
 	getcwd(dir, 1024);
 	edit_env_value(envs, "OLDPWD", ft_strdup(pwd->value));
 	edit_env_value(envs, "PWD", ft_strdup(dir));
-	g_status = 0;
+	g_bash.status = 0;
 }
 
 void	cd_error_handle(char *str1, char *str2)
 {
 	error_msg_join("cd: ", str1, str2);
-	g_status = 1;
+	g_bash.status = 1;
 	return ;
 }
 
 void	ft_cd(t_inst *proc, t_env *envs, t_env *envs2)
 {
-	g_status = 1;
+	g_bash.status = 1;
 	if (proc->arg && proc->arg->next)
 		catch_error(proc->inst, ERR_TMA);
 	else if (proc->arg == NULL || proc->arg->str == NULL)

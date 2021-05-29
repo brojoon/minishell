@@ -33,12 +33,12 @@ void	catch_error(char *inst, char *msg)
 
 void	set_g_status(void)
 {
-	if (g_status == 256)
-		g_status = 127;
-	else if (g_status == 512)
-		g_status = 2;
-	else if (g_status == 768)
-		g_status = 1;
+	if (g_bash.status == 256)
+		g_bash.status = 127;
+	else if (g_bash.status == 512)
+		g_bash.status = 2;
+	else if (g_bash.status == 768)
+		g_bash.status = 1;
 }
 
 void	exec_error_handle(char *msg1, char *msg2, int status)

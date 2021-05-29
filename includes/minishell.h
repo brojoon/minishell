@@ -49,7 +49,7 @@
 # define ERR_RED "invalied redirection"
 # define ERR_SYN "syntax error near unexpected token"
 
-int						g_status;
+typedef struct s_bash	t_bash;
 typedef struct s_string	t_string;
 typedef struct s_inst	t_inst;
 typedef struct s_env	t_env;
@@ -62,7 +62,11 @@ typedef struct			s_cursor
 	int					vpos;
 	t_string			*history;
 }						t_cursor;
-
+struct					s_bash
+{
+	int					status;
+	char				*buf;
+};
 struct					s_string
 {
 	char				*str;
@@ -85,6 +89,8 @@ struct					s_env
 	char				*value;
 	t_env				*next;
 };
+
+t_bash	g_bash;
 
 void					print_status(void);
 char					*get_prompt(void);

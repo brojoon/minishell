@@ -19,12 +19,12 @@ void	ft_pwd(void)
 	if (!(getcwd(buf, 1024)))
 	{
 		catch_error("pwd", strerror(errno));
-		g_status = 1;
+		g_bash.status = 1;
 	}
 	else
 	{
 		ft_putendl_fd(buf, STDOUT_FILENO);
-		g_status = 0;
+		g_bash.status = 0;
 	}
 	return ;
 }

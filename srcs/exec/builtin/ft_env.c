@@ -46,7 +46,7 @@ void	ft_env(t_env *envs)
 	t_env	*node;
 
 	node = envs;
-	g_status = 0;
+	g_bash.status = 0;
 	while (node)
 	{
 		if (node->key && node->value)

@@ -21,7 +21,7 @@ void		del_first(t_env **envs)
 	free((*envs)->value);
 	free(*envs);
 	(*envs) = tmp;
-	g_status = 0;
+	g_bash.status = 0;
 }
 
 void		del_env(char *key, t_env *envs)
@@ -46,7 +46,7 @@ void		del_env(char *key, t_env *envs)
 		}
 		cur = cur->next;
 	}
-	g_status = 0;
+	g_bash.status = 0;
 }
 
 int			check_valid_env_key(char *key)
@@ -82,7 +82,7 @@ void		ft_unset(t_inst *proc, t_env **envs)
 			catch_error(proc->inst, err_msg);
 			free(tmp);
 			free(err_msg);
-			g_status = 1;
+			g_bash.status = 1;
 			break ;
 		}
 		else if (!ft_strcmp((*envs)->key, arg->str))

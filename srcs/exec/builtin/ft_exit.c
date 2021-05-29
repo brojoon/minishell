@@ -33,7 +33,7 @@ void	ft_exit(t_inst *proc, t_cursor *cursor)
 		if (!ft_isdigit(proc->arg->str[i]))
 		{
 			error_msg_join("exit: ", proc->arg->str, ERR_NAR);
-			g_status = 2;
+			g_bash.status = 2;
 			recover_term(cursor);
 			exit(2);
 		}
@@ -44,7 +44,7 @@ void	ft_exit(t_inst *proc, t_cursor *cursor)
 		errno = 1;
 		ft_putendl_fd("exit", STDERR_FILENO);
 		catch_error("exit", ERR_TMA);
-		g_status = 1;
+		g_bash.status = 1;
 		return ;
 	}
 	exit_number(proc, cursor);

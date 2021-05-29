@@ -41,7 +41,7 @@ int		redir_skip_left(char *str)
 		ft_putstr_fd("bash: ", STDERR_FILENO);
 		ft_putstr_fd(filename, STDERR_FILENO);
 		ft_putendl_fd(" No such file or directory", STDERR_FILENO);
-		g_status = 2;
+		g_bash.status = 2;
 		return (-1);
 	}
 	close(fd);

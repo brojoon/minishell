@@ -38,7 +38,7 @@ t_string *rd)
 		(ret = execve_before_term(path, chunked[0], chunked[1], cursor));
 	if (ret == -1)
 		exec_error_handle(proc->inst, ERR_CNF, 1);
-	exit_status(g_status);
+	exit_status(g_bash.status);
 }
 
 void	exec_redir_dright(t_inst *proc, t_env **envs, t_cursor *cursor, \
@@ -67,7 +67,7 @@ t_string *rd)
 		(ret = execve_before_term(path, chunked[0], chunked[1], cursor));
 	if (ret == -1)
 		exec_error_handle(proc->inst, ERR_CNF, 1);
-	exit_status(g_status);
+	exit_status(g_bash.status);
 }
 
 void	exec_redir_left(t_inst *proc, t_env **envs, t_cursor *cursor, \
@@ -95,7 +95,7 @@ t_string *rd)
 		(ret = execve_before_term(path, chunked[0], chunked[1], cursor));
 	if (ret == -1)
 		exec_error_handle(proc->inst, ERR_CNF, 1);
-	exit_status(g_status);
+	exit_status(g_bash.status);
 }
 
 void	redir_exec(t_inst *proc, t_env **envs, t_cursor *cursor, t_string *rd)
@@ -114,7 +114,7 @@ void	redir_exec(t_inst *proc, t_env **envs, t_cursor *cursor, t_string *rd)
 		else if (type == LEFT)
 			exec_redir_left(proc, envs, cursor, rd);
 	}
-	waitpid(pid, &g_status, 0);
+	waitpid(pid, &g_bash.status, 0);
 	set_g_status();
 	if (proc->child)
 		close(proc->child->fds[1]);

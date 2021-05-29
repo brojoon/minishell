@@ -26,14 +26,14 @@ void	handle_signal(int signo)
 {
 	pid_t	pid;
 
-	pid = waitpid(-1, &g_status, 0);
+	pid = waitpid(-1, &g_bash.status, 0);
 	if (signo == SIGINT)
 	{
 		if (pid == -1)
 			printf_prompt();
 		else
 			ft_putchar_fd('\n', STDERR_FILENO);
-		g_status = 130;
+		g_bash.status = 130;
 	}
 	else if (signo == SIGQUIT)
 	{
@@ -42,10 +42,10 @@ void	handle_signal(int signo)
 		else
 			ft_putstr_fd("Quit: 3\n", STDERR_FILENO);
 	}
-	if (g_status == 2)
-		g_status = 130;
-	if (g_status == 3)
-		g_status = 131;
+	if (g_bash.status == 2)
+		g_bash.status = 130;
+	if (g_bash.status == 3)
+		g_bash.status = 131;
 }
 
 void	set_signal(void)

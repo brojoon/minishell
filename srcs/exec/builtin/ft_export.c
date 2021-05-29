@@ -33,7 +33,7 @@ void	print_export(t_env *envs)
 		i++;
 	}
 	free(sorted_envs);
-	g_status = 0;
+	g_bash.status = 0;
 	return ;
 }
 
@@ -44,7 +44,7 @@ int		is_valid_export(char *str)
 
 	i = 0;
 	key_value_sepa = 0;
-	g_status = 1;
+	g_bash.status = 1;
 	if (!ft_isalpha(str[0]) && !(str[0] == '_'))
 		return (1);
 	while (str[++i])
@@ -56,7 +56,7 @@ int		is_valid_export(char *str)
 		(!(str[i] == '+') || !(str[i + 1] == '=')))
 			return (1);
 	}
-	g_status = 0;
+	g_bash.status = 0;
 	return (0);
 }
 

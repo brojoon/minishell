@@ -84,7 +84,10 @@ int	get_next_line_subsub(int fd, char *prompt,
 			return (9999);
 		}
 		else if (buf_size == BUFFER_SIZE || (*buf)[buf_size - 1] == '\n')
+		{
+			(*buf)[buf_size - 1] = '\0';
 			return (rd);
+		}
 		c = 0;
 	}
 	return (rd);

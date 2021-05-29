@@ -37,7 +37,7 @@ void	no_inst_redir(t_string *rd)
 		i = 0;
 		rd = rd->next->next;
 	}
-	g_status = 0;
+	g_bash.status = 0;
 }
 
 int		exec_builtin(t_inst *proc, t_env **envs, t_cursor *cursor)
@@ -86,7 +86,7 @@ t_env **envs, t_cursor *cursor)
 		(ret = execve_before_term(path, chunked[0], chunked[1], cursor));
 	if (ret == -1)
 		exec_error_handle(proc->inst, ERR_CNF, 1);
-	exit_status(g_status);
+	exit_status(g_bash.status);
 }
 
 void	exec_pipe(t_inst *proc, t_env **envs, t_cursor *cursor)
@@ -108,7 +108,7 @@ void	exec_pipe(t_inst *proc, t_env **envs, t_cursor *cursor)
 	pid = fork();
 	if (pid == 0)
 		child_process(proc, child, envs, cursor);
-	waitpid(pid, &g_status, 0);
+	waitpid(pid, &g_bash.status, 0);
 	set_g_status();
 	if (proc->child)
 		close(child->fds[1]);
