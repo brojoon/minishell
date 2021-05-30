@@ -6,7 +6,7 @@
 /*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 12:59:12 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 12:59:15 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/31 01:45:56 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,9 @@ int		recover_term(t_cursor *cursor)
 	cursor->term.c_lflag |= ICANON;
 	cursor->term.c_lflag |= ECHO;
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &(cursor->term));
-	ft_putstr_fd("\b\b \b\b\n", STDIN_FILENO);
+	write(0, "\n", 1);
+	tputs(tgoto(cursor->cm, 0, ++(cursor->vpos)), 1, ft_putchar);
+	tputs(cursor->ce, 1, ft_putchar);
 	return (-1);
 }
 
