@@ -6,7 +6,7 @@
 /*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 13:04:02 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/28 15:25:10 by hyi              ###   ########.fr       */
+/*   Updated: 2021/05/30 22:02:17 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 
 void	printf_prompt(void)
 {
-	char	*prompt;
+	char		*prompt;
+	t_cursor	cursor;
 
 	prompt = get_prompt();
+	update_cursor_pos(&cursor);
 	ft_putstr_fd("\b\b  \b\b\n", STDIN_FILENO);
 	write(0, prompt, ft_strlen(prompt));
 	free(prompt);

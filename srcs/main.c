@@ -6,7 +6,7 @@
 /*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 13:02:06 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/28 16:00:44 by hyi              ###   ########.fr       */
+/*   Updated: 2021/05/30 22:26:53 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ int		main(int argc, char **argv, char **envp)
 		prompt = get_prompt();
 		insts = main_subloop(prompt, &cursor, env_root);
 		free(prompt);
+		/*
 		t_inst *now = insts;
 		while (now)
 		{
@@ -122,6 +123,7 @@ int		main(int argc, char **argv, char **envp)
 		}
 		now = now->next;
 		}
+		*/
 		exec_parent_process(insts, &env_root, &cursor);
 		ft_inst_free(insts);
 	}

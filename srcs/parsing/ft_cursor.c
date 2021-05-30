@@ -6,7 +6,7 @@
 /*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 12:58:16 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/28 16:06:41 by hyi              ###   ########.fr       */
+/*   Updated: 2021/05/30 21:42:42 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,11 @@ int		proc_cursor(t_cursor *cursor, int flag, char *prompt, char **buf)
 		return (proc_cursor_case_down(&now_history, cursor, prompt, buf));
 	else if (flag == ESC)
 		cursor_erase(cursor, ft_strlen(prompt), *buf);
+	else if (flag == CTRLD)
+	{
+		if (ft_strlen(*buf) == 0)
+			return (-1);
+	}
 	else
 	{
 		now_history = 0;

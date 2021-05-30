@@ -6,7 +6,7 @@
 /*   By: hyungjki <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 12:59:03 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 12:59:04 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/05/30 22:54:14 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,11 @@ int	get_next_line_subsub(int fd, char *prompt,
 		rd = read(fd, &c, sizeof(c));
 		if (rd <= 0)
 			return (rd);
+		else if (g_bash.clean == 1)
+		{
+			(*buf)[0] = (char)c;
+			return (-1);
+		}
 		update_cursor_pos(cursor);
 		buf_size = proc_cursor(cursor, c, prompt, buf);
 		if (buf_size == -1)
@@ -84,14 +89,10 @@ int	get_next_line_subsub(int fd, char *prompt,
 			return (9999);
 		}
 		else if (buf_size == BUFFER_SIZE || (*buf)[buf_size - 1] == '\n')
-		{
-			if ((*buf)[buf_size - 1] == '\n')
-				(*buf)[buf_size - 1] = '\0';
-			return (rd);
-		}
+			return (buf_size);
 		c = 0;
 	}
-	return (rd);
+	return (buf_size);
 }
 
 int	get_next_line_subloop(int fd, char *prompt,
@@ -99,13 +100,21 @@ int	get_next_line_subloop(int fd, char *prompt,
 {
 	int	flag;
 
-	write(0, prompt, ft_strlen(prompt));
+	if (g_bash.clean == 0)
+		write(0, prompt, ft_strlen(prompt));
+	else
+		g_bash.clean = 0;
 	flag = get_next_line_subsub(fd, prompt, cursor, buf);
 	if (flag == 9999)
 		return (9999);
-	if (flag > 0 && (*buf)[0] != '\n')
-		cursor->history = ft_lstadd_back(&(cursor->history),
-				ft_lstinit(ft_strdup(*buf)));
+	if (flag > 0)
+	{
+		if ((*buf)[flag - 1] == '\n')
+				(*buf)[flag - 1] = '\0';
+		if((*buf)[0] != '\n')
+			cursor->history = ft_lstadd_back(&(cursor->history),
+					ft_lstinit(ft_strdup(*buf)));
+	}
 	return (flag);
 }
 
@@ -118,8 +127,8 @@ int	get_next_line(int fd, char **line, char *prompt, t_cursor *cursor)
 	if (fd < 0 || !line || BUFFER_SIZE <= 0)
 		return (-1);
 	*line = 0;
-	if (buf_ref && ft_proc_buf_ref(line, &buf_ref))
-		return (1);
+	if (buf_ref)
+		ft_proc_buf_ref(line, &buf_ref);
 	ft_memset(&buf, BUFFER_SIZE + 1);
 	while (1)
 	{
@@ -129,7 +138,13 @@ int	get_next_line(int fd, char **line, char *prompt, t_cursor *cursor)
 			free(buf);
 			return (9999);
 		}
-		else if (rd <= 0 || ft_while_loop(line, buf, &buf_ref))
+		else if (rd == -1 && g_bash.clean == 1)
+		{
+			write(0, &buf[0], 1);
+			ft_resize_and_copy(&buf_ref, &buf[0], 0, 1);
+			ft_memclean(&buf, ft_strlen(buf));
+		}
+		if (rd <= 0 || ft_while_loop(line, buf, &buf_ref))
 			break ;
 	}
 	free(buf);

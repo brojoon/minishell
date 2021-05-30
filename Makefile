@@ -34,7 +34,7 @@ SRCS = $(addprefix $(SRCDIR), $(SRC))
 OBJS = $(SRCS:.c=.o)
  
 $(NAME): $(LIBPOS) $(OBJS)
-	$(CC) $(CLFAGS) $(OBJS) libft.a -I $(INCDIR) -o $(NAME) -lncurses -fsanitize=address
+	$(CC) $(CLFAGS) $(OBJS) libft.a -I $(INCDIR) -o $(NAME) -lncurses #-fsanitize=address
 
 $(LIBPOS):
 	$(MAKE) -C ./libft/ libft.a
