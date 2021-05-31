@@ -65,7 +65,6 @@ int		recover_term(t_cursor *cursor)
 	cursor->term.c_lflag |= ICANON;
 	cursor->term.c_lflag |= ECHO;
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &(cursor->term));
-	write(0, "\n", 1);
 	tputs(tgoto(cursor->cm, 0, ++(cursor->vpos)), 1, ft_putchar);
 	tputs(cursor->ce, 1, ft_putchar);
 	return (-1);

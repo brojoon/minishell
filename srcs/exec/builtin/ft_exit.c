@@ -20,6 +20,7 @@ void	exit_number(t_inst *proc, t_cursor *cursor)
 	if (proc->arg && proc->arg->str)
 		i = ft_atoi(proc->arg->str);
 	recover_term(cursor);
+	ft_putendl_fd("exit", 2);
 	exit(i & 255);
 }
 

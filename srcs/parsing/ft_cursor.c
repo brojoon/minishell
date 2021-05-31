@@ -34,7 +34,10 @@ int		proc_cursor(t_cursor *cursor, int flag, char *prompt, char **buf)
 	else if (flag == CTRLD)
 	{
 		if (ft_strlen(*buf) == 0)
+		{
+			ft_putendl_fd("exit", 1);
 			return (-1);
+		}
 	}
 	else
 	{

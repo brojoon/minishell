@@ -34,7 +34,6 @@ int	change_buf(char **buf, char *str)
 	return (ft_strlen(str));
 }
 
-
 int	proc_cursor_case_up(t_string **now_history,
 		t_cursor *cursor, char *prompt, char **buf)
 {
