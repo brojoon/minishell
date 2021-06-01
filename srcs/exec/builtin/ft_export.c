@@ -6,7 +6,7 @@
 /*   By: hyungjki <hyungjki@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/05/24 12:51:23 by hyungjki          #+#    #+#             */
-/*   Updated: 2021/05/24 13:28:36 by hyungjki         ###   ########.fr       */
+/*   Updated: 2021/06/01 09:05:36 by hyi              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,19 +90,21 @@ void	check_export(char *str, t_env *envs)
 
 void	ft_export(t_inst *proc, t_env *envs)
 {
-	char	*err_msg;
-	char	*tmp;
+	char		*err_msg;
+	char		*tmp;
+	t_string	*now_arg;
 
 	if (proc->arg == NULL)
 		print_export(envs);
 	else
 	{
-		while (proc->arg)
+		now_arg = proc->arg;
+		while (now_arg)
 		{
-			if (is_valid_export(proc->arg->str))
+			if (is_valid_export(now_arg->str))
 			{
 				err_msg = ft_strjoin(proc->inst, ": `");
-				tmp = ft_strjoin(err_msg, proc->arg->str);
+				tmp = ft_strjoin(err_msg, now_arg->str);
 				free(err_msg);
 				err_msg = ft_strjoin(tmp, "\'");
 				catch_error(err_msg, "not a valid identifier");
@@ -110,8 +112,8 @@ void	ft_export(t_inst *proc, t_env *envs)
 				free(tmp);
 				return ;
 			}
-			check_export(proc->arg->str, envs);
-			proc->arg = proc->arg->next;
+			check_export(now_arg->str, envs);
+			now_arg = now_arg->next;
 		}
 	}
 }
