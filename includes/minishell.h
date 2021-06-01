@@ -290,6 +290,15 @@ void					ft_resize_and_copy(char **line, char *buf,
 int						recover_term(t_cursor *cursor);
 char					*replace_str(char **buf, int st, int ed, char *to);
 /*
+** get_next_line_02.c
+*/
+int						get_next_line_sub(char *prompt,
+							char **buf, int *clean_flag);
+int						get_next_line_sub01(char **buf,
+							char **line, char **buf_ref);
+int						get_next_line_whilesub(int rd,
+							char **buf_ref, char **buf);
+/*
 ** get_next_line.c
 */
 int						ft_while_loop(char **line, char *buf, char **buf_ref);

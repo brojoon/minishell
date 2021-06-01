@@ -114,7 +114,7 @@ void	exec_pipe(t_inst *proc, t_env **envs, t_cursor *cursor)
 	set_g_status();
 	if (proc->child)
 		close(child->fds[1]);
-	if (proc->fds && proc->fds[0] != 0)
+	if (proc->fds[0] != 0)
 		close(proc->fds[0]);
 }
 

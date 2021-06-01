@@ -17,7 +17,7 @@ SRC = main.c parsing/get_next_line/get_next_line.c parsing/ft_error.c\
 	  exec/builtin/ft_export.c exec/builtin/ft_export2.c exec/builtin/ft_export3.c\
 	  exec/error/error_handle.c exec/process/exec_utils.c exec/process/exec_proc.c \
 	  exec/process/signal.c exec/redirection/redir_exec.c exec/redirection/redir_skip.c \
-	  exec/redirection/redir_utils.c
+	  exec/redirection/redir_utils.c parsing/get_next_line/get_next_line_02.c
 
 SRCDIR = ./srcs/
 
@@ -34,7 +34,7 @@ SRCS = $(addprefix $(SRCDIR), $(SRC))
 OBJS = $(SRCS:.c=.o)
  
 $(NAME): $(LIBPOS) $(OBJS)
-	$(CC) $(CLFAGS) $(OBJS) libft.a -I $(INCDIR) -o $(NAME) -lncurses -fsanitize=address -static-libasan
+	$(CC) $(CLFAGS) $(OBJS) libft.a -I $(INCDIR) -o $(NAME) -lncurses #-fsanitize=address -static-libasan
 
 $(LIBPOS):
 	$(MAKE) -C ./libft/ libft.a

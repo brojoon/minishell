@@ -100,15 +100,7 @@ int	get_next_line_subloop(int fd, char *prompt,
 	int	flag;
 	int	clean_flag;
 
-	clean_flag = 0;
-	if (g_bash.clean == 0)
-		write(0, prompt, ft_strlen(prompt));
-	if (g_bash.clean == 1)
-	{
-		g_bash.clean = 0;
-		if (**buf == '\n')
-			clean_flag = 1;
-	}
+	clean_flag = get_next_line_sub(prompt, buf, &clean_flag);
 	if (clean_flag == 0)
 		flag = get_next_line_subsub(fd, prompt, cursor, buf);
 	else
@@ -117,7 +109,7 @@ int	get_next_line_subloop(int fd, char *prompt,
 		return (9999);
 	if (flag > 0 && g_bash.clean == 0)
 	{
-		if((*buf)[0] != '\n' && (*buf)[0] != '\0')
+		if ((*buf)[0] != '\n' && (*buf)[0] != '\0')
 		{
 			if ((*buf)[flag - 1] == '\n')
 				(*buf)[flag - 1] = '\0';
@@ -132,42 +124,22 @@ int	get_next_line(int fd, char **line, char *prompt, t_cursor *cursor)
 {
 	static char	*buf_ref;
 	char		*buf;
-	char		*temp;
 	int			rd;
+	int			flag;
 
 	if (fd < 0 || !line || BUFFER_SIZE <= 0)
 		return (-1);
 	*line = 0;
-	ft_memset(&buf, BUFFER_SIZE + 1);
-	if (buf_ref)
-	{
-		if (g_bash.clean == 0)
-		{
-			if (ft_proc_buf_ref(line, &buf_ref))
-				return (1);
-		}
-		else
-		{
-			temp = 0;
-			ft_proc_buf_ref(&temp, &buf_ref);
-			ft_strlcpy(buf, temp, ft_strlen(temp) + 1);
-			free(temp);
-		}
-	}
+	if (get_next_line_sub01(&buf, line, &buf_ref) == 1)
+		return (1);
 	while (1)
 	{
 		rd = get_next_line_subloop(fd, prompt, cursor, &buf);
-		if (rd == 9999)
-		{
-			free(buf);
-			return (9999);
-		}
-		else if (g_bash.clean == 1)
-		{
-			ft_resize_and_copy(&buf_ref, &buf[ft_strlen(buf) - 1], 0, 1);
-			ft_memclean(&buf, ft_strlen(buf));
+		flag = get_next_line_whilesub(rd, &buf_ref, &buf);
+		if (flag == 9999)
+			return (flag);
+		else if (flag == 1)
 			break ;
-		}
 		if (rd <= 0 || ft_while_loop(line, buf, &buf_ref))
 			break ;
 	}
